@@ -6,8 +6,27 @@
     },
     "hljzq_ysc":{
         "name":"欢乐家长群",
-        "path":"打开影视仓.js",
+        "path":"欢乐家长群_影视仓.js",
         "icon_path":"欢乐家长群.png"
+    },
+    "xw_dy":{
+        "name":"新闻",
+        "path":"新闻_抖音.js",
+        "icon_path":"新闻.png"
+    },
+    "ms_dy":{
+        "name":"美食",
+        "path":"美食_抖音.js",
+        "icon_path":"美食.png"
+    },
+    "ww_dy":{
+        "name":"娃娃",
+        "path":"娃娃_抖音.js",
+        "icon_path":"娃娃.png"
+    },
+    "gx_dy":{
+        "name":"搞笑",
+        "path":"搞笑_抖音.js",
+        "icon_path":"搞笑.png"
     }
-    
 }

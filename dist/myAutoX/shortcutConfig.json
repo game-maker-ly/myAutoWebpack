@@ -6,8 +6,13 @@
     },
     "hljzq_ysc":{
         "name":"欢乐家长群",
-        "path":"打开影视仓.js",
+        "path":"欢乐家长群_影视仓.js",
         "icon_path":"欢乐家长群.png"
+    },
+    "xw_dy":{
+        "name":"新闻",
+        "path":"新闻_抖音.js",
+        "icon_path":"新闻.png"
     }
     
 }
