@@ -28,8 +28,9 @@ jobs:
     - name: 编译
       run: |
         npm run build
-
-    - name: 推送到另一个仓库，专用于发布，不然会触发无限推送
+        
+    # 推送到另一个仓库防止无限触发
+    - name: 推送到myAutoX仓库
       uses: s0/git-publish-subdir-action@develop
       env:
         # 换成自己的目标仓库
