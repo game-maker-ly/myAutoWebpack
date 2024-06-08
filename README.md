@@ -1,5 +1,6 @@
 # 说明
 本项目用于编译一些autoX的小模块并推送给发布仓库
+目前用action来触发自动编译推送
 
 # 概述
 本项目是在 https://github.com/snailuncle/webpack-autojs 项目上魔改得来，
