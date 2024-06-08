@@ -29,6 +29,28 @@ scriptConfig.projects.forEach(project => {
   if(project.others){
       for (let index = 0; index < project.others.length; index++) {
              const fileName = project.others[index];
+             // 判断是否存在文件夹，通过是否包含*判断
+             var fpathList = fileName.split('*');
+             if(fpathList.length> 1){
+              var fpath = path.posix.resolve(scriptConfig.baseDir, outProjectName, fpathList[0]);
+              var suffix = fpathList[1];
+              // console.log(fpathList[0]);
+              var filesList = fs.readdirSync(fpath);
+              if(suffix.length > 0){
+                filesList = filesList.filter(function(e){
+                  return path.extname(e).toLowerCase() === suffix
+                });
+              }
+              // console.log(filesList);
+              for (let idx = 0; idx < filesList.length; idx++) {
+                var fname = path.join(fpathList[0], filesList[idx]);
+                // console.log(fname);
+                const outFileName=path.posix.resolve("/", outProjectName, fname).replace('.js','').replace('.ts','');
+                entry[outFileName] = path.posix.resolve(scriptConfig.baseDir, projectName, fname);
+              }
+              continue;//跳过之后的部分
+             }
+             // 结束判断
              const outFileName=path.posix.resolve("/", outProjectName, fileName).replace('.js','').replace('.ts','');
              entry[outFileName] = path.posix.resolve(scriptConfig.baseDir, projectName, fileName);
       }
