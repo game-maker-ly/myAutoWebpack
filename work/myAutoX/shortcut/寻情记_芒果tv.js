@@ -4,7 +4,7 @@ var clipId = 611439;
 var videoId = mgtvNet.getNewVideoId(clipId);
 if(videoId == -1){videoId = 21093374;}
 
-mgtvApp.openMGTV(clipId, videoId);
+mgtvApp.openMGTV(videoId);
 
 sleep(2000);
 

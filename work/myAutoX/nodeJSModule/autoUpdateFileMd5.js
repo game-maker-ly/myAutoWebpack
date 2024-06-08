@@ -27,6 +27,6 @@ async function calFilesMd5AndSave(desDir){
 }
 
 // 计算发布文件下的md5
-calFilesMd5AndSave("../../../dist/myAutoX");
+calFilesMd5AndSave("dist/myAutoX");
 // 计算工程文件下的md5
 // calFilesMd5AndSave("../");
