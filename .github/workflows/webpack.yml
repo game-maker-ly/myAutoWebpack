@@ -22,7 +22,21 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: 安装依赖
+      run: npm install
+        
+    - name: 编译
       run: |
-        npm install
         npm run build
+
+    - name: 推送到另一个仓库，专用于发布，不然会触发无限推送
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        # 换成自己的目标仓库
+        REPO: git@github.com:game-maker-ly/myAutoX.git
+        # 目标分支
+        BRANCH: main 
+        # 要推送的目录
+        FOLDER: dist
+        # 保存在secrets里面生成的ssh私钥
+        SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_PRIVATE_KEY }}
