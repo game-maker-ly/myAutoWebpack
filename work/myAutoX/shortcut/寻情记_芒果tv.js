@@ -5,7 +5,3 @@ var videoId = mgtvNet.getNewVideoId(clipId);
 if(videoId == -1){videoId = 21093374;}
 
 mgtvApp.openMGTV(videoId);
-
-sleep(2000);
-
-id("toFullScreen").findOne().click();
