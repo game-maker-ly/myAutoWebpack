@@ -26,7 +26,8 @@ toastLog("开始创建快捷方式");
 var shortcutConfig = FileTool.getShortcutConfig();
 // 创建之前先通知nova桌面回滚
 NovaTool.restoreNovaDesktop();
-sleep(5000);//等待回滚完毕
+sleep(10000);//等待回滚完毕
+// 至少得等10s
 // 2s还不够啊，服了
 
 for(sid in shortcutConfig){
