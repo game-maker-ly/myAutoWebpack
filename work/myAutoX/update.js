@@ -4,6 +4,11 @@
 // 否则跳过
 // 
 const FileTool = require("./lib/模块_文件操作.js");
+const DeviceTool = require("./lib/模块_设备操作.js");
+// 如果是息屏/休眠状态，需要解锁屏幕
+// 先保存亮度，并手动设置亮度
+DeviceTool.wakeUpDevice();
+
 toastLog("检查更新中");
 // 下载更新js
 // 先去寻找云端的版本json
@@ -11,8 +16,15 @@ toastLog("检查更新中");
 // 如果一致，就跳过此次更新
 var cfg_path = "config.json";
 var cfg_path_cloud = "config_cloud.json";
-var newVersion = FileTool.downloadFileAndRead(cfg_path, cfg_path_cloud)["version"];
 var localVersion = FileTool.getLocalVersion();
+var cloudCfg = FileTool.downloadFileAndRead(cfg_path, cfg_path_cloud);
+// 如果没有找到云端配置文件，就放弃更新操作，
+// 可能是没有网
+if(cloudCfg == null) {
+    toastLog("未获取到更新配置，请检查网络情况");
+    exit();//相当于return，不能直接用return
+}
+var newVersion = cloudCfg["version"];
 toastLog("本地版本:"+localVersion);
 toastLog("云端版本:"+newVersion);
 if(newVersion == localVersion){
