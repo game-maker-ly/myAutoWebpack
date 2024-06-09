@@ -22,6 +22,7 @@ var cloudCfg = FileTool.downloadFileAndRead(cfg_path, cfg_path_cloud);
 // 可能是没有网
 if(cloudCfg == null) {
     toastLog("未获取到更新配置，请检查网络情况");
+    DeviceTool.cancelWakeUpAndLock();
     exit();//相当于return，不能直接用return
 }
 var newVersion = cloudCfg["version"];
@@ -29,6 +30,7 @@ toastLog("本地版本:"+localVersion);
 toastLog("云端版本:"+newVersion);
 if(newVersion == localVersion){
     toastLog("已经是最新版本！");
+    DeviceTool.cancelWakeUpAndLock();
 }else{
     toastLog("检测到新版本，正在执行更新");
     var dirPath = "tasker/按需更新文件.js";
