@@ -7,7 +7,7 @@ exports.openMGTV = function(videoId){
         data: videoUrl
     });
 
-    sleep(3000);
+    sleep(5000);
     // 纯坐标是对应不上的
     // var btn = id("toFullScreen").findOne();
     var videoContainer = idContains("main_container").findOne();

@@ -31,7 +31,10 @@ exports.wakeUpDevice = function(){
     // 设置手动亮度模式
     setDeviceBrightness_Mode(0);
     setDeviceBrightness(lowBrightnerss);
+    device.wakeUp();
     device.keepScreenOn(300 * 1000);
+    sleep(1000);    // 等待
+    swipe(500, 1800, 500, 0, 500);
 }
 // 恢复亮度，并锁屏
 exports.cancelWakeUpAndLock = function(){
