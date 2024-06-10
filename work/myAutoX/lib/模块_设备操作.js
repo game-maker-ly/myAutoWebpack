@@ -42,7 +42,25 @@ exports.wakeUpDevice = function () {
         // 小米默认锁屏无法用匀速手势打开
         // 只能换主题
         // 或者用下拉通知栏的方式，点击时钟解锁
-        swipe(500, 1800, 500, 0, 500);
+        // 检测是否有数字锁屏
+        // 假如是小米9，就不执行滑动
+        // 用下拉通知栏唤起时钟代替
+        var deviceName = device.model;
+        if(deviceName == "MI 9"){
+            //下拉状态栏
+            swipe(500, 30, 500, 1000, 300);
+            sleep(400);
+            //点击时间
+            click(100, 120);
+            // 
+            sleep(700);
+            desc(2).findOne().click();
+            desc(2).findOne().click();
+            desc(3).findOne().click();
+            desc(3).findOne().click();
+        }else{
+            swipe(500, 1800, 500, 0, 500);
+        }
     }
 }
 // 恢复亮度，并锁屏

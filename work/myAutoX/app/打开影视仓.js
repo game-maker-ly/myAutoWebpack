@@ -21,7 +21,7 @@ exports.openYSC = function (videoName, selectVideoSrc) {
     sleep(2000);
     click(450, 450);
     // className("android.view.View").depth(10).findOne().parent().parent().parent().click();
-    sleep(3000);
+    sleep(7000);
     //var widget=className("android.view.View").findOne();
     click(100, 100);
     //如果用root权限则用Tap

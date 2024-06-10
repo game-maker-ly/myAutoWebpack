@@ -21,13 +21,16 @@ const scut_tool = require("../lib/模块_创建快捷方式.js");
 const FileTool = require("../lib/模块_文件操作.js");
 const NovaTool = require("../lib/模块_桌面操作.js");
 const DeviceTool = require("../lib/模块_设备操作.js");
+const HandTool = require("../lib/模块_模拟操作扩展.js");
 
 toastLog("开始创建快捷方式");
+// 回到桌面
+HandTool.goHome();
 
 var shortcutConfig = FileTool.getShortcutConfig();
 // 创建之前先通知nova桌面回滚
 NovaTool.restoreNovaDesktop();
-sleep(10000);//等待回滚完毕
+sleep(9000);//等待回滚完毕
 // 至少得等10s
 // 2s还不够啊，服了
 
@@ -38,6 +41,6 @@ for(sid in shortcutConfig){
     toastLog(sname);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
-sleep(8000);
+sleep(7000);
 toastLog("结束创建快捷方式，执行锁屏");
 DeviceTool.cancelWakeUpAndLock();
