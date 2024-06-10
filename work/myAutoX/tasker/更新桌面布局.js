@@ -38,6 +38,6 @@ for(sid in shortcutConfig){
     toastLog(sname);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
-
+sleep(8000);
 toastLog("结束创建快捷方式，执行锁屏");
 DeviceTool.cancelWakeUpAndLock();

@@ -9,7 +9,7 @@ function searchWithType_private(keyword, type){
 
 exports.searchWithType = function(keyword, type){
     searchWithType_private(keyword, type);
-    sleep(5000);
+    sleep(7000);
     click(300, 500);
 }
 
