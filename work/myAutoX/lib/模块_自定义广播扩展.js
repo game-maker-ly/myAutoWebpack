@@ -24,15 +24,19 @@ async function waitBroadcastReceiver(callBack_func){
     // 这里就用创建快捷方式代替
     callBack_func && callBack_func();
     // 广播回调触发
-    await p1.then((res) => {
-        // toastLog(res);
-        toastLog("自定义创建快捷方式结束广播");
-        if(res){
-            // toastLog("关闭广播");
-            flag = true;
-            unregisterReceiver();// 关闭广播
-            // 后面接下一个代码
-        }
+    
+    await new Promise(function (resolve, reject) {
+        p1.then((res) => {
+            // toastLog(res);
+            toastLog("自定义创建快捷方式结束广播");
+            if(res){
+                // toastLog("关闭广播");
+                flag = true;
+                unregisterReceiver();// 关闭广播
+                // 后面接下一个代码
+                resolve(true);
+            }
+        });
     });
     // app.sendBroadcast({
     //     action: "android.intent.action.yashu",
