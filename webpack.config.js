@@ -118,7 +118,7 @@ module.exports = function (env, argv) {
         // reservedStrings: [],
         // // 通过固定和随机的位置移动数组，使解密的位置难以匹配，大文件应重点开启
         rotateStringArray: prod,
-        seed: 0,
+        seed: 7,
         // // 使混淆后的代码无法使用格式美化，需要保证compact为true
         // selfDefending: prod,
         // // 生成指引文件

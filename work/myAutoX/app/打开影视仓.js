@@ -1,6 +1,16 @@
 // 打开影视仓
 exports.openYSC = function (videoName, selectVideoSrc) {
-    launch("com.mygithub0.tvbox0.osdX");
+    // launch("com.mygithub0.tvbox0.osdX");
+    // 即使打开也是回到桌面，便于无障碍操作
+    app.startActivity({
+        action: "VIEW",
+        packageName: "com.mygithub0.tvbox0.osdX",
+        className: "com.github.tvbox.osc.ui.activity.HomeActivity"
+    });
+
+    // 基本上是做不到切换源了
+    // 找不到当前播放的集数
+    
 
     var sendButton = text("搜索").findOne();
     sendButton.click();
