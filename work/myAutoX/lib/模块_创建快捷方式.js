@@ -70,7 +70,7 @@ async function createDesktopShortCut(s_id, s_name, s_path, i_path){
 // 图标路径
 exports.createDesktopShortCut = function(s_id, s_name, s_path, i_path) {
     createDesktopShortCut(s_id, s_name, s_path, i_path);
-    sleep(2000);
+    //sleep(2000);
 }
 
 
