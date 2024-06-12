@@ -118,8 +118,8 @@ exports.getAllFilePaths = function () {
 }
 
 exports.getShortcutConfig = function () {
-    if(cache_shortCutConfig == null){
-        cache_shortCutConfig = readJson("shortcutConfig.json");
-    }
+    // 很迷，为什么会有缓存，
+    // 明明Md5也是这么写的，就不会缓存
+    cache_shortCutConfig = readJson("shortcutConfig.json");
     return cache_shortCutConfig;
 }

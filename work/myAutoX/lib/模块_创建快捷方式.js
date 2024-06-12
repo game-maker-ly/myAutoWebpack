@@ -61,7 +61,7 @@ async function createDesktopShortCut(s_id, s_name, s_path, i_path){
     });
     // 以上的请求创建快捷方式是异步的，如果短时间收到大量请求，会忽略部分请求
     // 加个500ms的延时
-    // sleep(1200);
+    sleep(2000);
 }
 
 //需要的参数，图标路径

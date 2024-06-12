@@ -42,7 +42,7 @@ for(sid in shortcutConfig){
     var sname = shortcutConfig[sid]["name"];
     var spath = "shortcut/"+shortcutConfig[sid]["path"];
     var i_path = "icon/"+shortcutConfig[sid]["icon_path"];
-    toastLog(sname);
+    toastLog(sname+":"+spath);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
 sleep(7000);
