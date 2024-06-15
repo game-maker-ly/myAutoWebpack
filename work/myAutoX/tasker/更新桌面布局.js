@@ -44,6 +44,8 @@ for (sid in shortcutConfig) {
     toastLog(sname + ":" + spath);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
-sleep(7000);
+// 给个5s锁屏应该够了（虽然不准
+// 另外之前创建快捷方式的延时不准，导致总有漏的情况
+sleep(5000);
 toastLog("结束创建快捷方式，执行锁屏");
 DeviceTool.cancelWakeUpAndLock();

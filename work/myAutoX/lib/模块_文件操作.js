@@ -47,16 +47,18 @@ function downloadFile_async_list(dirList) {
     let size = dirList.length;
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
-        var desDir = srcDir;
         var url = BASE_URL + srcDir;
         // toastLog(url);
         // 有bug，暂时重复广播实现
         http.get(url, null, (res) => {
             // 保存到本地
             if (res.statusCode == 200) {
+                // srcDir恒为数组最后一项
+                // 但是i在变化，可能和变量作用域有关
+                var desDir = dirList[i];
                 files.createWithDirs(desDir);
                 files.writeBytes(desDir, res.body.bytes());
-                log("下载成功！");
+                log("下载成功："+desDir);
                 events.broadcast.emit("isFileListDownloaded", size);
             } else {
                 toastLog("下载失败！");

@@ -6,7 +6,14 @@ exports.openMGTV = function(videoId){
         //type: "text/plain",
         data: videoUrl
     });
-
+    // 需要注意的是
+    // 可能是版本问题，或者安卓底层调度问题
+    // timer并不总是准确的
+    // 会出现过快和过慢的情况，
+    // 能用回调+线程阻塞达到同步的方法
+    // 或者自带的waitFor方法
+    // 就尽量避免用sleep();
+    
     sleep(7000);
     // 纯坐标是对应不上的
     // var btn = id("toFullScreen").findOne();

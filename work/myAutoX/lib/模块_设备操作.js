@@ -2,6 +2,7 @@ var curBrightnerss_Mode = 0;
 var curBrightnerss = 240;
 
 // 调用无障碍服务的接口实现锁屏动作
+// 如果无障碍服务未开启则报错
 function lockScreen() {
     var success = runtime.accessibilityBridge.getService().performGlobalAction(android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_LOCK_SCREEN);
     return success;
