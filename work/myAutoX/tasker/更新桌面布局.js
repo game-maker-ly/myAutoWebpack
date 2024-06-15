@@ -37,12 +37,11 @@ NovaTool.restoreNovaDesktop();
 sleep(9000);//等待回滚完毕
 // 至少得等10s
 // 2s还不够啊，服了
-
-for(sid in shortcutConfig){
+for (sid in shortcutConfig) {
     var sname = shortcutConfig[sid]["name"];
-    var spath = "shortcut/"+shortcutConfig[sid]["path"];
-    var i_path = "icon/"+shortcutConfig[sid]["icon_path"];
-    toastLog(sname+":"+spath);
+    var spath = "shortcut/" + shortcutConfig[sid]["path"];
+    var i_path = "icon/" + shortcutConfig[sid]["icon_path"];
+    toastLog(sname + ":" + spath);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
 sleep(7000);

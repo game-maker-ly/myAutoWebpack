@@ -16,7 +16,7 @@ function checkIsSupported() {
     }
 }
 
-async function createDesktopShortCut(s_id, s_name, s_path, i_path){
+function createDesktopShortCut(s_id, s_name, s_path, i_path){
     shortcutManager = context.getSystemService(context.SHORTCUT_SERVICE);
     requestPinShortcutSupported = shortcutManager.isRequestPinShortcutSupported();
     // toastLog("启动器是否支持固定快捷方式: " + requestPinShortcutSupported);
@@ -56,7 +56,7 @@ async function createDesktopShortCut(s_id, s_name, s_path, i_path){
 
     var shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, succIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-    await MyBroadcastTool.waitBroadcastReceiver(() => {
+    MyBroadcastTool.waitBroadcastReceiver_Async(() => {
         toastLog("当前执行："+name);
         shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
     });
@@ -70,7 +70,7 @@ async function createDesktopShortCut(s_id, s_name, s_path, i_path){
 // 图标路径
 exports.createDesktopShortCut = function(s_id, s_name, s_path, i_path) {
     createDesktopShortCut(s_id, s_name, s_path, i_path);
-    sleep(2000);
+    // sleep(2000);
 }
 
 

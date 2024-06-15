@@ -7,14 +7,14 @@ var BASE_URL = cache_config["project_url"];
 var cacheMd5 = null;
 var cache_shortCutConfig = null;
 
-function readConfig(){
+function readConfig() {
     // 假如配置文件不存在，就手动创建
     var c_path = "config.json";
     var defaultCfg = {
-        "version":"1.0",
-        "project_url":"https://mirror.ghproxy.com/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+        "version": "1.0",
+        "project_url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
     }
-    if(!files.exists(c_path)){
+    if (!files.exists(c_path)) {
         files.write(c_path, JSON.stringify(defaultCfg));
     }
     return readJson(c_path);
@@ -26,7 +26,7 @@ function readJson(path) {
 }
 
 //这个写法是同步下载
-function downloadFile_private(srcDir, desDir){
+function downloadFile_private(srcDir, desDir) {
     var url = BASE_URL + srcDir;
     var res = http.get(url);
     // 保存到本地
@@ -34,44 +34,37 @@ function downloadFile_private(srcDir, desDir){
         files.createWithDirs(desDir);
         files.writeBytes(desDir, res.body.bytes());
         return true;
-    }else{
+    } else {
         return false;
     }
 }
 
-// 异步下载文件
-// 涉及到多个文件，用list传入时调用
-async function downloadFile_async(srcDir, desDir){
-    var url = BASE_URL + srcDir;
-    http.get(url,null, (res) => {
-        // 保存到本地
-        if (res.statusCode == 200) {
-            files.createWithDirs(desDir);
-            files.writeBytes(desDir, res.body.bytes());
-            return true;
-        }else{
-            return false;
-        }
-    });
-}
 
-async function downloadFile_async_list(dirList){
-    var pmList = [];
-    dirList.forEach(d => {
-        var promise1 = new Promise((resolve, reject) => {
-            var isS = downloadFile_async(d, d);
-            if(isS){
-                resolve(true);
-            }else{
-                reject(false);
+function downloadFile_async_list(dirList) {
+    // 不能用async/await
+    // get的回调不兼容Promise
+    // 仅在autojs4版本有这个问题，之后的版本都正常
+    let size = dirList.length;
+    for (let i = 0; i < size; i++) {
+        var srcDir = dirList[i];
+        var desDir = srcDir;
+        var url = BASE_URL + srcDir;
+        // toastLog(url);
+        // 有bug，暂时重复广播实现
+        http.get(url, null, (res) => {
+            // 保存到本地
+            if (res.statusCode == 200) {
+                files.createWithDirs(desDir);
+                files.writeBytes(desDir, res.body.bytes());
+                log("下载成功！");
+                events.broadcast.emit("isFileListDownloaded", size);
+            } else {
+                toastLog("下载失败！");
             }
+            // 重复广播给主线程，如果达到列表数目，就认为完成
+            // 执行退出
         });
-        pmList.push(promise1);
-    });
-    // 执行
-    Promise.all(pmList).then((values) => {
-        // console.log(values);
-    });
+    }
 }
 
 // 获取本地版本号
@@ -84,13 +77,14 @@ exports.downloadFile = function (desDir) {
     downloadFile_private(desDir, desDir);
 }
 
-exports.downloadFileList = function (desDirList) {
+exports.downloadFileList_Async = function (desDirList) {
+    toastLog("开始异步下载");
     downloadFile_async_list(desDirList);
 }
 
 exports.downloadFileAndRead = function (srcDir, desDir) {
     var isSucc = downloadFile_private(srcDir, desDir);
-    var res = isSucc ? readJson(desDir): null;
+    var res = isSucc ? readJson(desDir) : null;
     return res;
 }
 
@@ -100,7 +94,7 @@ exports.getMd5ByPath = function (path) {
     if (cacheMd5 == null) {
         cacheMd5 = readJson("md5.json");
     }
-    if(!(path in cacheMd5)){
+    if (!(path in cacheMd5)) {
         return null;
     }
     return cacheMd5[path];

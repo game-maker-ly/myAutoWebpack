@@ -2,6 +2,7 @@
 // 然后计算md5值并保存到md5.json
 // 手动执行的话用遍历all
 // 否则就用白名单模式，传入推送的文件,只更新这部分文件的md5
+// nodejs可以用async/await
 const ftool = require('./fileTool.js');
 const md5tool = require('./md5tool.js');
 // 一定会更新的文件不需要记录md5值
