@@ -13,9 +13,9 @@
 // 固定命名规则肯定不可取，还是手动维护较好
 // 不过md5值可以用代码遍历生成
 // files.write('tasker/1.js', "test");
-// toastLog(engines.myEngine().cwd());
+// log(engines.myEngine().cwd());
 // var a = {"1":1,"2":2}
-// toastLog(Object.keys(a));
+// log(Object.keys(a));
 // 调用创建快捷方式到桌面
 const scut_tool = require("../lib/模块_创建快捷方式.js");
 const FileTool = require("../lib/模块_文件操作.js");
@@ -29,7 +29,7 @@ const DeviceTool = require("../lib/模块_设备操作.js");
 // 这个谜之bug
 // 我只能认为是顺序的问题
 // 第二个快捷方式会被莫名其妙吞掉
-toastLog("开始创建快捷方式");
+log("开始创建快捷方式");
 
 var shortcutConfig = FileTool.getShortcutConfig();
 // 创建之前先通知nova桌面回滚，回滚会自动返回桌面
@@ -41,11 +41,11 @@ for (sid in shortcutConfig) {
     var sname = shortcutConfig[sid]["name"];
     var spath = "shortcut/" + shortcutConfig[sid]["path"];
     var i_path = "icon/" + shortcutConfig[sid]["icon_path"];
-    toastLog(sname + ":" + spath);
+    log(sname + ":" + spath);
     scut_tool.createDesktopShortCut(sid, sname, spath, i_path);
 }
 // 给个5s锁屏应该够了（虽然不准
 // 另外之前创建快捷方式的延时不准，导致总有漏的情况
 sleep(5000);
-toastLog("结束创建快捷方式，执行锁屏");
+log("结束创建快捷方式，执行锁屏");
 DeviceTool.cancelWakeUpAndLock();

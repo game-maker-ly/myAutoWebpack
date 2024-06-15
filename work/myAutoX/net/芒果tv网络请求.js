@@ -8,7 +8,7 @@ exports.getNewVideoId = function (collection_id) {
         var newVideoInfo = rejson.data.list[0];
         var videoId = newVideoInfo.video_id;
         var videoName = newVideoInfo.t3;
-        toastLog(videoName);
+        log(videoName);
         return videoId;
     }
     return -1;

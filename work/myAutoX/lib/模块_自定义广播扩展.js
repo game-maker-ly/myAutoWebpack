@@ -15,10 +15,10 @@ function waitBroadcastReceiver(callBack_func) {
             },
         });
     }).then((res) => {
-        // toastLog(res);
-        toastLog("创建快捷方式结束广播");
+        // log(res);
+        log("创建快捷方式结束广播");
         receiver && context.unregisterReceiver(receiver);
-        toastLog("关闭广播");
+        log("关闭广播");
 
         // myThread.clearInterval(myInterval);
         // 退出当前线程
@@ -42,7 +42,7 @@ function waitBroadcastReceiver(callBack_func) {
     // 不过本来就需要异步下载，用重复广播反而是比较适合的
     myThread = threads.start(function(){
         myInterval = setInterval(() => {
-            toastLog("执行阻塞");
+            log("执行阻塞");
         }, 3000);
     });
     myThread.join();

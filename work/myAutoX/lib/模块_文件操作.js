@@ -48,7 +48,7 @@ function downloadFile_async_list(dirList) {
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
         var url = BASE_URL + srcDir;
-        // toastLog(url);
+        // log(url);
         // 有bug，暂时重复广播实现
         http.get(url, null, (res) => {
             // 保存到本地
@@ -61,7 +61,7 @@ function downloadFile_async_list(dirList) {
                 log("下载成功："+desDir);
                 events.broadcast.emit("isFileListDownloaded", size);
             } else {
-                toastLog("下载失败！");
+                log("下载失败！");
             }
             // 重复广播给主线程，如果达到列表数目，就认为完成
             // 执行退出
@@ -80,7 +80,7 @@ exports.downloadFile = function (desDir) {
 }
 
 exports.downloadFileList_Async = function (desDirList) {
-    toastLog("开始异步下载");
+    log("开始异步下载");
     downloadFile_async_list(desDirList);
 }
 

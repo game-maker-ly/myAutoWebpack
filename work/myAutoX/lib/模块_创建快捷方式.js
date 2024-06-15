@@ -10,16 +10,16 @@ const MyBroadcastTool = require("./模块_自定义广播扩展.js");
 
 function checkIsSupported() {
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-        toastLog("本代码仅在华为安卓8手机上测试通过");
+        log("本代码仅在华为安卓8手机上测试通过");
     } else {
-        toastLog("需要安卓8(包含)以上");
+        log("需要安卓8(包含)以上");
     }
 }
 
 function createDesktopShortCut(s_id, s_name, s_path, i_path){
     shortcutManager = context.getSystemService(context.SHORTCUT_SERVICE);
     requestPinShortcutSupported = shortcutManager.isRequestPinShortcutSupported();
-    // toastLog("启动器是否支持固定快捷方式: " + requestPinShortcutSupported);
+    // log("启动器是否支持固定快捷方式: " + requestPinShortcutSupported);
 
     // 创建intent调用autojs的执行脚本act
     var shortcutInfoIntent = new Intent();
@@ -32,7 +32,7 @@ function createDesktopShortCut(s_id, s_name, s_path, i_path){
     var name = s_name
 
     var bt_m = files.path(icon_path);
-    // toastLog(bt_m);
+    // log(bt_m);
     var bitmap = BitmapFactory.decodeFile(bt_m);
     icon = Icon.createWithBitmap(bitmap);
 
@@ -57,7 +57,7 @@ function createDesktopShortCut(s_id, s_name, s_path, i_path){
     var shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, succIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     MyBroadcastTool.waitBroadcastReceiver_Async(() => {
-        toastLog("当前执行："+name);
+        log("当前执行："+name);
         shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
     });
     // 以上的请求创建快捷方式是异步的，如果短时间收到大量请求，会忽略部分请求
@@ -77,6 +77,6 @@ exports.createDesktopShortCut = function(s_id, s_name, s_path, i_path) {
 exports.delDesktopShortCut = function(shortcutId) {
     appWidgetHost= new AppWidgetHost(context, 1);
     //var ids=appWidgetHost.getAppWidgetIds();
-    //toastLog(ids);
+    //log(ids);
     appWidgetHost.deleteHost();
 }

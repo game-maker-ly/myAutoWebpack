@@ -1,6 +1,6 @@
 exports.openMGTV = function(videoId){
     var videoUrl = util.format("imgotv://player?videoId=%s", videoId);
-    toastLog(videoUrl);
+    log(videoUrl);
     app.startActivity({
         action: "VIEW",
         //type: "text/plain",
@@ -13,7 +13,7 @@ exports.openMGTV = function(videoId){
     // 能用回调+线程阻塞达到同步的方法
     // 或者自带的waitFor方法
     // 就尽量避免用sleep();
-    
+
     sleep(7000);
     // 纯坐标是对应不上的
     // var btn = id("toFullScreen").findOne();

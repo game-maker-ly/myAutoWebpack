@@ -8,8 +8,8 @@
 // 文件路径：md5
 // autojs语法
 const FileTool = require("../lib/模块_文件操作.js");
-toastLog("执行更新主流程");
-toastLog("开始下载");
+log("执行更新主流程");
+log("开始下载");
 // 首先检查本地是否存在md5.json，
 // 如果不存在就跳过md5检查，直接下载所有文件，从云端
 var dirPath = "md5.json";
@@ -19,7 +19,7 @@ var isMD5Exists = files.exists(dirPath);
 if (!isMD5Exists) {
     FileTool.downloadFile(dirPath);
     var flist = FileTool.getAllFilePaths();
-    // toastLog(flist);
+    // log(flist);
     FileTool.downloadFileList_Async(flist);
 } else {
     // 如果md5文件存在，就和云端上的md5文件作对比
@@ -50,14 +50,14 @@ if (!isMD5Exists) {
 }
 
 const myInterval = setInterval(() => {
-    toastLog("执行阻塞");
+    log("执行阻塞");
 }, 10000);
 
 let eventsCount = 0;
 events.broadcast.on("isFileListDownloaded", function (size) {
     eventsCount = eventsCount + 1;
     if (eventsCount == size) {
-        toastLog("文件列表下载完成！");
+        log("文件列表下载完成！");
         if (isMD5Exists) {
             log("已更新：" + m_count + "个文件");
             var count = 0;

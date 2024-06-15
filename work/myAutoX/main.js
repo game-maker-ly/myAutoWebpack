@@ -4,6 +4,6 @@
 const path = require('path');
 
 
-toastLog(path);
+log(path);
 
 toast('Hello, AutoX.js');
