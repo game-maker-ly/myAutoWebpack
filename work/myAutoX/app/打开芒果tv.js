@@ -17,12 +17,9 @@ exports.openMGTV = function(videoId){
     sleep(7000);
     // 纯坐标是对应不上的
     // var btn = id("toFullScreen").findOne();
-    var videoContainer = idContains("main_container").findOne();
-    var x = videoContainer.bounds().right - 80;
-    var y = videoContainer.bounds().bottom - 80;
-    click(x, y);// 全屏按钮
-    sleep(900);
-    click(x, y);
+    click(600, 400);// 全屏按钮
+    sleep(1000);
+    text("全屏").findOnce().click();
     // 这里其实可以用横屏来实现全屏，因为芒果tv的视频基本都是横屏
     // 不用去找随时可能改名的按钮
     // 但实现太复杂了

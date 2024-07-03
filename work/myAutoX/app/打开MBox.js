@@ -17,6 +17,8 @@ exports.openMBox = function (videoName, selectVideoSrc, selectResSrc) {
     var searchInput = id("et_search").findOne();
     searchInput.setText(videoName);
 
+    sleep(1000);
+
     var sendButton = id("iv_search").findOne();
     sendButton.click();
 
@@ -25,13 +27,18 @@ exports.openMBox = function (videoName, selectVideoSrc, selectResSrc) {
     var selectVideoSrcBtn = textContains(selectVideoSrc).clickable(true).findOne();
     selectVideoSrcBtn.click();
 
-    sleep(3000);
-    var selectVideo2play = id("tvName").findOne().parent();
-    selectVideo2play.click();
+    sleep(2000);
+    var selectVideo2play = id("tvName").findOne().bounds();
+    click(selectVideo2play.centerX() + 200, selectVideo2play.centerY()+50);
 
-    sleep(1000);
+
+    sleep(2000);
     // 貌似无法规避重复点击
     // 要么申请截图，取色，不过太麻烦了
+
+    // sleep函数限制太大了
+    // 不论是自身准确性
+    // 还是受网速影响
 
     var selectResBtn = id("tvFlag").textContains(selectResSrc).findOne().parent();
     selectResBtn.click();
