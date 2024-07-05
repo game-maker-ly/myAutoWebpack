@@ -15,11 +15,14 @@ log("开始下载");
 var dirPath = "md5.json";
 var isMD5Exists = files.exists(dirPath);
 
+var dlFile_count = 0;
+
 // 如果md5文件不存在，就直接下载全部
 if (!isMD5Exists) {
     FileTool.downloadFile(dirPath);
     var flist = FileTool.getAllFilePaths();
     // log(flist);
+    dlFile_count = flist.length;
     FileTool.downloadFileList_Async(flist);
 } else {
     // 如果md5文件存在，就和云端上的md5文件作对比
@@ -46,7 +49,18 @@ if (!isMD5Exists) {
         }
     }
     // 异步并发更新文件
+    dlFile_count = needUpdateFiles.length;
     FileTool.downloadFileList_Async(needUpdateFiles);
+}
+
+// 如果可下载文件数为0，不会发送广播，那么会导致一直阻塞，需要做个if判断
+if(dlFile_count == 0){
+    // 直接更新布局
+    // 然后退出当前脚本
+    log("无可更新文件，直接开始更新桌面布局。。。");
+    engines.execScriptFile("tasker/更新桌面布局.js");
+    //强制退出
+    exit();
 }
 
 const myInterval = setInterval(() => {
@@ -72,8 +86,8 @@ events.broadcast.on("isFileListDownloaded", function (size) {
             // 完成后把云端的md5覆盖到本地
             files.remove(dirPath);
             files.rename(cloudPath, dirPath);
-            // 创建快捷方式
         }
+        // 创建快捷方式
         engines.execScriptFile("tasker/更新桌面布局.js");
         // 清除定时器并强制退出
         clearInterval(myInterval);
