@@ -46,7 +46,7 @@ exports.openMBox = function (videoName, selectVideoSrc, selectResSrc) {
     sleep(1000);
     var selectCurEpisode = id("sl").selected().findOne();
     selectCurEpisode.click();
-    // 全屏
+    // 全屏，只能用自带的全屏按钮，强制横屏不是满屏
     sleep(6000);
     var mainBounds = id("subtitle_view").findOne().bounds();
     click(mainBounds.centerX(), mainBounds.centerY() - 100);

@@ -7,7 +7,7 @@ function searchWithType_private(keyword, type) {
 }
 
 
-exports.searchWithType = function (keyword, type) {
+exports.searchWithType = function (keyword, type, isNewest = true) {
     searchWithType_private(keyword, type);
     // 等6s后操作
     sleep(3000);
@@ -22,16 +22,20 @@ exports.searchWithType = function (keyword, type) {
     // 次一点的做法就是看这个控件在整个屏幕里离边框的百分比
     // 然后就是这种写死坐标的方式
     // setScreenMetrics(1080, 2340);
-    // 筛选
-    click(1150, 250);// 得根据不同分辨率适配位置
-    sleep(700);
-    // 最新发布
-    click(500, 500);
-    sleep(700);
-    // 返回
-    click(500, 1600);
+    // 可以按最新排序
+    if(isNewest){
+        // 筛选
+        click(1150, 250);// 得根据不同分辨率适配位置
+        sleep(700);
+        // 最新发布
+        click(500, 500);
+        sleep(700);
+        // 返回
+        click(500, 1600);
+        sleep(3000);
+    }
+    
 
-    sleep(3000);
     click(300, 500);
 }
 
