@@ -1,7 +1,7 @@
 // 此模块通过创建透明悬浮窗，来实现强制横屏和隐藏导航栏的目的
 importClass(android.view.View);
 
-_createFloaty2FullScreen(0, true);
+//_createFloaty2FullScreen(0, true);
 
 // ori=-1，为自动横屏，=0，横屏，=1，竖屏
 function _createFloaty2FullScreen(ori, isHideBar) {
@@ -42,7 +42,7 @@ function _createFloaty2FullScreen(ori, isHideBar) {
     });
 
 }
-/*
+
 exports.createFloaty2FullScreen = function(ori, isHideBar){
     _createFloaty2FullScreen(ori, isHideBar);
-}*/
+}
