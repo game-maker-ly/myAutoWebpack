@@ -61,7 +61,7 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
             // 有几种情况，
             // 1.已全屏，需要返回
             // 2.未全屏竖屏，
-            var s_btn = textContains("搜索").findOnce();
+            var s_btn = textContains("搜").findOnce();
             if(s_btn == null){
                 // 说明不正常，进入了竖屏全屏，手动返回
                 back();
