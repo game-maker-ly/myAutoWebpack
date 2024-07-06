@@ -50,7 +50,8 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
         // 否则就返回上一级
         if(isLandscape){
             try {
-                b1 = textContains("全屏").visibleToUser(true).findOne(1500).bounds();
+                sleep(1500);
+                b1 = textContains("全屏").visibleToUser(true).findOnce().bounds();
             } catch (error) {}
             if(b1 != null){
                 log("检测到横屏视频，已自动全屏");
