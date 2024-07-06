@@ -7,6 +7,8 @@
 // 用个cache来缓存即可
 // 文件路径：md5
 // autojs语法
+/// 此文件每次更新都会从云端请求(当版本号不一致时)
+// 达到热更的目的，所以也无需记录md5
 const FileTool = require("../lib/模块_文件操作.js");
 log("执行更新主流程");
 log("开始下载");
@@ -84,6 +86,8 @@ events.broadcast.on("isFileListDownloaded", function (size) {
             }
             log("已删除：" + count + "个文件");
             // 完成后把云端的md5覆盖到本地
+            // cloud文件删不删都不影响，没必要在其他地方加
+            // 只需要保证md5和config文件本身正确即可
             files.remove(dirPath);
             files.rename(cloudPath, dirPath);
         }

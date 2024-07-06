@@ -6,7 +6,7 @@
 const ftool = require('./fileTool.js');
 const md5tool = require('./md5tool.js');
 // 一定会更新的文件不需要记录md5值
-var blackFileList = ["main.js","project.json","md5.json","tasker/按需更新文件.js"]
+var blackFileList = ["main.js","project.json","config.json","md5.json","tasker/按需更新文件.js"]
 var blackDirList = ["app", "lib", "net", "nodeJSModule"]
 // 得带参数来执行
 async function calFilesMd5AndSave(desDir){

@@ -6,11 +6,10 @@ var dyApp = require("../app/打开抖音.js");
 // 对于教做饭，添加固定的美食博主即可，
 // 其他tag不精准，有用ai洗稿的，有不讲解的
 // 倒是新闻随机性较强
-var keywords_list = ["老饭骨","夏叔厨房", "爷俩儿好菜","美食作家王刚", "家常菜日记","马大厨教做菜"];
 
 // 从配置文件更新
 const msbz = open("./cfg/美食博主.txt");
-keywords_list = msbz.readlines();
+var keywords_list = msbz.readlines();
 log(keywords_list);
 
 var rand_idx = random(0, keywords_list.length - 1);
