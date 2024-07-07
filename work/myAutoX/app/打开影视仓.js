@@ -3,7 +3,7 @@ exports.openYSC = function (videoName, selectVideoSrc) {
     // launch("com.mygithub0.tvbox0.osdX");
     // 即使打开也是回到桌面，便于无障碍操作
     app.startActivity({
-        action: "VIEW",
+        action: "MAIN",
         packageName: "com.mygithub0.tvbox0.osdX",
         className: "com.github.tvbox.osc.ui.activity.HomeActivity"
     });
