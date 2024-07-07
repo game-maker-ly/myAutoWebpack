@@ -50,13 +50,15 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
         // 否则就返回上一级
         if(isLandscape){
             try {
-                sleep(1500);
-                b1 = textContains("全屏").visibleToUser(true).findOnce().bounds();
+                // sleep(1500);
+                // 获取全屏按钮
+                // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
+                var b1 = textContains("全屏").visibleToUser(true).findOnce().parent();
+                if(b1 != null){
+                    log("检测到横屏视频，已自动全屏");
+                    b1.click();
+                }
             } catch (error) {}
-            if(b1 != null){
-                log("检测到横屏视频，已自动全屏");
-                click(b1.centerX(), b1.centerY());
-            }
         }else{
             // 竖屏，且没有导航栏，则返回
             // 有几种情况，
