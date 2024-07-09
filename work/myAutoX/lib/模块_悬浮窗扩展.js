@@ -4,14 +4,20 @@ importClass(android.view.View);
 // 用回调不太美观，还是用事件通知吧，结合参数
 // 替换updateFloaty
 
+
 // 悬浮窗对象
 var w;
 // ori=-1，为自动横屏，=0，横屏，=1，竖屏
 function _createFloaty2FullScreen(ori, isHideBar) {
     w = floaty.rawWindow(
-        <frame gravity="center">
+        <frame gravity="center" id="myFloatyView">
         </frame>
     );
+    // 设为全屏
+    w.setSize(-1, -1);
+    // 去除遮挡
+    // w.setTouchable(false);
+
     //w.setPosition(500, 500);
     // 不能用监听事件代替
     setTimeout(() => {
@@ -45,6 +51,10 @@ function _oriType2ori(angle) {
 var isWatchInit = false;
 var currentType = 0;
 function _watchFloatyRotate() {
+    if(isWatchInit){
+        // 说明已存在广播，直接返回
+        return;
+    }
     var mOrientationEventListener = new JavaAdapter(android.view.OrientationEventListener, {
         onOrientationChanged: (orientation) => {
             //log(orientation);
@@ -93,6 +103,23 @@ function _watchFloatyRotate() {
 }
 
 
+// 自定义flag处理函数(位运算)
+// 好处就是添加flag不会重复生效
+// 同样移除也是
+//添加 FLAG：mGroupFlags |= FLAG 
+//清除 FLAG：mGroupFlags &= ~FLAG 
+//包含 FLAG：(mGroupFlags & FLAG) != 0 或 (mGroupFlags & FLAG) == FLAG 
+//不包含 FLAG：(mGroupFlags & FLAG) == 0 或 (mGroupFlags & FLAG) != FLAG
+function _addFlag(srcFlag ,flag){
+    srcFlag |= flag;
+    return srcFlag;
+}
+
+function _removeFlag(srcFlag, flag){
+    srcFlag &= flag;
+    return srcFlag;
+}
+
 
 
 // 更新悬浮窗
@@ -108,16 +135,30 @@ function _updateFloaty(ori, isHideBar, callback_Func) {
     var layoutParams = c.getWindowLayoutParams();
     var wview = c.getWindowView();
 
+
+    // 必须直接赋值，不知道为什么
+    // 原理不明
+    layoutParams.flags =  LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+    // 屏幕方向
+    layoutParams.screenOrientation = ori;
     ui.run(function () {
-        // 屏幕方向
-        layoutParams.screenOrientation = ori;
         // 隐藏导航栏
         if (isHideBar) {
+            log("隐藏导航栏");
+            // 隐藏导航栏（对view的操作必须在ui线程
             wview.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
-            layoutParams.flags = LayoutParams.FLAG_LAYOUT_NO_LIMITS | layoutParams.flag;
+            // 全屏
+            layoutParams.flags |= LayoutParams.FLAG_FULLSCREEN;
+        } else {
+            log("取消隐藏导航栏");
+            // 取消沉浸模式
+            wview.setSystemUiVisibility(~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION & ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY & ~View.SYSTEM_UI_FLAG_FULLSCREEN);
+            // 移除全屏flag
+            layoutParams.flags &= (~LayoutParams.FLAG_FULLSCREEN);
         }
         // 去除遮挡
-        w.setTouchable(false);
+        layoutParams.flags = _addFlag(layoutParams.flags, LayoutParams.FLAG_NOT_TOUCHABLE);
+        
         // 更新布局
         c.updateWindowLayoutParams(layoutParams);
 
@@ -135,9 +176,10 @@ function _updateFloatyOri_sync(oriType, isHideBar = false) {
     if (!isLocked) {
         isLocked = true;
         var ori = _oriType2ori(oriType);
-        log("旋转屏幕："+oriType+"度，模式："+ori);
+        log("旋转屏幕至："+oriType+"度，对应模式："+ori);
         _updateFloaty(ori, isHideBar, () => {
-            events.broadcast.emit("onMyDeviceRotate", oriType);
+            // log("当前屏幕角度："+oriType);
+            events.broadcast.emit("onMyDeviceRotate", oriType, ori);
             isLocked = false;
         });
     }
@@ -149,15 +191,77 @@ function _updateFloatyOri_sync(oriType, isHideBar = false) {
 // 
 
 // 广播+回调的模式
+// 实际上可以只用广播
+// events模块是在当前脚本线程里的，如果当前脚本被死循环阻塞，那不会触发
+// 那实际上on方法可以提到需要的地方
+// 但话又说回来了，是先要注册广播
+// 再写广播回调，那实际上也没差，写在这里还方便理解
+// 用回调函数抛出，虽然模块之间的关系比较麻烦
+// 
 function _registerRotateBroadcast(callback_Func){
-    if(!isWatchInit){
-        _watchFloatyRotate();
-    }
-    events.broadcast.on("onMyDeviceRotate", function (type) {
-        log("当前屏幕角度："+type);
-        var ori = _oriType2ori(type);
+    // 注册旋转广播
+    _watchFloatyRotate();
+    // 返回
+    events.broadcast.on("onMyDeviceRotate", function (type, ori) {
         callback_Func && callback_Func(ori);
     });
+    
+}
+
+var minSwipeDistance = 100;
+var mPosX = 0;
+var mPosY = 0;
+var mCurPosX = 0;
+var mCurPosY = 0;
+function _registerSwipeBroadcast(callback_Func){
+    var mTouchEventListener = new JavaAdapter(android.view.View.OnTouchListener, {
+        onTouch: (view, event) => {
+            var act = event.getAction();
+            //log(act);
+            switch (act) {
+                case 0://ACTION_DOWN
+                    mPosX = event.getX();
+                    mPosY = event.getY();
+                    break;
+                case 2://ACTION_MOVE
+                    mCurPosX = event.getX();
+                    mCurPosY = event.getY();
+                    break;
+                case 1://ACTION_UP
+                    // 优化一下也可以监听左右滑动
+                    if (mCurPosY - mPosY > minSwipeDistance) {
+                        //向下滑動
+                        log("向下滑动");
+                        events.broadcast.emit("onMyDeviceSwipe", "DOWN");
+                    } else if (mCurPosY - mPosY < -minSwipeDistance) {
+                        //向上滑动
+                        log("向上滑动");
+                        events.broadcast.emit("onMyDeviceSwipe", "UP");
+                    } else if (mCurPosX - mPosX > minSwipeDistance) {
+                        //向右滑動
+                        log("向右滑动");
+                        events.broadcast.emit("onMyDeviceSwipe", "RIGHT");
+                    } else if (mCurPosX - mPosX < -minSwipeDistance) {
+                        //向左滑动
+                        log("向左滑动");
+                        events.broadcast.emit("onMyDeviceSwipe", "LEFT");
+                    }
+                    break;
+            }
+            return true;
+        }
+    });
+    // 设置监听
+    w.myFloatyView.setOnTouchListener(mTouchEventListener);
+    
+    events.broadcast.on("onMyDeviceSwipe", function (type) {
+        callback_Func && callback_Func(type);
+    });
+}
+
+
+exports.registerSwipeBroadcast = function(callback_Func){
+    _registerSwipeBroadcast(callback_Func);
 }
 
 exports.registerRotateBroadcast = function(callback_Func){

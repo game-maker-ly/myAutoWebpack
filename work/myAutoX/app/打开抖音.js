@@ -42,6 +42,7 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     click(300, 500);
     // 然后尝试跟随屏幕旋转
     // 问题在于竖屏需要触发返回按钮
+    // 广播注册与事件调用分开？
     myFloaty.registerRotateBroadcast((type)=> {
         var b1 = null;
         log("当前屏幕方向状态："+type);
