@@ -110,14 +110,14 @@ function _watchFloatyRotate() {
 //清除 FLAG：mGroupFlags &= ~FLAG 
 //包含 FLAG：(mGroupFlags & FLAG) != 0 或 (mGroupFlags & FLAG) == FLAG 
 //不包含 FLAG：(mGroupFlags & FLAG) == 0 或 (mGroupFlags & FLAG) != FLAG
-function _addFlag(srcFlag ,flag){
-    srcFlag |= flag;
-    return srcFlag;
+function _addFlag(srcFlags, flag) {
+    srcFlags |= flag;
+    return srcFlags;
 }
 
-function _removeFlag(srcFlag, flag){
-    srcFlag &= flag;
-    return srcFlag;
+function _removeFlag(srcFlags, flag) {
+    srcFlags &= ~flag;
+    return srcFlags;
 }
 
 
@@ -214,6 +214,12 @@ var mPosY = 0;
 var mCurPosX = 0;
 var mCurPosY = 0;
 function _registerSwipeBroadcast(callback_Func){
+    // 目前来说，事件注册只会进行一次
+    // 但是update布局会在自动旋转里进行多次
+    // 所以touchable必须得用全局变量保存，要么就避免同时用
+    // 本身这个就算是hook事件
+    w.setTouchable(true);
+
     var mTouchEventListener = new JavaAdapter(android.view.View.OnTouchListener, {
         onTouch: (view, event) => {
             var act = event.getAction();

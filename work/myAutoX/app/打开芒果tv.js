@@ -14,6 +14,14 @@ exports.openMGTV = function (videoId) {
     // 其他强制横屏app也是一样
     if (device.model == "MI 9") {
         myFloaty.createFloaty2FullScreen(0, true);
+
+        myFloaty.registerSwipeBroadcast((type)=> {
+            if(type == "UP"){
+                log("向上滑");
+            }else if(type == "DOWN"){
+                log("向下滑");
+            }
+        });
     } else {
         // 使用waitFor？
         sleep(7000);
