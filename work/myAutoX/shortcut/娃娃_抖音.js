@@ -5,11 +5,17 @@ const msbz = open("./cfg/娃娃关键词.txt");
 var keywords_list = msbz.readlines();
 log(keywords_list);
 
-var rand_idx = random(0, keywords_list.length - 1);
-var rand_ch_keyword = keywords_list[rand_idx];
 
-var isSortByNewest = random(0, 1) == 1;
-log(rand_ch_keyword+","+isSortByNewest);
+randOpenVideo();
+// 接收广播信息
+events.broadcast.on("DY_RE_search", function () {
+    randOpenVideo();// 重新打开
+});
 
-
-dyApp.searchWithType(rand_ch_keyword, "video", isSortByNewest);
+function randOpenVideo() {
+    var rand_idx = random(0, keywords_list.length - 1);
+    var rand_ch_keyword = keywords_list[rand_idx];
+    var isSortByNewest = random(0, 1) == 1;
+    // 随机关键词并打开抖音
+    dyApp.searchWithType(rand_ch_keyword, "video", isSortByNewest);
+}

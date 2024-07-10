@@ -1,3 +1,5 @@
+const myFloaty = require("../lib/模块_悬浮窗扩展.js");
+
 // 打开影视仓
 exports.openYSC = function (videoName, selectVideoSrc) {
     // launch("com.mygithub0.tvbox0.osdX");
@@ -36,4 +38,20 @@ exports.openYSC = function (videoName, selectVideoSrc) {
     //var widget=className("android.view.View").findOne();
     click(100, 100);
     //如果用root权限则用Tap
+
+    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
+    // 选集事件
+    myFloaty.registerRotateBroadcast((type) => {
+        myFloaty.notiWithAppExecFinished(false);
+        log("当前屏幕方向状态：" + type);
+        if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
+            log("触发选集事件");
+            // 调出选集界面
+            try {
+                click(300, 300);
+                text("选集").findOne(1000).click();
+            } catch (error) {}
+        }
+        myFloaty.notiWithAppExecFinished(true);
+    });
 }

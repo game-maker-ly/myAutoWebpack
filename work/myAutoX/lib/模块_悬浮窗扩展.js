@@ -3,12 +3,24 @@ importClass(android.view.View);
 
 // 用回调不太美观，还是用事件通知吧，结合参数
 // 替换updateFloaty
+const ORI_TYPE = {
+    Auto: -1,
+    Portrait:0,
+    Portrait_reverse:180,
+    Landscape: 270,
+    Landscape_reverse: 90,
+}
+// 枚举
+exports.ORI_TYPE = ORI_TYPE;
 
 
 // 悬浮窗对象
 var w;
 // ori=-1，为自动横屏，=0，横屏，=1，竖屏
-function _createFloaty2FullScreen(ori, isHideBar) {
+// 像影视仓，芒果app等自带横屏的
+// 用悬浮窗横屏覆盖，会导致找不到控件（偶尔，有点离谱
+// 抖音就没这个问题，果然app还是大厂兼容性高
+function _createFloaty2FullScreen(oriType, isHideBar) {
     w = floaty.rawWindow(
         <frame gravity="center" id="myFloatyView">
         </frame>
@@ -24,7 +36,7 @@ function _createFloaty2FullScreen(ori, isHideBar) {
         w.close();
     }, 5 * 3600 * 1000);
     // 更新悬浮窗
-    _updateFloaty(ori, isHideBar);
+    _updateFloaty(oriType, isHideBar);
     // 监听设备旋转
     // _watchFloatyRotate();
 }
@@ -76,16 +88,17 @@ function _watchFloatyRotate() {
 
             if(desOriType != -1){
                 if (currentType == desOriType) {
-                    // 说明方向没有变化
+                    // 说明方向没有变化，退出
                     return;
                 }
                 // 获取当前实际角度
                 // var angle = _getScreenRotation();
                 // log(angle);
                 // 完成修正
-                log(desOriType);
-                _updateFloatyOri_sync(desOriType);
-                // 设置当前屏幕方向状态
+                // log(desOriType);
+                // 否则执行更新，这里可以用广播或回调把处理旋转的逻辑抛给上层处理
+                _emitUpdateFloatyBroadcast(desOriType);
+                // 设置当前屏幕方向状态，关键是这个type一定要对
                 currentType = desOriType;
             }
             // log(getScreenRotation());
@@ -123,7 +136,14 @@ function _removeFlag(srcFlags, flag) {
 
 
 // 更新悬浮窗
-function _updateFloaty(ori, isHideBar, callback_Func) {
+// 使用锁更新悬浮窗角度
+var isLocked = false;
+function _updateFloaty(oriType, isHideBar, callback_Func) {
+    if(isLocked){
+        return;
+    }
+    // 加锁
+    isLocked = true;
     // 反射获取悬浮窗实例
     var b = w.getClass().getDeclaredField("mWindow");
     b.setAccessible(true);
@@ -138,8 +158,9 @@ function _updateFloaty(ori, isHideBar, callback_Func) {
 
     // 必须直接赋值，不知道为什么
     // 原理不明
-    layoutParams.flags =  LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+    // 
     // 屏幕方向
+    var ori = _oriType2ori(oriType);
     layoutParams.screenOrientation = ori;
     ui.run(function () {
         // 隐藏导航栏
@@ -148,6 +169,7 @@ function _updateFloaty(ori, isHideBar, callback_Func) {
             // 隐藏导航栏（对view的操作必须在ui线程
             wview.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
             // 全屏
+            layoutParams.flags =  LayoutParams.FLAG_LAYOUT_NO_LIMITS;
             layoutParams.flags |= LayoutParams.FLAG_FULLSCREEN;
         } else {
             log("取消隐藏导航栏");
@@ -155,6 +177,7 @@ function _updateFloaty(ori, isHideBar, callback_Func) {
             wview.setSystemUiVisibility(~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION & ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY & ~View.SYSTEM_UI_FLAG_FULLSCREEN);
             // 移除全屏flag
             layoutParams.flags &= (~LayoutParams.FLAG_FULLSCREEN);
+            layoutParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
         }
         // 去除遮挡
         layoutParams.flags = _addFlag(layoutParams.flags, LayoutParams.FLAG_NOT_TOUCHABLE);
@@ -163,27 +186,26 @@ function _updateFloaty(ori, isHideBar, callback_Func) {
         c.updateWindowLayoutParams(layoutParams);
 
         callback_Func && callback_Func();
+        isLocked = false;// 释放锁
+        isEmitLocked = false;
     });
-
 }
 
-// 使用锁更新悬浮窗角度
-var isLocked = false;
-// 可以在这里写事件？
-// 写个广播
-// 适用于广播中不断触发的情形，保证单次只有一个执行
-function _updateFloatyOri_sync(oriType, isHideBar = false) {
-    if (!isLocked) {
-        isLocked = true;
-        var ori = _oriType2ori(oriType);
-        log("旋转屏幕至："+oriType+"度，对应模式："+ori);
-        _updateFloaty(ori, isHideBar, () => {
-            // log("当前屏幕角度："+oriType);
-            events.broadcast.emit("onMyDeviceRotate", oriType, ori);
-            isLocked = false;
-        });
+// 与更新悬浮窗共用锁，防止频繁广播
+// 不能共用锁？
+// 这里的锁只能保证不会重复触发动画
+// 还需要一个锁，并且有一个锁住，就不发送广播
+var isEmitLocked = false;
+function _emitUpdateFloatyBroadcast(oriType){
+    // log("当前布局锁："+isLocked+"，当前广播锁："+ isEmitLocked +"，当前屏幕方向："+oriType);
+    if(isLocked || isEmitLocked){
+        return;
     }
+    log("测试");
+    isEmitLocked = true;
+    events.broadcast.emit("onMyDeviceRotate", oriType);
 }
+
 
 
 // 不行，回调的目的是为了检测是否需要按下全屏按钮
@@ -202,10 +224,18 @@ function _registerRotateBroadcast(callback_Func){
     // 注册旋转广播
     _watchFloatyRotate();
     // 返回
-    events.broadcast.on("onMyDeviceRotate", function (type, ori) {
-        callback_Func && callback_Func(ori);
+    events.broadcast.on("onMyDeviceRotate", function (type) {
+        callback_Func && callback_Func(type);
     });
-    
+    events.broadcast.on("onMyAppExecFinished", function (isFinished) {
+        // 锁住/解锁广播
+        log("广播锁变化"+isFinished);
+        isEmitLocked = !isFinished;
+    });
+}
+
+function _notiWithAppExecFinished(isFinished){
+    events.broadcast.emit("onMyAppExecFinished", isFinished);
 }
 
 var minSwipeDistance = 100;
@@ -265,6 +295,9 @@ function _registerSwipeBroadcast(callback_Func){
     });
 }
 
+exports.notiWithAppExecFinished = function(isFinished){
+    _notiWithAppExecFinished(isFinished);
+}
 
 exports.registerSwipeBroadcast = function(callback_Func){
     _registerSwipeBroadcast(callback_Func);
@@ -274,11 +307,11 @@ exports.registerRotateBroadcast = function(callback_Func){
     _registerRotateBroadcast(callback_Func);
 }
 
-exports.updateFloatyOri_sync = function(callback_Func){
-    _updateFloatyOri_sync(callback_Func);
+exports.updateFloaty = function(oriType, isHideBar, callback_Func){
+    _updateFloaty(oriType ,isHideBar, callback_Func);
 }
 
 
-exports.createFloaty2FullScreen = function(ori, isHideBar){
-    _createFloaty2FullScreen(ori, isHideBar);
+exports.createFloaty2FullScreen = function(oriType, isHideBar){
+    _createFloaty2FullScreen(oriType, isHideBar);
 }

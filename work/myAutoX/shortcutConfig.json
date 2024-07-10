@@ -9,16 +9,6 @@
         "path":"寻情记_芒果tv.js",
         "icon_path":"寻情记.jpg"
     },
-    "lgxs_ysc":{
-        "name":"兰闺喜事",
-        "path":"兰闺喜事_影视仓.js",
-        "icon_path":"兰闺喜事.png"
-    },
-    "hljzq_ysc":{
-        "name":"欢乐家长群",
-        "path":"欢乐家长群_影视仓.js",
-        "icon_path":"欢乐家长群.png"
-    },
     "xw_dy":{
         "name":"新闻",
         "path":"新闻_抖音.js",
@@ -38,5 +28,15 @@
         "name":"搞笑",
         "path":"搞笑_抖音.js",
         "icon_path":"搞笑.png"
+    },
+    "lgxs_ysc":{
+        "name":"兰闺喜事",
+        "path":"兰闺喜事_影视仓.js",
+        "icon_path":"兰闺喜事.png"
+    },
+    "hljzq_ysc":{
+        "name":"欢乐家长群",
+        "path":"欢乐家长群_影视仓.js",
+        "icon_path":"欢乐家长群.png"
     }
 }

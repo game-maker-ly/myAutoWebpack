@@ -7,5 +7,5 @@ exports.openMyTv = function(){
         className: "com.hulytu.diypi.ui.SplashActivity"
     });
     // 全屏
-    myFloaty.createFloaty2FullScreen(0, true);
+    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, true);
 }

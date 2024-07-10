@@ -1,5 +1,6 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
+var isInit = false;
 function searchWithType_private(keyword, type) {
     var videoUrl = util.format("snssdk1128://search?keyword=%s", keyword);
     app.startActivity({
@@ -7,15 +8,19 @@ function searchWithType_private(keyword, type) {
         data: videoUrl
     });
     // 强制竖屏
-    myFloaty.createFloaty2FullScreen(1, false);
+    if (!isInit) {
+        log("创建悬浮窗");
+        myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Portrait, false);
+    }
 }
 
 
 exports.searchWithType = function (keyword, type, isNewest = true) {
+    log(keyword + "," + isNewest);
     searchWithType_private(keyword, type);
     // 等6s后操作
-    sleep(3000);
-    var bb = text("视频").findOnce().bounds();
+    // sleep(3000);
+    var bb = text("视频").findOne().bounds();
     click(bb.centerX(), bb.centerY());
     sleep(3000);
     // 按最新排序
@@ -27,7 +32,7 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     // 然后就是这种写死坐标的方式
     // setScreenMetrics(1080, 2340);
     // 可以按最新排序
-    if(isNewest){
+    if (isNewest) {
         // 筛选
         click(1150, 250);// 得根据不同分辨率适配位置
         sleep(700);
@@ -43,35 +48,55 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     // 然后尝试跟随屏幕旋转
     // 问题在于竖屏需要触发返回按钮
     // 广播注册与事件调用分开？
-    myFloaty.registerRotateBroadcast((type)=> {
-        var b1 = null;
-        log("当前屏幕方向状态："+type);
-        var isLandscape = (type == 0 | type == 8);
-        // 如果是横屏，就检测全屏按钮
-        // 否则就返回上一级
-        if(isLandscape){
-            try {
-                // sleep(1500);
-                // 获取全屏按钮
-                // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
-                var b1 = textContains("全屏").visibleToUser(true).findOnce().parent();
-                if(b1 != null){
-                    log("检测到横屏视频，已自动全屏");
-                    b1.click();
-                }
-            } catch (error) {}
-        }else{
-            // 竖屏，且没有导航栏，则返回
-            // 有几种情况，
-            // 1.已全屏，需要返回
-            // 2.未全屏竖屏，
-            var s_btn = textContains("@").findOnce();
-            if(s_btn == null){
-                // 说明不正常，进入了竖屏全屏，手动返回
-                back();
+    if (!isInit) {
+        log("注册旋转广播");
+        // 注册旋转广播
+        myFloaty.registerRotateBroadcast((type) => {
+            log("当前屏幕方向状态：" + type);
+            if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
+                log("触发重选关键词事件");
+                // 广播给上层处理，或者回调
+                events.broadcast.emit("DY_RE_search");
             }
-        }
-        
-    });
+            // 手动更新布局
+            var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse | type == myFloaty.ORI_TYPE.Auto);
+            // 如果需要旋转，就旋转
+            if (!isIngored) {
+                myFloaty.updateFloaty(type, false, () => {
+                    log("旋转屏幕至：" + type + "度");
+                    // log("当前屏幕角度："+oriType);
+                    var isLandscape = (type == myFloaty.ORI_TYPE.Landscape | type == myFloaty.ORI_TYPE.Landscape_reverse);
+                    // 如果是横屏，就检测全屏按钮
+                    // 否则就返回上一级
+                    if (isLandscape) {
+                        try {
+                            // sleep(1500);
+                            // 获取全屏按钮
+                            // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
+                            var b1 = textContains("全屏").visibleToUser(true).findOnce().parent();
+                            if (b1 != null) {
+                                log("检测到横屏视频，已自动全屏");
+                                b1.click();
+                            }
+                        } catch (error) { }
+                    } else {
+                        // 竖屏，且没有导航栏，则返回
+                        // 有几种情况，
+                        // 1.已全屏，需要返回
+                        // 2.未全屏竖屏，
+                        var s_btn = textContains("@").findOne(1000);
+                        if (s_btn == null) {
+                            // 说明不正常，进入了竖屏全屏，手动返回
+                            back();
+                        }
+                    }
+                });
+            }
+        });
+    }
+    // 通知悬浮窗，app操作执行完毕，释放广播锁
+    myFloaty.notiWithAppExecFinished(true);
+    // 初始化完成
+    isInit = true;
 }
 
