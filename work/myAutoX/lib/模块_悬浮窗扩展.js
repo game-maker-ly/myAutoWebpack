@@ -198,11 +198,10 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
 var isEmitLocked = false;
 function _emitUpdateFloatyBroadcast(oriType){
     // log("当前布局锁："+isLocked+"，当前广播锁："+ isEmitLocked +"，当前屏幕方向："+oriType);
-    if(isLocked || isEmitLocked){
-        return;
-    }
-    log("测试");
+    if(isEmitLocked) return;
     isEmitLocked = true;
+    log("测试");
+    if(isLocked) return;
     events.broadcast.emit("onMyDeviceRotate", oriType);
 }
 
@@ -229,8 +228,8 @@ function _registerRotateBroadcast(callback_Func){
     });
     events.broadcast.on("onMyAppExecFinished", function (isFinished) {
         // 锁住/解锁广播
-        log("广播锁变化"+isFinished);
         isEmitLocked = !isFinished;
+        log("广播锁变化："+isEmitLocked);
     });
 }
 

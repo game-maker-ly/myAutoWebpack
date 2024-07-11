@@ -31,8 +31,13 @@
     },
     "lgxs_ysc":{
         "name":"兰闺喜事",
-        "path":"兰闺喜事_影视仓.js",
+        "path":"兰闺喜事_OK影视.js",
         "icon_path":"兰闺喜事.png"
+    },
+    "ssyghdf_fongmi":{
+        "name":"树上有个好地方",
+        "path":"树上有个好地方_OK影视.js",
+        "icon_path":"树上有个好地方.png"
     },
     "hljzq_ysc":{
         "name":"欢乐家长群",
