@@ -5,6 +5,7 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
     // action = MAIN，强制回到主页
     app.startActivity({
         action: "MAIN",
+        flags:["ACTIVITY_CLEAR_TOP"],    //清除活动，返回主页
         packageName: "com.fongmi.android.tv",
         className: "com.fongmi.android.tv.ui.activity.HomeActivity"
     });

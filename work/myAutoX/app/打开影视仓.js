@@ -7,6 +7,7 @@ exports.openYSC = function (videoName, selectVideoSrc) {
     // action = MAIN，强制回到主页
     app.startActivity({
         action: "MAIN",
+        flags:["ACTIVITY_CLEAR_TOP"],    //清除活动，返回主页
         packageName: "com.mygithub0.tvbox0.osdX",
         className: "com.github.tvbox.osc.ui.activity.HomeActivity"
     });

@@ -65,8 +65,9 @@ if(dlFile_count == 0){
     exit();
 }
 
+// 有概率卡住，无法复现
 const myInterval = setInterval(() => {
-    log("执行阻塞");
+    log("执行更新文件阻塞");
 }, 10000);
 
 let eventsCount = 0;
