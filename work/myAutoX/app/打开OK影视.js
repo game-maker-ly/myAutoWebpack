@@ -64,7 +64,7 @@ function _registerRotateBroadcast4FongMi() {
 // 打开fongmi
 exports.openFongMi = function (videoName, selectVideoSrc, selectResSrc) {
     // 打开fongMi
-    _openFongMi();
+    _openFongMi(videoName, selectVideoSrc, selectResSrc);
 }
 
 
