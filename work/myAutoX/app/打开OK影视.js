@@ -29,7 +29,7 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
 
     // 选择第一个
     var firstItem = className("RelativeLayout").visibleToUser(true).clickable(true).indexInParent(0).filter(function (w) {
-        return w.bounds().top < 300;
+        return w.bounds().top < 350;
     }).findOne();
     firstItem.click();
 
