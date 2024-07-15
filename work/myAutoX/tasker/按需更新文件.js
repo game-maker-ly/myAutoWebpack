@@ -10,7 +10,7 @@
 /// 此文件每次更新都会从云端请求(当版本号不一致时)
 // 达到热更的目的，所以也无需记录md5
 const FileTool = require("../lib/模块_文件操作.js");
-const DeviceTool = require("./lib/模块_设备操作.js");
+const DeviceTool = require("../lib/模块_设备操作.js");
 log("执行更新主流程");
 log("开始下载");
 // 首先检查本地是否存在md5.json，
