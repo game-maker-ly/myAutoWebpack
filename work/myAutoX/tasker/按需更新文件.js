@@ -71,7 +71,8 @@ const myInterval = setInterval(() => {
     log("执行更新文件阻塞");
 }, 10000);
 
-// 做个超时处理，假设1分半超时
+// 做个超时处理，假设30s超时
+// 一般情况下10s内能下完所有文件
 setTimeout(()=>{
     // 锁屏
     log("更新文件超时，执行锁屏");
@@ -79,7 +80,7 @@ setTimeout(()=>{
     // 仅清除定时器无法退出
     clearInterval(myInterval);
     exit();
-}, 90*1000);
+}, 30*1000);
 
 let eventsCount = 0;
 events.broadcast.on("isFileListDownloaded", function (size) {

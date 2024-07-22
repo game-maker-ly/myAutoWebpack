@@ -45,18 +45,15 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
 function _registerRotateBroadcast4FongMi() {
     myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
     // 选集事件
-    myFloaty.registerRotateBroadcast((type) => {
-        myFloaty.notiWithAppExecFinished(false);
-        log("当前屏幕方向状态：" + type);
-        if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
-            log("触发选集事件");
-            // 调出选集界面
-            try {
-                click(300, 300);
-                text("选集").findOne(1000).click();
-            } catch (error) { }
-        }
-        myFloaty.notiWithAppExecFinished(true);
+    myFloaty.registerRotateBroadcast();
+    myFloaty.createBtn2click(false ,()=> {
+        // 选集事件
+        log("触发选集事件");
+        try {
+            // 强制无异常
+            click(300, 300);
+            text("选集").findOne(1000).click();
+        } catch (error) {}
     });
 }
 

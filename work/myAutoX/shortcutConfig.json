@@ -29,6 +29,21 @@
         "path":"搞笑_抖音.js",
         "icon_path":"搞笑.png"
     },
+    "jx_dy":{
+        "name":"推荐",
+        "path":"精选_抖音.js",
+        "icon_path":"精选.png"
+    },
+    "gz_dy":{
+        "name":"关注",
+        "path":"关注_抖音.js",
+        "icon_path":"关注.png"
+    },
+    "tc_dy":{
+        "name":"常德",
+        "path":"同城_抖音.js",
+        "icon_path":"同城.png"
+    },
     "lgxs_ysc":{
         "name":"兰闺喜事",
         "path":"兰闺喜事_OK影视.js",

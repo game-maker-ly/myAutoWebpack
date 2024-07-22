@@ -15,13 +15,32 @@ function searchWithType_private(keyword, type) {
 }
 
 
+function _openHome(type) {
+    var videoUrl = "snssdk1128://feed";
+    app.startActivity({
+        action: "VIEW",
+        data: videoUrl
+    });
+    // 选择页面
+    // 默认是精选页面
+    // 仅考虑长辈模式下，只有同城，关注，精选
+    if (type) {
+        text(type).findOne().parent().click();
+    }
+    if(!isInit){
+        // 仅自动全屏，不用选集按钮
+        addMyRotateEvent();
+        isInit = true;
+    }
+}
+
 exports.searchWithType = function (keyword, type, isNewest = true) {
     log(keyword + "," + isNewest);
     searchWithType_private(keyword, type);
     // 等6s后操作
     // sleep(3000);
-    var bb = text("视频").findOne().bounds();
-    click(bb.centerX(), bb.centerY());
+    text("视频").findOne().parent().click();
+    // click(bb.centerX(), bb.centerY());
     sleep(3000);
     // 按最新排序
     // 实际上得根据不同设备来录
@@ -51,47 +70,10 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     if (!isInit) {
         log("注册旋转广播");
         // 注册旋转广播
-        myFloaty.registerRotateBroadcast((type) => {
-            log("当前屏幕方向状态：" + type);
-            if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
-                log("触发重选关键词事件");
-                // 广播给上层处理，或者回调
-                events.broadcast.emit("DY_RE_search");
-            }
-            // 手动更新布局
-            var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse | type == myFloaty.ORI_TYPE.Auto);
-            // 如果需要旋转，就旋转
-            if (!isIngored) {
-                myFloaty.updateFloaty(type, false, () => {
-                    log("旋转屏幕至：" + type + "度");
-                    // log("当前屏幕角度："+oriType);
-                    var isLandscape = (type == myFloaty.ORI_TYPE.Landscape | type == myFloaty.ORI_TYPE.Landscape_reverse);
-                    // 如果是横屏，就检测全屏按钮
-                    // 否则就返回上一级
-                    if (isLandscape) {
-                        try {
-                            // sleep(1500);
-                            // 获取全屏按钮
-                            // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
-                            var b1 = textContains("全屏").visibleToUser(true).findOnce().parent();
-                            if (b1 != null) {
-                                log("检测到横屏视频，已自动全屏");
-                                b1.click();
-                            }
-                        } catch (error) { }
-                    } else {
-                        // 竖屏，且没有导航栏，则返回
-                        // 有几种情况，
-                        // 1.已全屏，需要返回
-                        // 2.未全屏竖屏，
-                        var s_btn = textContains("@").findOne(1000);
-                        if (s_btn == null) {
-                            // 说明不正常，进入了竖屏全屏，手动返回
-                            back();
-                        }
-                    }
-                });
-            }
+        // 这里用悬浮窗按钮代替旋转事件监听
+        addMyRotateEvent();
+        myFloaty.createBtn2click(false, () => {
+            events.broadcast.emit("DY_RE_search");
         });
     }
     // 通知悬浮窗，app操作执行完毕，释放广播锁
@@ -100,3 +82,56 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     isInit = true;
 }
 
+// 自动旋转全屏
+function addMyRotateEvent() {
+    myFloaty.registerRotateBroadcast((type) => {
+        log("当前屏幕方向状态：" + type);
+        /*
+        if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
+            log("触发重选关键词事件");
+            // 广播给上层处理，或者回调
+            events.broadcast.emit("DY_RE_search");
+        }*/
+        // 手动更新布局
+        var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse | type == myFloaty.ORI_TYPE.Auto);
+        // 如果需要旋转，就旋转
+        if (!isIngored) {
+            myFloaty.updateFloaty(type, false, () => {
+                log("旋转屏幕至：" + type + "度");
+                // log("当前屏幕角度："+oriType);
+                var isLandscape = (type == myFloaty.ORI_TYPE.Landscape | type == myFloaty.ORI_TYPE.Landscape_reverse);
+                // 如果是横屏，就检测全屏按钮
+                // 否则就返回上一级
+                if (isLandscape) {
+                    try {
+                        // sleep(1500);
+                        // 获取全屏按钮
+                        // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
+                        var b1 = textContains("全屏").visibleToUser(true).findOne(1000).parent();
+                        if (b1 != null) {
+                            log("检测到横屏视频，已自动全屏");
+                            b1.click();
+                        }
+                    } catch (error) { }
+                } else {
+                    // 竖屏，且没有导航栏，则返回
+                    // 有几种情况，
+                    // 1.已全屏，需要返回
+                    // 2.未全屏竖屏，
+                    var s_btn = textContains("@").findOne(1000);
+                    if (s_btn == null) {
+                        // 说明不正常，进入了竖屏全屏，手动返回
+                        back();
+                    }
+                }
+            });
+        }
+    });
+}
+
+
+// 比较特殊的，点进去就是视频，不过还是注册一下屏幕旋转？
+// 倒是不需要选集按钮
+exports.openHome = function (type) {
+    _openHome(type);
+}

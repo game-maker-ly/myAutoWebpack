@@ -19,34 +19,34 @@ function _openMGTV(videoId) {
     // 全屏
     // 芒果tv无法生效，在高版本miui上
     // 其他强制横屏app也是一样
-    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
+   
+    // sleep不准确
+    // sleep(7000);
+    // 标志视频加载完成
+    text("简介").waitFor();
+    // 纯坐标是对应不上的
+    click(600, 400);// 全屏按钮
     if (device.model == "MI 9") {
         log("小米9");
-        sleep(7000);
-        // 纯坐标是对应不上的
-        click(600, 400);// 全屏按钮
         id("toFullScreen").findOne(1000).click();
     } else {
-        // 使用waitFor？
-        sleep(7000);
-        // 纯坐标是对应不上的
-        // var btn = id("toFullScreen").findOne();
-        click(600, 400);// 全屏按钮
         text("全屏").findOne(1000).click();
     }
 
-    myFloaty.registerRotateBroadcast((type) => {
-        myFloaty.notiWithAppExecFinished(false);
-        log("当前屏幕方向状态：" + type);
-        if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
-            log("触发选集事件");
-            // 调出选集界面
-            try {
-                click(300, 300);
-                text("选集").findOne(1000).click();
-            } catch (error) {}
-        }
-        myFloaty.notiWithAppExecFinished(true);
+    // 选集事件就不用监听屏幕旋转的方式，不友好
+    // 但是刷新悬浮窗位置又需要监听，挺难搞的
+    
+
+    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
+    myFloaty.registerRotateBroadcast();
+    myFloaty.createBtn2click(false ,()=> {
+        // 选集事件
+        log("触发选集事件");
+        try {
+            // 强制无异常
+            click(300, 300);
+            text("选集").findOne(1000).click();
+        } catch (error) {}
     });
 
     // 需要注意的是

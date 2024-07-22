@@ -1,3 +1,4 @@
+const AddonTool_Btn = require("./模块_悬浮窗扩展_按钮分支.js");
 // 此模块通过创建透明悬浮窗，来实现强制横屏和隐藏导航栏的目的
 importClass(android.view.View);
 
@@ -224,6 +225,8 @@ function _registerRotateBroadcast(callback_Func){
     _watchFloatyRotate();
     // 返回
     events.broadcast.on("onMyDeviceRotate", function (type) {
+        // 尝试更新坐标
+        AddonTool_Btn.setBtnPos(type == 90 || type == 270);
         callback_Func && callback_Func(type);
     });
     events.broadcast.on("onMyAppExecFinished", function (isFinished) {
@@ -313,4 +316,9 @@ exports.updateFloaty = function(oriType, isHideBar, callback_Func){
 
 exports.createFloaty2FullScreen = function(oriType, isHideBar){
     _createFloaty2FullScreen(oriType, isHideBar);
+}
+
+// 创建点击按钮
+exports.createBtn2click= function(isDragable, callback_Func){
+    AddonTool_Btn.createBtn2click(isDragable, callback_Func);
 }
