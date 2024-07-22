@@ -29,6 +29,7 @@ function _openHome(type) {
     }
     if(!isInit){
         // 仅自动全屏，不用选集按钮
+        myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Portrait, false);
         addMyRotateEvent();
         isInit = true;
     }
