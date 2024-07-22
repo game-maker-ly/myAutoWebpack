@@ -25,7 +25,8 @@ function _openHome(type) {
     // 默认是精选页面
     // 仅考虑长辈模式下，只有同城，关注，精选
     if (type) {
-        text(type).findOne().parent().click();
+        textContains("@").waitFor();
+        text(type).visibleToUser().findOne().parent().click();
     }
     if(!isInit){
         // 仅自动全屏，不用选集按钮

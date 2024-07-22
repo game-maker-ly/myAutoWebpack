@@ -9,6 +9,8 @@ function _createBtn2click(isDragable, callback_Func){
         </frame>
     );
 
+    log("创建悬浮窗按钮");
+
     // 根据屏幕朝向，修改按钮坐标
     // window.setPosition(100, 700);
     var angle = _getScreenRotation();
@@ -108,7 +110,7 @@ function _registerClickBroadcast(isDragable, callback_Func){
 
 
 function onClick(){
-    toastLog("测试");
+    toastLog("触发点击");
     setAutoHide();
     events.broadcast.emit("onMyBtnClick");
     // 用广播通知上层，懒得回调了
@@ -139,7 +141,7 @@ function setAutoHide(){
 // 目前只有创建按钮，刷新位置和设置点击事件需要暴露出去
 // 点击事件肯定是创建时就赋值
 // 刷新位置交给上层
-exports.createBtn2click = function(isDragable, callback_Func){
+exports.createBtn2clickAddon = function(isDragable, callback_Func){
     _createBtn2click(isDragable, callback_Func);
 }
 

@@ -319,6 +319,7 @@ exports.createFloaty2FullScreen = function(oriType, isHideBar){
 }
 
 // 创建点击按钮
+// 方法名不能重复
 exports.createBtn2click= function(isDragable, callback_Func){
-    AddonTool_Btn.createBtn2click(isDragable, callback_Func);
+    AddonTool_Btn.createBtn2clickAddon(isDragable, callback_Func);
 }
