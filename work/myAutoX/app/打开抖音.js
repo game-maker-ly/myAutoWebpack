@@ -38,8 +38,13 @@ function _openHome(type) {
     // 默认是精选页面
     // 仅考虑长辈模式下，只有同城，关注，精选
     if (type) {
+        // 等待载入
         textContains("@").waitFor();
-        text(type).visibleToUser().findOne().parent().click();
+        var btn = text(type).visibleToUser().findOne(1000);
+        if(btn){
+            var b1 = btn.bounds();
+            click(b1.centerX(), b1.centerY());
+        }
     }
     if(!isInit){
         // 仅自动全屏，不用选集按钮
