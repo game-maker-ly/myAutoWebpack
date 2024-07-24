@@ -6,7 +6,7 @@ function _openVideoById(videoId) {
     // log(videoUrl);
     app.startActivity({
         action: "VIEW",
-        flags: ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效
+        flags: ["ACTIVITY_CLEAR_TOP", "ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效
         //type: "text/plain",
         data: videoUrl
     });

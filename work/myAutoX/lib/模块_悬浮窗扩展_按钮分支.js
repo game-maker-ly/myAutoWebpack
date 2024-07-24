@@ -1,12 +1,16 @@
 
-var window=null;
+var window = null;
 // _createBtn2click(true);
 const BTN_SIZE = 70;
+// 只读一次设备尺寸，防止因屏幕旋转造成读取错误
+// 但是如果屏幕本来就是横屏就会出错
+// 这个参数是建立在竖屏的
+// 高版本安卓，device.width为0，为autojs本身的bug
 
-function _createBtn2clickAddon(isDragable, callback_Func){
+function _createBtn2clickAddon(isDragable, callback_Func) {
     window = floaty.window(
         <frame gravity="center" id="content">
-             <img src="file://icon/选集.png" id="action" w="70" h="70"/>
+            <img src="file://icon/选集.png" id="action" w="70" h="70" />
         </frame>
     );
 
@@ -24,14 +28,14 @@ function _createBtn2clickAddon(isDragable, callback_Func){
     setAutoHide();
 
     // 事件有概率阻塞脚本
-    setTimeout(()=>{
+    setTimeout(() => {
         window.close();
         exit();
     }, 5 * 3600 * 1000);
 
     // 注册点击广播
     _registerClickBroadcast(isDragable, callback_Func);
-    
+
 }
 
 // 图片也可以触发点击事件
@@ -55,9 +59,9 @@ var x = 0, y = 0;
 var windowX, windowY;
 //记录按键被按下的时间以便判断长按等动作
 var downTime;
-function _addTouchEvent(){
-    window.action.setOnTouchListener(function(view, event){
-        switch(event.getAction()){
+function _addTouchEvent() {
+    window.action.setOnTouchListener(function (view, event) {
+        switch (event.getAction()) {
             case event.ACTION_DOWN:
                 x = event.getRawX();
                 y = event.getRawY();
@@ -70,13 +74,13 @@ function _addTouchEvent(){
                 window.setPosition(windowX + (event.getRawX() - x),
                     windowY + (event.getRawY() - y));
                 //如果按下的时间超过1.5秒判断为长按，退出脚本
-                if(new Date().getTime() - downTime > 1500){
+                if (new Date().getTime() - downTime > 1500) {
                     exit();
                 }
                 return true;
             case event.ACTION_UP:
                 //手指弹起时如果偏移很小则判断为点击
-                if(Math.abs(event.getRawY() - y) < 5 && Math.abs(event.getRawX() - x) < 5){
+                if (Math.abs(event.getRawY() - y) < 5 && Math.abs(event.getRawX() - x) < 5) {
                     onClick();
                 }
                 return true;
@@ -97,13 +101,13 @@ function _getScreenRotation() {
 
 
 
-function _registerClickBroadcast(isDragable, callback_Func){
+function _registerClickBroadcast(isDragable, callback_Func) {
     // 可拖拽改变位置
-    if(isDragable){
+    if (isDragable) {
         // 不需要java包装，可以直接用touch监听
         _addTouchEvent();
-    }else{
-        window.action.click(function(){
+    } else {
+        window.action.click(function () {
             onClick();
         });
     }
@@ -113,7 +117,7 @@ function _registerClickBroadcast(isDragable, callback_Func){
 }
 
 
-function onClick(){
+function onClick() {
     // toastLog("触发点击");
     setAutoHide();
     events.broadcast.emit("onMyBtnClick");
@@ -122,30 +126,32 @@ function onClick(){
 
 // 理论上用面向对象的方式更好重构
 // 但现在先跑起来再说
-function _setBtnPos(isLandscape){
-    if(!window) return;
-    if(isLandscape){
-        window.setPosition(0, device.width/2 - BTN_SIZE - 200);
-    }else{
-        window.setPosition(0, device.height/2 - BTN_SIZE - 200);
+function _setBtnPos(isLandscape) {
+    if (!window) return;
+    // 根据屏幕方向变化
+    var DEVICE_H = context.getResources().getDisplayMetrics().heightPixels;
+    if (isLandscape) {
+        window.setPosition(0, DEVICE_H / 2 - BTN_SIZE - 200);
+    } else {
+        window.setPosition(0, DEVICE_H / 2 - BTN_SIZE - 200);
     }
 }
 
 var curVisibility = true;
-function _setVisibility(isShow){
-    if(!window) return;
+function _setVisibility(isShow) {
+    if (!window) return;
     // 这里需要用ui线程更新可视化
     // 如果当前状态和传入状态一致，则不做操作
-    if(curVisibility == isShow) return;
-    if(isShow){
-        ui.run(function(){
+    if (curVisibility == isShow) return;
+    if (isShow) {
+        ui.run(function () {
             log("触发显示按钮");
             window.content.attr("visibility", "visible");
         });
         // 延迟隐藏
         setAutoHide();
-    }else{
-        ui.run(function(){
+    } else {
+        ui.run(function () {
             log("触发隐藏按钮");
             window.content.attr("visibility", "gone");
         });
@@ -156,9 +162,9 @@ function _setVisibility(isShow){
 
 // 3s后隐藏
 // 考虑到抖音白色较为显眼，就白底黑字
-function setAutoHide(){
+function setAutoHide() {
     window.content.attr("alpha", 1);
-    setTimeout(()=>{
+    setTimeout(() => {
         window.content.attr("alpha", 0.3);
     }, 3000);
 }
@@ -184,20 +190,20 @@ function _angle2oriType(angle) {
 // 目前只有创建按钮，刷新位置和设置点击事件需要暴露出去
 // 点击事件肯定是创建时就赋值
 // 刷新位置交给上层
-exports.createBtn2clickAddon = function(isDragable, callback_Func){
+exports.createBtn2clickAddon = function (isDragable, callback_Func) {
     _createBtn2clickAddon(isDragable, callback_Func);
 }
 
 
-exports.setBtnPos = function(isLandscape){
+exports.setBtnPos = function (isLandscape) {
     _setBtnPos(isLandscape);
 }
 
-exports.setVisibility = function(isShow){
+exports.setVisibility = function (isShow) {
     _setVisibility(isShow);
 }
 
-exports.getCurrentOriTypeAddon = function(){
+exports.getCurrentOriTypeAddon = function () {
     var angle = _getScreenRotation();
     return _angle2oriType(angle);
 }
