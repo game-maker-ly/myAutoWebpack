@@ -104,7 +104,9 @@ function _watchFloatyRotate() {
             }
             // log(getScreenRotation());
         }
-    }, context);
+    }, context, 2);
+    // DELAY_UI:2，0.06s一次，但是貌似更省电，不卡
+    // 默认，DELAY_NORMAL:3，最慢，0.2s一次
     // 启用
     mOrientationEventListener.enable();
 
