@@ -3,9 +3,10 @@ const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
 function _openVideoById(videoId) {
     var videoUrl = util.format("imgotv://player?videoId=%s", videoId);
-    log(videoUrl);
+    // log(videoUrl);
     app.startActivity({
         action: "VIEW",
+        flags: ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效
         //type: "text/plain",
         data: videoUrl
     });
@@ -26,25 +27,26 @@ function _openMGTV(videoId) {
     text("简介").waitFor();
     // 纯坐标是对应不上的
     click(600, 400);// 全屏按钮
-    if (device.model == "MI 9") {
-        log("小米9");
-        id("toFullScreen").findOne(1000).click();
-    } else {
-        text("全屏").findOne(1000).click();
-    }
+    try {
+        if (device.model == "MI 9") {
+            log("小米9");
+            id("toFullScreen").findOne(1000).click();
+        } else {
+            text("全屏").findOne(1000).click();
+        }
+    } catch (error) { }
+    
 
     // 选集事件就不用监听屏幕旋转的方式，不友好
     // 但是刷新悬浮窗位置又需要监听，挺难搞的
-    
-
-    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
-    myFloaty.registerRotateBroadcast();
+    //myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
+    //myFloaty.registerRotateBroadcast();
     myFloaty.createBtn2click(false ,()=> {
         // 选集事件
         log("触发选集事件");
         try {
             // 强制无异常
-            click(300, 300);
+            click(800, 500);
             text("选集").findOne(1000).click();
         } catch (error) {}
     });

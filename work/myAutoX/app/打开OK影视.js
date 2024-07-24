@@ -43,15 +43,15 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
 }
 
 function _registerRotateBroadcast4FongMi() {
-    myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
-    // 选集事件
-    myFloaty.registerRotateBroadcast();
+    // myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
+    // // 选集事件
+    // myFloaty.registerRotateBroadcast();
     myFloaty.createBtn2click(false ,()=> {
         // 选集事件
         log("触发选集事件");
         try {
             // 强制无异常
-            click(300, 300);
+            click(800, 500);
             text("选集").findOne(1000).click();
         } catch (error) {}
     });

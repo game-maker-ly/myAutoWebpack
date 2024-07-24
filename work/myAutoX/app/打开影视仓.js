@@ -49,7 +49,7 @@ exports.openYSC = function (videoName, selectVideoSrc) {
             log("触发选集事件");
             // 调出选集界面
             try {
-                click(300, 300);
+                click(800, 500);
                 text("选集").findOne(1000).click();
             } catch (error) {}
         }

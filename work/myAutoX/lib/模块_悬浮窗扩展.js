@@ -6,8 +6,8 @@ importClass(android.view.View);
 // 替换updateFloaty
 const ORI_TYPE = {
     Auto: -1,
-    Portrait:0,
-    Portrait_reverse:180,
+    Portrait: 0,
+    Portrait_reverse: 180,
     Landscape: 270,
     Landscape_reverse: 90,
 }
@@ -64,7 +64,7 @@ function _oriType2ori(angle) {
 var isWatchInit = false;
 var currentType = 0;
 function _watchFloatyRotate() {
-    if(isWatchInit){
+    if (isWatchInit) {
         // 说明已存在广播，直接返回
         return;
     }
@@ -87,7 +87,7 @@ function _watchFloatyRotate() {
                 desOriType = 270;
             }
 
-            if(desOriType != -1){
+            if (desOriType != -1) {
                 if (currentType == desOriType) {
                     // 说明方向没有变化，退出
                     return;
@@ -139,10 +139,36 @@ function _removeFlag(srcFlags, flag) {
 // 更新悬浮窗
 // 使用锁更新悬浮窗角度
 var isLocked = false;
+var isUpdateFloatyBroadcastInit = false;
+var updateFloatyFinished_callback_Func;
+var updateFloatyFinished_Thread;
 function _updateFloaty(oriType, isHideBar, callback_Func) {
-    if(isLocked){
+    if (isLocked) {
         return;
     }
+    //停止回调线程执行
+    updateFloatyFinished_Thread && updateFloatyFinished_Thread.interrupt();
+    // 仅注册1次
+
+    if (!isUpdateFloatyBroadcastInit) {
+        // 注册完成更新布局广播
+        // once只能保证进执行1次，但不能防止重复注册
+        // 没有释放锁，只能是广播没有触发
+        // 这就很尴尬了，要保证释放锁一定触发，那就必须得用回调函数
+        events.broadcast.on("onUpdateFloatyFinished", function (type) {
+            log("更新布局完毕");
+            updateFloatyFinished_Thread = threads.start(function () {
+                updateFloatyFinished_callback_Func && updateFloatyFinished_callback_Func();
+                // 修改悬浮窗按钮位置
+                AddonTool_Btn.setBtnPos(type == 90 || type == 270);
+            });
+        });
+        isUpdateFloatyBroadcastInit = true;
+    }
+
+    // 修改回调函数
+    updateFloatyFinished_callback_Func = callback_Func;
+
     // 加锁
     isLocked = true;
     // 反射获取悬浮窗实例
@@ -166,14 +192,14 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
     ui.run(function () {
         // 隐藏导航栏
         if (isHideBar) {
-            log("隐藏导航栏");
+            // log("隐藏导航栏");
             // 隐藏导航栏（对view的操作必须在ui线程
             wview.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN);
             // 全屏
-            layoutParams.flags =  LayoutParams.FLAG_LAYOUT_NO_LIMITS;
+            layoutParams.flags = LayoutParams.FLAG_LAYOUT_NO_LIMITS;
             layoutParams.flags |= LayoutParams.FLAG_FULLSCREEN;
         } else {
-            log("取消隐藏导航栏");
+            // log("取消隐藏导航栏");
             // 取消沉浸模式
             wview.setSystemUiVisibility(~View.SYSTEM_UI_FLAG_HIDE_NAVIGATION & ~View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY & ~View.SYSTEM_UI_FLAG_FULLSCREEN);
             // 移除全屏flag
@@ -181,14 +207,23 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
             layoutParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE;
         }
         // 去除遮挡
+        // flag位运算不影响性能
         layoutParams.flags = _addFlag(layoutParams.flags, LayoutParams.FLAG_NOT_TOUCHABLE);
-        
+
         // 更新布局
         c.updateWindowLayoutParams(layoutParams);
 
-        callback_Func && callback_Func();
+        // ui线程用sleep会阻塞，干脆用个延时函数抛出执行？
+        // 或者用广播？
+        // 用广播吧，ui线程专门更新布局即可
+        // 广播并没有生效，这就离谱了
+        // 设置延时广播
+        // 线程不能用？准确来说是回调函数不能用
+        events.broadcast.emit("onUpdateFloatyFinished", oriType);
         isLocked = false;// 释放锁
         isEmitLocked = false;
+        // 如果重新触发了更新布局，就放弃已有的回调？那要单开一个线程，随时终止这个线程
+        // 就不需要广播了
     });
 }
 
@@ -197,13 +232,18 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
 // 这里的锁只能保证不会重复触发动画
 // 还需要一个锁，并且有一个锁住，就不发送广播
 var isEmitLocked = false;
-function _emitUpdateFloatyBroadcast(oriType){
-    // log("当前布局锁："+isLocked+"，当前广播锁："+ isEmitLocked +"，当前屏幕方向："+oriType);
-    if(isEmitLocked) return;
+var emitCallback_Func;
+function _emitUpdateFloatyBroadcast(oriType) {
+    log("当前布局锁：" + isLocked + "，当前广播锁：" + isEmitLocked + "，当前屏幕方向：" + oriType);
+    if (isEmitLocked) return;
     isEmitLocked = true;
-    log("测试");
-    if(isLocked) return;
-    events.broadcast.emit("onMyDeviceRotate", oriType);
+    // 这里很灵敏
+    // log("触发旋转广播发送");
+    if (isLocked) return;
+    // 但是广播发送到接收，很慢，有点卡的感觉
+    // events.broadcast.emit("onMyDeviceRotate", oriType);
+    // log("触发旋转事件回调:"+emitCallback_Func);
+    emitCallback_Func && emitCallback_Func(oriType);
 }
 
 
@@ -220,24 +260,26 @@ function _emitUpdateFloatyBroadcast(oriType){
 // 再写广播回调，那实际上也没差，写在这里还方便理解
 // 用回调函数抛出，虽然模块之间的关系比较麻烦
 // 
-function _registerRotateBroadcast(callback_Func){
+function _registerRotateBroadcast(callback_Func) {
     // 注册旋转广播
     _watchFloatyRotate();
     // 返回
-    events.broadcast.on("onMyDeviceRotate", function (type) {
-        // 尝试更新坐标
-        AddonTool_Btn.setBtnPos(type == 90 || type == 270);
-        callback_Func && callback_Func(type);
-    });
-    events.broadcast.on("onMyAppExecFinished", function (isFinished) {
-        // 锁住/解锁广播
-        isEmitLocked = !isFinished;
-        log("广播锁变化："+isEmitLocked);
-    });
+    emitCallback_Func = callback_Func;
+    log("注册旋转回调函数");
+    // events.broadcast.on("onMyDeviceRotate", function (type) {
+    //     // 尝试更新坐标
+    //     callback_Func && callback_Func(type);
+    // });
+    // events.broadcast.on("onMyAppExecFinished", function (isFinished) {
+    //     // 锁住/解锁广播
+    //     isEmitLocked = !isFinished;
+    //     log("广播锁变化："+isEmitLocked);
+    // });
 }
 
-function _notiWithAppExecFinished(isFinished){
-    events.broadcast.emit("onMyAppExecFinished", isFinished);
+function _notiWithAppExecFinished(isFinished) {
+    isEmitLocked = !isFinished;
+    log("广播锁变化：" + isEmitLocked);
 }
 
 var minSwipeDistance = 100;
@@ -245,7 +287,7 @@ var mPosX = 0;
 var mPosY = 0;
 var mCurPosX = 0;
 var mCurPosY = 0;
-function _registerSwipeBroadcast(callback_Func){
+function _registerSwipeBroadcast(callback_Func) {
     // 目前来说，事件注册只会进行一次
     // 但是update布局会在自动旋转里进行多次
     // 所以touchable必须得用全局变量保存，要么就避免同时用
@@ -291,35 +333,43 @@ function _registerSwipeBroadcast(callback_Func){
     });
     // 设置监听
     w.myFloatyView.setOnTouchListener(mTouchEventListener);
-    
+
     events.broadcast.on("onMyDeviceSwipe", function (type) {
         callback_Func && callback_Func(type);
     });
 }
 
-exports.notiWithAppExecFinished = function(isFinished){
+exports.notiWithAppExecFinished = function (isFinished) {
     _notiWithAppExecFinished(isFinished);
 }
 
-exports.registerSwipeBroadcast = function(callback_Func){
+exports.registerSwipeBroadcast = function (callback_Func) {
     _registerSwipeBroadcast(callback_Func);
 }
 
-exports.registerRotateBroadcast = function(callback_Func){
+exports.registerRotateBroadcast = function (callback_Func) {
     _registerRotateBroadcast(callback_Func);
 }
 
-exports.updateFloaty = function(oriType, isHideBar, callback_Func){
-    _updateFloaty(oriType ,isHideBar, callback_Func);
+exports.updateFloaty = function (oriType, isHideBar, callback_Func) {
+    _updateFloaty(oriType, isHideBar, callback_Func);
 }
 
 
-exports.createFloaty2FullScreen = function(oriType, isHideBar){
+exports.createFloaty2FullScreen = function (oriType, isHideBar) {
     _createFloaty2FullScreen(oriType, isHideBar);
 }
 
 // 创建点击按钮
 // 方法名不能重复
-exports.createBtn2click= function(isDragable, callback_Func){
+exports.createBtn2click = function (isDragable, callback_Func) {
     AddonTool_Btn.createBtn2clickAddon(isDragable, callback_Func);
+}
+// 隐藏按钮
+exports.setBtnVisibility = function (isShow) {
+    AddonTool_Btn.setVisibility(isShow);
+}
+
+exports.getCurrentOriType = function () {
+    return AddonTool_Btn.getCurrentOriTypeAddon();
 }

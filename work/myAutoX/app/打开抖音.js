@@ -1,10 +1,23 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
 var isInit = false;
+// 重复打开activity，会触发抖音的活动销毁，强制回到主页
+// 需要每隔几次，就清空前面的活动
+var reOpenCount = 0;
 function searchWithType_private(keyword, type) {
+    var clearFlags = [];
+    if(reOpenCount < 5){
+        clearFlags = [];
+        reOpenCount++;
+    }else{
+        // 利用flag清除之前的活动
+        clearFlags = ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"];
+        reOpenCount = 0;
+    }
     var videoUrl = util.format("snssdk1128://search?keyword=%s", keyword);
     app.startActivity({
         action: "VIEW",
+        flags: clearFlags,    //清除上次活动，每隔5次清空，观感好不少
         data: videoUrl
     });
     // 强制竖屏
@@ -75,9 +88,15 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
         // 这里用悬浮窗按钮代替旋转事件监听
         addMyRotateEvent();
         myFloaty.createBtn2click(false, () => {
+            // 隐藏按钮
+            log("隐藏按钮");
+            myFloaty.setBtnVisibility(false);
             events.broadcast.emit("DY_RE_search");
+            // 需要重置回竖屏，做完操作后再切回来
         });
     }
+    // 显示按钮
+    myFloaty.setBtnVisibility(true);
     // 通知悬浮窗，app操作执行完毕，释放广播锁
     myFloaty.notiWithAppExecFinished(true);
     // 初始化完成
@@ -95,7 +114,7 @@ function addMyRotateEvent() {
             events.broadcast.emit("DY_RE_search");
         }*/
         // 手动更新布局
-        var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse | type == myFloaty.ORI_TYPE.Auto);
+        var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse || type == myFloaty.ORI_TYPE.Auto);
         // 如果需要旋转，就旋转
         if (!isIngored) {
             myFloaty.updateFloaty(type, false, () => {
@@ -104,9 +123,12 @@ function addMyRotateEvent() {
                 var isLandscape = (type == myFloaty.ORI_TYPE.Landscape | type == myFloaty.ORI_TYPE.Landscape_reverse);
                 // 如果是横屏，就检测全屏按钮
                 // 否则就返回上一级
+                // 这里findOne会有1s延迟，
+                log("是否横屏：" + isLandscape);
                 if (isLandscape) {
                     try {
-                        // sleep(1500);
+                        // 横屏隐藏悬浮窗按钮
+                        myFloaty.setBtnVisibility(false);
                         // 获取全屏按钮
                         // 点击坐标，会出现动画未完成，但回调已触发的情况，获取到的bounds不准
                         var b1 = textContains("全屏").visibleToUser(true).findOne(1000).parent();
@@ -116,6 +138,8 @@ function addMyRotateEvent() {
                         }
                     } catch (error) { }
                 } else {
+                    // 竖屏恢复悬浮窗按钮
+                    myFloaty.setBtnVisibility(true);
                     // 竖屏，且没有导航栏，则返回
                     // 有几种情况，
                     // 1.已全屏，需要返回
@@ -127,6 +151,9 @@ function addMyRotateEvent() {
                     }
                 }
             });
+        }else{
+            // 不旋转也要释放锁
+            myFloaty.notiWithAppExecFinished(true);
         }
     });
 }
