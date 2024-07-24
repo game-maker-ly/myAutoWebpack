@@ -9,7 +9,7 @@ const BTN_SIZE = 70;
 
 function _createBtn2clickAddon(isDragable, callback_Func) {
     window = floaty.window(
-        <frame gravity="center" id="content">
+        <frame gravity="center" id="content" bg="#66FFCC">
             <img src="file://icon/选集.png" id="action" w="70" h="70" />
         </frame>
     );
