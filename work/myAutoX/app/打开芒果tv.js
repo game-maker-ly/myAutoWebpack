@@ -36,21 +36,23 @@ function _openMGTV(videoId) {
         }
     } catch (error) { }
     
-
+    // 等待进入横屏再创建，不然会出现按钮位置不对
+    setTimeout(()=>{
+        myFloaty.createBtn2click(false ,()=> {
+            // 选集事件
+            log("触发选集事件");
+            try {
+                // 强制无异常
+                click(800, 500);
+                text("选集").findOne(1000).click();
+            } catch (error) {}
+        });
+    }, 2000);
     // 选集事件就不用监听屏幕旋转的方式，不友好
     // 但是刷新悬浮窗位置又需要监听，挺难搞的
     //myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
     //myFloaty.registerRotateBroadcast();
-    myFloaty.createBtn2click(false ,()=> {
-        // 选集事件
-        log("触发选集事件");
-        try {
-            // 强制无异常
-            click(800, 500);
-            text("选集").findOne(1000).click();
-        } catch (error) {}
-    });
-
+    
     // 需要注意的是
     // 可能是版本问题，或者安卓底层调度问题
     // timer并不总是准确的

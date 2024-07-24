@@ -8,9 +8,10 @@ const BTN_SIZE = 70;
 // 高版本安卓，device.width为0，为autojs本身的bug
 
 function _createBtn2clickAddon(isDragable, callback_Func) {
+    // 还是相对路径，需要注意，由于基本是快捷方式调用，所以会导致找不到图标
     window = floaty.window(
-        <frame gravity="center" id="content" bg="#66FFCC">
-            <img src="file://icon/选集.png" id="action" w="70" h="70" />
+        <frame gravity="center" id="content">
+            <img src="file://../icon/选集.png" id="action" w="70" h="70" />
         </frame>
     );
 
@@ -130,6 +131,7 @@ function _setBtnPos(isLandscape) {
     if (!window) return;
     // 根据屏幕方向变化
     var DEVICE_H = context.getResources().getDisplayMetrics().heightPixels;
+    log(DEVICE_H);// 直接运行可以，怎么放云端就不行
     if (isLandscape) {
         window.setPosition(0, DEVICE_H / 2 - BTN_SIZE - 200);
     } else {
