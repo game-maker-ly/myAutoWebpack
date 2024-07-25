@@ -31,7 +31,7 @@ events.broadcast.on("DY_RE_search", function () {
 function randOpenVideo() {
     var rand_idx = random(0, keywords_list.length - 1);
     var rand_ch_keyword = keywords_list[rand_idx];
-    var isSortByNewest = random(0, 1) == 1;
+    var sortType = dyApp.getRandSortType();
     // 随机关键词并打开抖音
-    dyApp.searchWithType(rand_ch_keyword, "video", isSortByNewest);
+    dyApp.searchWithType(rand_ch_keyword, "video", sortType);
 }

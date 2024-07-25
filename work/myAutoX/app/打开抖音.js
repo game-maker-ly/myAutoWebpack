@@ -1,15 +1,95 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
+// 排序类型
+const SORT_TYPE = {
+    Default: 0,
+    New: 1,
+    Like: 2
+}
+const SORT_TYPE_ARR = [SORT_TYPE.Default, SORT_TYPE.New, SORT_TYPE.Like];
+function _getRandSortType() {
+    var rand_idx = random(0, SORT_TYPE_ARR.length - 1);
+    var rand_type = SORT_TYPE_ARR[rand_idx];
+    return rand_type;
+}
+
+exports.getRandSortType = function () {
+    return _getRandSortType();
+}
+
+// 获取设备名称
+const DEVICE_NAME = device.model;
+function _clickWithDiffDevice(sortType) {
+    // 有概率获取不到筛选按钮
+    // 布局一
+    var sx_btn = text("筛选").visibleToUser().findOne(1000);
+    if (sx_btn) {
+        sx_btn.parent().click();
+        sleep(2000);
+        // 不同型号位置不一样
+        // 默认就是综合排序
+        if (DEVICE_NAME == "MI 9") {
+            // 平板
+            if (sortType == SORT_TYPE.New) {
+                // 最新发布
+                click(410, 630);
+            } else if (sortType == SORT_TYPE.Like) {
+                // 最多点赞
+                click(640, 630);
+            }
+        } else {
+            // 平板
+            if (sortType == SORT_TYPE.New) {
+                // 最新发布
+                click(420, 670);
+            } else if (sortType == SORT_TYPE.Like) {
+                // 最多点赞
+                click(710, 670);
+            }
+        }
+    }else{
+        // 布局二
+        sx_btn = text("综合排序").visibleToUser().findOne(1000);
+        sx_btn.parent().click();
+        sleep(2000);
+        if (DEVICE_NAME == "MI 9") {
+            // 平板
+            if (sortType == SORT_TYPE.New) {
+                // 最新发布
+                click(100, 700);
+            } else if (sortType == SORT_TYPE.Like) {
+                // 最多点赞
+                click(100, 800);
+            }
+        } else {
+            // 平板
+            if (sortType == SORT_TYPE.New) {
+                // 最新发布
+                click(100, 670);
+            } else if (sortType == SORT_TYPE.Like) {
+                // 最多点赞
+                click(100, 820);
+            }
+        }
+    }
+
+    // 返回
+    sleep(2000);
+    click(500, 1600);
+    sleep(5000);
+}
+
+
 var isInit = false;
 // 重复打开activity，会触发抖音的活动销毁，强制回到主页
 // 需要每隔几次，就清空前面的活动
 var reOpenCount = 0;
 function searchWithType_private(keyword, type) {
     var clearFlags = [];
-    if(reOpenCount < 5){
+    if (reOpenCount < 5) {
         clearFlags = [];
         reOpenCount++;
-    }else{
+    } else {
         // 利用flag清除之前的活动
         clearFlags = ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"];
         reOpenCount = 0;
@@ -32,6 +112,7 @@ function _openHome(type) {
     var videoUrl = "snssdk1128://feed";
     app.startActivity({
         action: "VIEW",
+        flags: ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],    // 清除上次活动
         data: videoUrl
     });
     // 选择页面
@@ -41,12 +122,12 @@ function _openHome(type) {
         // 等待载入
         textContains("@").waitFor();
         var btn = text(type).visibleToUser().findOne(1000);
-        if(btn){
+        if (btn) {
             var b1 = btn.bounds();
             click(b1.centerX(), b1.centerY());
         }
     }
-    if(!isInit){
+    if (!isInit) {
         // 仅自动全屏，不用选集按钮
         myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Portrait, false);
         addMyRotateEvent();
@@ -54,11 +135,12 @@ function _openHome(type) {
     }
 }
 
-exports.searchWithType = function (keyword, type, isNewest = true) {
-    log(keyword + "," + isNewest);
+exports.searchWithType = function (keyword, type, sortType) {
+    log(keyword + "," + sortType);
     searchWithType_private(keyword, type);
     // 等6s后操作
     // sleep(3000);
+    // 点击视频
     text("视频").findOne().parent().click();
     // click(bb.centerX(), bb.centerY());
     sleep(3000);
@@ -71,17 +153,10 @@ exports.searchWithType = function (keyword, type, isNewest = true) {
     // 然后就是这种写死坐标的方式
     // setScreenMetrics(1080, 2340);
     // 可以按最新排序
-    if (isNewest) {
-        // 筛选
-        click(1150, 250);// 得根据不同分辨率适配位置
-        sleep(700);
-        // 最新发布
-        click(500, 500);
-        sleep(700);
-        // 返回
-        click(500, 1600);
-        sleep(3000);
-    }
+    // 目前有3种排序，默认排序，按最新排序，点赞最多排序
+    // 由于布局分析没法用，只能手写了
+    _clickWithDiffDevice(sortType);
+
     // 打开视频
     click(300, 500);
     // 然后尝试跟随屏幕旋转
@@ -156,7 +231,7 @@ function addMyRotateEvent() {
                     }
                 }
             });
-        }else{
+        } else {
             // 不旋转也要释放锁
             myFloaty.notiWithAppExecFinished(true);
         }
