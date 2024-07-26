@@ -62,7 +62,7 @@ function _setBtnPos(isLandscape) {
     // log("坐标"+DEVICE_W+":"+DEVICE_H);
     if (isLandscape) {
         window.setPos(0, DEVICE_H / 2 - BTN_SIZE - 200);
-        window_r.setPos(DEVICE_W - BTN_SIZE, DEVICE_H / 2 - BTN_SIZE - 200);
+        window_r.setPos(DEVICE_W - BTN_SIZE - 300, DEVICE_H / 2 - BTN_SIZE - 200);
     } else {
         window.setPos(0, DEVICE_H / 2 - BTN_SIZE - 200);
         window_r.setPos(DEVICE_W - BTN_SIZE, DEVICE_H / 2 - BTN_SIZE - 200);
