@@ -1,4 +1,5 @@
 const AddonTool_Btn = require("./模块_悬浮窗扩展_按钮分支.js");
+const AddonTool_Btn_2side = require("./模块_悬浮窗扩展_按钮附加_两侧.js");
 // 此模块通过创建透明悬浮窗，来实现强制横屏和隐藏导航栏的目的
 importClass(android.view.View);
 
@@ -374,4 +375,9 @@ exports.setBtnVisibility = function (isShow) {
 
 exports.getCurrentOriType = function () {
     return AddonTool_Btn.getCurrentOriTypeAddon();
+}
+
+// 创建两侧按钮
+exports.create2sidesBtn2click = function(isDragable, callback_Func, callback_Func_R){
+    AddonTool_Btn_2side.create2sidesBtn2clickAddon(isDragable, callback_Func, callback_Func_R);
 }

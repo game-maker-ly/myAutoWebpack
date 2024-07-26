@@ -21,6 +21,8 @@ exports.getRandSortType = function () {
 const DEVICE_NAME = device.model;
 function _clickWithDiffDevice(sortType) {
     // 有概率获取不到筛选按钮
+    // 默认就不排序
+    if (sortType == SORT_TYPE.Default) return;
     // 布局一
     var sx_btn = text("筛选").visibleToUser().findOne(1000);
     if (sx_btn) {
@@ -47,6 +49,9 @@ function _clickWithDiffDevice(sortType) {
                 click(710, 670);
             }
         }
+        // 返回
+        sleep(2000);
+        click(500, 1600);
     }else{
         // 布局二
         sx_btn = text("综合排序").visibleToUser().findOne(1000);
@@ -72,11 +77,8 @@ function _clickWithDiffDevice(sortType) {
             }
         }
     }
-
-    // 返回
+    // 等2s后进入视频
     sleep(2000);
-    click(500, 1600);
-    sleep(5000);
 }
 
 
