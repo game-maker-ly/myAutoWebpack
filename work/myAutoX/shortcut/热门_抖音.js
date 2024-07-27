@@ -8,6 +8,9 @@ events.broadcast.on("DY_RE_search", function () {
     randOpenVideo();// 重新打开
 });
 
+// 考虑过滤掉一部分热搜词，如游戏
+// 考虑不随机排序，就默认排序
+
 function randOpenVideo() {
     var rand_ch_keyword = dyNet.getRandNewsKeyword();
     var sortType = dyApp.getRandSortType();

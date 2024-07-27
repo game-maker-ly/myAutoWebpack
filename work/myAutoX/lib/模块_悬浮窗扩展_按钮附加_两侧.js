@@ -1,7 +1,10 @@
 const MyFloatyBtn = require("./class/类_悬浮窗按钮.js").MyFloatyBtn;
 
 // 宏声明按钮大小
+// 按钮大小考虑调整
+// 透明度考虑降低以不影响观看
 const BTN_SIZE = 100;
+
 
 // 只读一次设备尺寸，防止因屏幕旋转造成读取错误
 // 但是如果屏幕本来就是横屏就会出错
