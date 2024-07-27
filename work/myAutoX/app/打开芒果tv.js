@@ -36,6 +36,7 @@ function _openMGTV(videoId) {
         }
     } catch (error) { }
     
+    // 用sleep函数貌似会出现按钮不显示
     // 等待进入横屏再创建，不然会出现按钮位置不对
     setTimeout(()=>{
         myFloaty.createBtn2click(false ,()=> {

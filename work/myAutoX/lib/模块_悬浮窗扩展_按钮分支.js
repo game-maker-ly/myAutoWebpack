@@ -1,6 +1,5 @@
 
 var window = null;
-// _createBtn2click(true);
 const BTN_SIZE = 70;
 // 只读一次设备尺寸，防止因屏幕旋转造成读取错误
 // 但是如果屏幕本来就是横屏就会出错
