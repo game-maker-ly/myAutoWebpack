@@ -10,7 +10,7 @@ exports.openMyTv = function () {
     myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, true);
     // 创建两侧按钮，延时3s创建，不然位置不对
     // sleep(3000);
-    myFloaty.create2sidesBtn2click(false, () => {
+    myFloaty.create2sidesBtn2click(true, false, () => {
         log("上一频道");
         swipe(1500, 700, 1500, 100, 500);// 上一频道
     }, () => {

@@ -3,7 +3,7 @@ const MyFloatyBtn = require("./class/类_悬浮窗按钮.js").MyFloatyBtn;
 // 宏声明按钮大小
 // 按钮大小考虑调整
 // 透明度考虑降低以不影响观看
-const BTN_SIZE = 100;
+const BTN_SIZE = 70;
 var DEVICE_W = 1200;
 var DEVICE_H = 2000;
 if(device.model == "MI 9"){
@@ -17,14 +17,16 @@ if(device.model == "MI 9"){
 // 高版本安卓，device.width为0，为autojs本身的bug
 var window;
 var window_r;
-function _create2sidesBtn2clickAddon(isDragable, callback_Func, callback_Func_R) {
+function _create2sidesBtn2clickAddon(isLandscape, isDragable, callback_Func, callback_Func_R) {
     // 还是相对路径，需要注意，由于基本是快捷方式调用，所以会导致找不到图标
     window = new MyFloatyBtn(1, "file://../icon/上一集.png", BTN_SIZE);
     window_r = new MyFloatyBtn(2, "file://../icon/下一集.png", BTN_SIZE);
 
     // 根据屏幕朝向，修改按钮坐标
-    var angle = _getScreenRotation();
-    var isLandscape = angle == 1 || angle == 3;
+    // var angle = _getScreenRotation();
+    // var isLandscape = angle == 1 || angle == 3;
+    // 把修改朝向抛给上层处理，主要电视这个挺迷的，打开电视后创建悬浮窗不会显示
+    // 只能打开之前创建
     _setBtnPos(isLandscape);
 
     // 注册点击广播
@@ -70,7 +72,7 @@ function _setBtnPos(isLandscape) {
     // log("坐标"+DEVICE_W+":"+DEVICE_H);
     if (isLandscape) {
         window.setPos(0, DEVICE_W / 2 - BTN_SIZE - 200);
-        window_r.setPos(DEVICE_H - BTN_SIZE, DEVICE_W / 2 - BTN_SIZE - 200);
+        window_r.setPos(DEVICE_H - BTN_SIZE * 3, DEVICE_W / 2 - BTN_SIZE - 200);
     } else {
         window.setPos(0, DEVICE_H / 2 - BTN_SIZE - 200);
         window_r.setPos(DEVICE_W - BTN_SIZE, DEVICE_H / 2 - BTN_SIZE - 200);
@@ -112,8 +114,8 @@ function _angle2oriType(angle) {
 // 点击事件肯定是创建时就赋值
 // 刷新位置交给上层
 
-exports.create2sidesBtn2clickAddon = function (isDragable, callback_Func, callback_Func_R) {
-    _create2sidesBtn2clickAddon(isDragable, callback_Func, callback_Func_R);
+exports.create2sidesBtn2clickAddon = function (isLandscape, isDragable, callback_Func, callback_Func_R) {
+    _create2sidesBtn2clickAddon(isLandscape, isDragable, callback_Func, callback_Func_R);
 }
 
 

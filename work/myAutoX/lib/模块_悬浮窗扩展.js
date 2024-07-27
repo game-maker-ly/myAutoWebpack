@@ -378,6 +378,6 @@ exports.getCurrentOriType = function () {
 }
 
 // 创建两侧按钮
-exports.create2sidesBtn2click = function(isDragable, callback_Func, callback_Func_R){
-    AddonTool_Btn_2side.create2sidesBtn2clickAddon(isDragable, callback_Func, callback_Func_R);
+exports.create2sidesBtn2click = function(isLandscape, isDragable, callback_Func, callback_Func_R){
+    AddonTool_Btn_2side.create2sidesBtn2clickAddon(isLandscape, isDragable, callback_Func, callback_Func_R);
 }
