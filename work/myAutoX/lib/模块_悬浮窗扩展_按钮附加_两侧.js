@@ -4,7 +4,12 @@ const MyFloatyBtn = require("./class/类_悬浮窗按钮.js").MyFloatyBtn;
 // 按钮大小考虑调整
 // 透明度考虑降低以不影响观看
 const BTN_SIZE = 100;
-
+var DEVICE_W = 1200;
+var DEVICE_H = 2000;
+if(device.model == "MI 9"){
+    DEVICE_W = device.width;
+    DEVICE_H = device.height;
+}
 
 // 只读一次设备尺寸，防止因屏幕旋转造成读取错误
 // 但是如果屏幕本来就是横屏就会出错
@@ -60,12 +65,12 @@ function _registerClickBroadcast(isDragable, callback_Func, callback_Func_R) {
 function _setBtnPos(isLandscape) {
     if (!window) return;
     // 根据屏幕方向变化
-    var DEVICE_W = context.getResources().getDisplayMetrics().widthPixels;
-    var DEVICE_H = context.getResources().getDisplayMetrics().heightPixels;
+    
+    // 直接根据型号固定分辨率吧，用context获取的不准
     // log("坐标"+DEVICE_W+":"+DEVICE_H);
     if (isLandscape) {
-        window.setPos(0, DEVICE_H / 2 - BTN_SIZE - 200);
-        window_r.setPos(DEVICE_W - BTN_SIZE - 160, DEVICE_H / 2 - BTN_SIZE - 200);
+        window.setPos(0, DEVICE_W / 2 - BTN_SIZE - 200);
+        window_r.setPos(DEVICE_H - BTN_SIZE, DEVICE_W / 2 - BTN_SIZE - 200);
     } else {
         window.setPos(0, DEVICE_H / 2 - BTN_SIZE - 200);
         window_r.setPos(DEVICE_W - BTN_SIZE, DEVICE_H / 2 - BTN_SIZE - 200);
