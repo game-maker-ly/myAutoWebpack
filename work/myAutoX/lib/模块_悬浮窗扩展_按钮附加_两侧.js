@@ -15,6 +15,15 @@ if(device.model == "MI 9"){
 // 但是如果屏幕本来就是横屏就会出错
 // 这个参数是建立在竖屏的
 // 高版本安卓，device.width为0，为autojs本身的bug
+// 还有一个谜之bug，有概率在打开应用时报错
+// 不在ui线程创建view，奇怪
+// 其他调用没有这个问题
+// 就这里难道是创建了2个悬浮窗所以会出现这个问题？
+// 后面尝试摸清触发条件，复现bug，再修复
+// 另外打开应用时，再创建按钮会不显示，还是一个显示一个不显示
+// 这就很离谱了
+// 难不成硬要加个ui.run？
+
 var window;
 var window_r;
 function _create2sidesBtn2clickAddon(isLandscape, isDragable, callback_Func, callback_Func_R) {

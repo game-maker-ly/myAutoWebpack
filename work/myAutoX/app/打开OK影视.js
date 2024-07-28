@@ -40,6 +40,7 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
 
     // 全屏
     id("video").clickable(true).findOne().click();
+    sleep(3000);
 }
 
 function _registerRotateBroadcast4FongMi() {

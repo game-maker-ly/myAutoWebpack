@@ -35,7 +35,7 @@ function _openMGTV(videoId) {
             text("全屏").findOne(1000).click();
         }
     } catch (error) { }
-    
+    sleep(3000);
     myFloaty.create2sidesBtn2click(true, false, () => {
         log("上一集");
         // 抛给上层
