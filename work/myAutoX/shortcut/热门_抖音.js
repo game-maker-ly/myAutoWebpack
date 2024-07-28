@@ -17,7 +17,7 @@ events.broadcast.on("DY_RE_search", function () {
 
 function randOpenVideo() {
     var rand_ch_keyword = dyNet.getRandNewsKeyword();
-    var sortType = dyApp.getRandSortType();
+    var sortType = dyApp.SORT_TYPE.Default; // 默认排序
     // 随机关键词并打开抖音
     dyApp.searchWithType(rand_ch_keyword, "video", sortType);
 }

@@ -6,6 +6,8 @@ const SORT_TYPE = {
     New: 1,
     Like: 2
 }
+exports.SORT_TYPE = SORT_TYPE;
+
 const SORT_TYPE_ARR = [SORT_TYPE.Default, SORT_TYPE.New, SORT_TYPE.Like];
 function _getRandSortType() {
     var rand_idx = random(0, SORT_TYPE_ARR.length - 1);
