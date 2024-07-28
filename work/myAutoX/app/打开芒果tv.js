@@ -17,6 +17,16 @@ function _openVideoById(videoId) {
 function _openMGTV(videoId) {
     _openVideoById(videoId);
 
+    // 必须在屏幕旋转前创建，不然平板上会无法显示
+    myFloaty.create2sidesBtn2click(true, false, () => {
+        log("上一集");
+        // 抛给上层
+        events.broadcast.emit("onMyMgtvChangeNO", true);
+    }, () => {
+        log("下一集");
+        events.broadcast.emit("onMyMgtvChangeNO", false);
+    });
+
     // 全屏
     // 芒果tv无法生效，在高版本miui上
     // 其他强制横屏app也是一样
@@ -35,15 +45,6 @@ function _openMGTV(videoId) {
             text("全屏").findOne(1000).click();
         }
     } catch (error) { }
-    sleep(3000);
-    myFloaty.create2sidesBtn2click(true, false, () => {
-        log("上一集");
-        // 抛给上层
-        events.broadcast.emit("onMyMgtvChangeNO", true);
-    }, () => {
-        log("下一集");
-        events.broadcast.emit("onMyMgtvChangeNO", false);
-    });
 
     // 用sleep函数貌似会出现按钮不显示
     // 等待进入横屏再创建，不然会出现按钮位置不对

@@ -1,7 +1,7 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
 // 打开fongmi
-function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
+function _openFongMi(videoName, selectVideoSrc, selectResSrc, isShowBtn) {
     // action = MAIN，强制回到主页
     app.startActivity({
         action: "MAIN",
@@ -9,6 +9,9 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
         packageName: "com.fongmi.android.tv",
         className: "com.fongmi.android.tv.ui.activity.HomeActivity"
     });
+    if(isShowBtn){
+        _registerRotateBroadcast4FongMi();
+    }
 
     // 延时用waitFor/findOnt(timeout)代替
 
@@ -40,7 +43,6 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc) {
 
     // 全屏
     id("video").clickable(true).findOne().click();
-    sleep(3000);
 }
 
 function _registerRotateBroadcast4FongMi() {
@@ -77,13 +79,8 @@ function _registerRotateBroadcast4FongMi() {
 
 
 // 打开fongmi
-exports.openFongMi = function (videoName, selectVideoSrc, selectResSrc) {
+exports.openFongMi = function (videoName, selectVideoSrc, selectResSrc, isShowBtn) {
     // 打开fongMi
-    _openFongMi(videoName, selectVideoSrc, selectResSrc);
+    _openFongMi(videoName, selectVideoSrc, selectResSrc, isShowBtn);
 }
 
-
-exports.registerRotateBroadcast4FongMi = function(){
-    // 注册选集事件
-    _registerRotateBroadcast4FongMi();
-}
