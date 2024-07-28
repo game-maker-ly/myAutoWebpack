@@ -8,15 +8,17 @@ if(videoId == -1){videoId = 21093374;}
 mgtvApp.openMGTV(videoId);
 
 
+// 写个随机推荐，从列表中随机取出合集id
+// 慢慢找吧，目前还没发现什么好看的
+// 芒果tv上免费的都不好看
 
-
-/*
-mgtvApp.registerSwipe((type) => {
-    if(type == "UP"){
-        log("下一集");
-        mgtvApp.openVideoById();
-    }else if(type == "DOWN"){
-        log("上一集");
-        mgtvApp.openVideoById();
+// 注册上下集事件
+events.broadcast.on("onMyMgtvChangeNO", function(isPrev){
+    videoId = mgtvNet.getNearVideoId(clipId, videoId, isPrev);
+    var cid = mgtvNet.getCurYearId();
+    if(cid){
+        // 切换合集
+        clipId = cid;
     }
-});*/
+    mgtvApp.openVideoById(videoId);
+});

@@ -36,8 +36,18 @@ function _openMGTV(videoId) {
         }
     } catch (error) { }
     
+    myFloaty.create2sidesBtn2click(true, false, () => {
+        log("上一集");
+        // 抛给上层
+        events.broadcast.emit("onMyMgtvChangeNO", true);
+    }, () => {
+        log("下一集");
+        events.broadcast.emit("onMyMgtvChangeNO", false);
+    });
+
     // 用sleep函数貌似会出现按钮不显示
     // 等待进入横屏再创建，不然会出现按钮位置不对
+    /*
     setTimeout(()=>{
         myFloaty.createBtn2click(false ,()=> {
             // 选集事件
@@ -48,7 +58,7 @@ function _openMGTV(videoId) {
                 text("选集").findOne(1000).click();
             } catch (error) {}
         });
-    }, 2000);
+    }, 2000);*/
     // 选集事件就不用监听屏幕旋转的方式，不友好
     // 但是刷新悬浮窗位置又需要监听，挺难搞的
     //myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
@@ -63,25 +73,12 @@ function _openMGTV(videoId) {
     // 就尽量避免用sleep();
 
 
-
     // 这里用横屏来实现全屏，因为芒果tv的视频基本都是横屏
     // 不用去找随时可能改名的按钮
     // 原理就是在最上层构建一个透明的view
     // 然后对这个view进行旋转来达到全屏的目的
 }
 
-
-function _registerSwipe(callback_Func) {
-    myFloaty.registerSwipeBroadcast((type) => {
-        callback_Func && callback_Func();
-
-    });
-}
-
-
-exports.registerSwipe = function (callback_Func) {
-    _registerSwipe(callback_Func);
-}
 
 exports.openVideoById = function (videoId) {
     _openVideoById(videoId);

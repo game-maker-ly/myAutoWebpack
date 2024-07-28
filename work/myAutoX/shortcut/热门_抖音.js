@@ -10,6 +10,10 @@ events.broadcast.on("DY_RE_search", function () {
 
 // 考虑过滤掉一部分热搜词，如游戏
 // 考虑不随机排序，就默认排序
+// 后面慢慢写吧，一边找关键词，一边过滤
+// 完善自己的规则
+
+// 竖屏视频不能旋转，预料之内
 
 function randOpenVideo() {
     var rand_ch_keyword = dyNet.getRandNewsKeyword();

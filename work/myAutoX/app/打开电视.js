@@ -12,6 +12,10 @@ exports.openMyTv = function () {
     // sleep(3000);
     myFloaty.create2sidesBtn2click(true, false, () => {
         log("上一频道");
+        // 其实是写反了，不过app自己有换台反转，那就先这样吧
+        // 这个动作是上滑，抖音的上滑是查看下一视频
+        // 电视默认上滑是下一个台，很合理
+        // 反转后就是上一个台
         swipe(1500, 700, 1500, 100, 500);// 上一频道
     }, () => {
         log("下一频道");

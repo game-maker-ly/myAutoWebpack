@@ -46,6 +46,22 @@ function _registerRotateBroadcast4FongMi() {
     // myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, false);
     // // 选集事件
     // myFloaty.registerRotateBroadcast();
+    myFloaty.create2sidesBtn2click(true, false, () => {
+        log("上一集");
+        try {
+            // 强制无异常
+            click(800, 500);
+            text("上集").findOne(1000).click();
+        } catch (error) {}
+    }, () => {
+        log("下一集");
+        try {
+            // 强制无异常
+            click(800, 500);
+            text("下集").findOne(1000).click();
+        } catch (error) {}
+    });
+    /*
     myFloaty.createBtn2click(false ,()=> {
         // 选集事件
         log("触发选集事件");
@@ -54,7 +70,7 @@ function _registerRotateBroadcast4FongMi() {
             click(800, 500);
             text("选集").findOne(1000).click();
         } catch (error) {}
-    });
+    });*/
 }
 
 

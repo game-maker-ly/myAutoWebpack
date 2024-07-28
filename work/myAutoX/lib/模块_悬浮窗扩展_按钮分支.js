@@ -130,7 +130,7 @@ function _setBtnPos(isLandscape) {
     if (!window) return;
     // 根据屏幕方向变化
     var DEVICE_H = context.getResources().getDisplayMetrics().heightPixels;
-    log(DEVICE_H);// 直接运行可以，怎么放云端就不行
+    // log(DEVICE_H);// 直接运行可以，怎么放云端就不行
     if (isLandscape) {
         window.setPosition(0, DEVICE_H / 2 - BTN_SIZE - 200);
     } else {
