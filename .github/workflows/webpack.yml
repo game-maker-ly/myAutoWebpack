@@ -31,7 +31,7 @@ jobs:
 
     - name: 计算md5
       run: |
-        node ./work/myAutoX/nodeJSModule/autoUpdateFileMd5.js
+        node ./nodeJSTool/autoUpdateFileMd5.js
         
     # 推送到另一个仓库防止无限触发
     - name: 推送到myAutoX仓库
