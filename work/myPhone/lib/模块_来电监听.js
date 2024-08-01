@@ -30,24 +30,12 @@ function registerPhoneStateReceiver() {
                 let mIncomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 // log(state == "IDLE");
                 // 抛给上层，连状态和号码一起
-                switch (state) {
-                    case "IDLE":
-                        // 挂断电话
-                        log("挂断电话");
-                        events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
-                        break;
-                    case "RINGING":
-                        // 电话正在响铃
-                        log("电话正在响铃");
-                        events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
-                        break;
-                    case "OFFHOOK":
-                        // 电话处于通话状态
-                        log("电话处于通话状态");
-                        events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
-                        break;
-                    default:
-                        break;
+                // IDLE：挂断，OFFHOOK，为接通或者拨出（主动拨出也可触发
+                // RINGING，来电
+                // 去掉NULL的
+                // 还要避免重复
+                if (mIncomingNumber) {
+                    events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
                 }
             }
         }
@@ -66,17 +54,18 @@ function registerPhoneStateReceiver() {
     isInit = true;  // 只注册一次
 }
 
+// 会重复触发，需要用锁？
 function _setPhoneStateListener(callback_Func) {
     registerPhoneStateReceiver();
 
     // 仅注册一次
-    events.broadcast.on("onMyPhoneStateChanged", function(state, phone){
-        log("此时通话状态："+state+"，来电号码："+phone);
+    events.broadcast.on("onMyPhoneStateChanged", function (state, phone) {
+        log("此时通话状态：" + state + "，来电号码：" + phone);
         callback_Func && callback_Func(state, phone);
     });
 }
 
 
-exports.setPhoneStateListener = function(callback_Func){
+exports.setPhoneStateListener = function (callback_Func) {
     _setPhoneStateListener(callback_Func);
 }

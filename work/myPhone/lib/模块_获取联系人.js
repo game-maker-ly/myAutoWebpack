@@ -50,7 +50,6 @@ function _createContactShortcut(name, phone) {
         flags: ["ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],\
         data: "tel:"+'+phone+'\
     });\
-    text("免提").findOne(10000).click();\
     ';
     var c_path = "shortcut/phone/"+name+".js";
     files.write(c_path, script_str);
@@ -75,7 +74,7 @@ const white_list = ["罗", "唐", "黄", "红", "胡*全", "幺舅妈", "燕子"
 const white_reg = new RegExp(white_list.join("|"));
 
 function _initContactInfo() {
-    // files.removeDir("shortcut");
+    files.removeDir("shortcut/phone/");
     files.createWithDirs("shortcut/phone/");
     var c_infos = getContactInfos();
     // 这里可以过滤掉白名单以外的号码

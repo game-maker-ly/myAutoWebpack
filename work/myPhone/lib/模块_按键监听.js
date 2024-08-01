@@ -11,6 +11,7 @@ keys.menu 菜单键
 keys.volume_up 音量上键
 keys.volume_down 音量下键
 */
+// 仅在亮屏状态下生效，借助无障碍服务，但是无障碍息屏状态下是失效的
 var isInit = false;
 function _setClickListener(callback_Func) {
     if(isInit) return;

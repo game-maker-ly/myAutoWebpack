@@ -17,13 +17,14 @@ if (lockTool.getLocked()) {
 // 触发按键监听，回调传入手电筒执行函数
 // 清理其他脚本
 scriptTool.closeOtherScript();
-
-// 设置按键监听，若检测到有按键按下，则异步执行手电筒脚本
+log("亮屏触发");
+// 重复触发了，得防止重复
 phoneStateListenerTool.setPhoneStateListener((state, phone) => {
     if (state == "OFFHOOK") {
         // log("接通电话");
         // 尝试按下免提
         // 等待免提
+        // 这个监听可以监听到主动拨出，或接电话
         text("免提").findOne(3000).click();
     } else if (state == "RINGING") {
         // 来电

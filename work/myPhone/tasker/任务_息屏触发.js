@@ -14,6 +14,7 @@ if (lockTool.getLocked()) {
     // 设置锁
     lockTool.setLocked(true);
 }
+log("息屏触发");
 // 触发按键监听，回调传入手电筒执行函数
 // 清理其他脚本
 scriptTool.closeOtherScript();

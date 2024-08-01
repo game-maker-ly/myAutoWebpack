@@ -12,7 +12,7 @@ function readConfig() {
     var c_path = "config.json";
     var defaultCfg = {
         "version": "1.0",
-        "project_url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+        "project_url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myPhone/"
     }
     if (!files.exists(c_path)) {
         files.write(c_path, JSON.stringify(defaultCfg));
