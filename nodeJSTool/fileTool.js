@@ -1,16 +1,14 @@
 const fs = require('fs').promises;
-const { fail } = require('assert');
 const path = require('path');
 
-// 递归遍历
 var fileTool = {};
 
+// 暂存变量？
+// 每次调用list必须重置
 var res = [];
-var cacheJson = {};
 var BASE_DIR = null;
 
-
-
+// 递归遍历
 async function traverseDirectory(dir) {
     try {
         const files = await fs.readdir(dir);
@@ -40,7 +38,7 @@ fileTool.listFiles = async function (dir) {
         BASE_DIR = path.resolve(dir);
     }
     console.log("当前工程绝对路径为："+BASE_DIR);
-    res = [];
+    res = [];// 这里不是重置了么
     await traverseDirectory(BASE_DIR);
     return res;
 }
@@ -69,26 +67,13 @@ function isFileExists(path) {
         return false;
     }
 }
-async function backMd5Json(){
-    // 备份旧的
-    var md5_path = path.join(BASE_DIR, 'md5.json');
-    var isMd5Exists = await isFileExists(md5_path);
-    console.log(md5_path);
-    console.log(isMd5Exists);
 
-    if (isMd5Exists) {
-        await fs.copyFile(md5_path, './md5_old.json', fs.constants.COPYFILE_FICLONE, (err) => {
-            if (err) throw err;
-            console.log('文件拷贝成功!');
-        });
-    }
-}
-
-
+// 异步操作必须转同步
 async function saveMd5JsonAsync(data) {
     // 备份操作目前来看意义不大，先放弃
     // 验证文件存在总要报错，算了
     var md5_path = path.join(BASE_DIR, 'md5.json');
+    console.log("已保存md5文件至："+BASE_DIR);
 
     await fs.writeFile(md5_path, data, (err) => {
         if (err) {
@@ -98,28 +83,9 @@ async function saveMd5JsonAsync(data) {
     });
 }
 
-fileTool.saveMd5Json = function (data) {
-    saveMd5JsonAsync(data);
+fileTool.saveMd5Json = async function (data) {
+    await saveMd5JsonAsync(data);
 }
 
-function readMd5Json() {
-    var md5_path = path.join(BASE_DIR, 'md5.json');
-    fs.readFile(md5_path, 'utf-8', (err, data) => {
-        if (err) {
-            throw err;
-        }
-
-        // parse JSON object
-        const res = JSON.parse(data.toString());
-        return res;
-    });
-}
-
-fileTool.getMd5ByPath = function (path) {
-    if (cacheJson == {}) {
-        cacheJson = readMd5Json();
-    }
-    return cacheJson[path];
-}
 
 module.exports = fileTool;
