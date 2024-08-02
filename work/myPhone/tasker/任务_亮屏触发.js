@@ -4,6 +4,7 @@ const phoneStateListenerTool = require("../lib/模块_来电监听.js");
 const btnListenerTool = require("../lib/模块_按键监听.js");
 const scriptTool = require("../lib/模块_脚本管理.js");
 const lockTool = require("../lib/模块_锁.js");
+const voiceTool = require("../lib/模块_语音王.js");
 
 
 // 如果锁住
@@ -26,9 +27,17 @@ phoneStateListenerTool.setPhoneStateListener((state, phone) => {
         // 尝试按下免提
         // 等待免提
         // 这个监听可以监听到主动拨出，或接电话
-        text("免提").findOne(6000).click();
+        try {
+            text("免提").findOne(6000).click();
+        } catch (e) { }
     } else if (state == "RINGING") {
-        // 来电
+        // 响铃，即来电
+        // 尝试获取姓名
+        var nameUI = id("com.android.incallui:id/firstline").findOne(3000);
+        if (nameUI) {
+            var p_name = nameUI.text();
+            voiceTool.speak(p_name+"打来电话");
+        }
     } else {
         // log("挂断电话");
     }

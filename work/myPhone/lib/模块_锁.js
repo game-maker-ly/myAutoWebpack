@@ -1,16 +1,18 @@
-function _setLocked(lock){
+function _setLocked(lock, lockName){
     var storage = storages.create("TaskShared");
-    storage.put("clean_locked", lock);
+    var n = lockName ? lockName: "clean_locked";
+    storage.put(n, lock);
 }
 
-function _getLocked(){
+function _getLocked(lockName){
     var storage = storages.create("TaskShared");
-    var isInit = storage.contains("clean_locked"); 
+    var n = lockName ? lockName: "clean_locked";
+    var isInit = storage.contains(n); 
     if(!isInit){
         // 若没有初始化clean_locked，那么就设其值为false
-        _setLocked(false);
+        _setLocked(false, n);
     }
-    return storage.get("clean_locked");
+    return storage.get(n);
 }
 
 
