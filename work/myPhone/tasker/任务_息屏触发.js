@@ -1,6 +1,8 @@
 // 息屏触发的任务
 // 和亮屏触发任务结合使用
-const btnListenerTool = require("../lib/模块_按键监听.js");
+// 息屏状态下，无障碍失效，广播监听失效，按键监听失效
+// 所以只适合用于清理
+
 const scriptTool = require("../lib/模块_脚本管理.js");
 const deviceTool = require("../lib/模块_设备操作.js");
 const lockTool = require("../lib/模块_锁.js");
@@ -16,14 +18,11 @@ if (lockTool.getLocked()) {
 }
 log("息屏触发");
 // 触发按键监听，回调传入手电筒执行函数
-// 清理其他脚本
-scriptTool.closeOtherScript();
+// 清理其他脚本，但是忽略手电筒，手电筒亮屏清理
+scriptTool.closeOtherScriptWithIgnoreSource("手电筒");
 // 返回桌面
 deviceTool.goHome();
-// 设置按键监听，若检测到有按键按下，则异步执行手电筒脚本
-btnListenerTool.setClickListener(() => {
-    engines.execScriptFile("../shortcut/手电筒.js");
-});
+
 
 // 执行完毕，释放锁
 lockTool.setLocked(false);

@@ -1,5 +1,13 @@
 // 需要无障碍权限
 
+const KEY_CODE={
+    volume_up:24,
+    volume_down:25,
+    menu:82,
+    home:3,
+    back:4
+}
+exports.KEY_CODE = KEY_CODE;
 
 //启用按键监听
 
@@ -16,10 +24,12 @@ var isInit = false;
 function _setClickListener(callback_Func) {
     if(isInit) return;
     // 阻碍之前的事件，脚本关闭会还原，也即按键屏蔽
+    // home键和back键暂不屏蔽，后面看情况
+    // 菜单键用于接听电话，拨打电话，
     events.setKeyInterceptionEnabled("volume_up", true);
     events.setKeyInterceptionEnabled("volume_down", true);
-    events.setKeyInterceptionEnabled("home", true);
-    events.setKeyInterceptionEnabled("back", true);
+    // events.setKeyInterceptionEnabled("home", true);
+    // events.setKeyInterceptionEnabled("back", true);
     events.setKeyInterceptionEnabled("menu", true);
 
     events.observeKey();
@@ -27,7 +37,7 @@ function _setClickListener(callback_Func) {
     events.on("key_down", function (keyCode, event) {
         //处理按键事件
         log("按键按下");
-        callback_Func && callback_Func();
+        callback_Func && callback_Func(keyCode);
     });
 
     events.on("exit", function () {
