@@ -48,6 +48,8 @@ function lightSwitch_old(lightStatus) {
         m_Camera.startPreview();
     } else {
         // 需要释放摄像头
+        // 如果m_camera为null，就不做操作
+        if(m_Camera == null) return;
         log("关闭手电");
         m_Camera.stopPreview();
         m_Camera.release();

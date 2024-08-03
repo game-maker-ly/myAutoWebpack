@@ -37,6 +37,7 @@ function _setClickListener(callback_Func) {
     events.on("key_down", function (keyCode, event) {
         //处理按键事件
         log("按键按下");
+        // 这里只触发一次才对
         callback_Func && callback_Func(keyCode);
     });
 

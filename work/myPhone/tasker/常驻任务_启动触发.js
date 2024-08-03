@@ -2,6 +2,8 @@
 // 需要在锁模块配置全局白名单
 // 用来替代亮屏监听
 
+// 这个方案有个问题，广播有很严重的延迟
+
 // 息屏触发的任务
 // 和亮屏触发任务结合使用
 const phoneStateListenerTool = require("../lib/模块_来电监听.js");
@@ -71,14 +73,14 @@ if (isRuning) {
         }
     });
     // 电池状态
-    batteryStateListenerTool.setBatteryStateListener((state) => {
-        if(state == "low"){
-            // 语音提示需要充电
-            voiceTool.speak("电量不足，请及时充电");
-        }else if(state == "okay"){
-            voiceTool.speak("电量已经充满");
-        }
-    });
+    // batteryStateListenerTool.setBatteryStateListener((state) => {
+    //     if(state == "low"){
+    //         // 语音提示需要充电
+    //         voiceTool.speak("电量不足，请及时充电");
+    //     }else if(state == "okay"){
+    //         voiceTool.speak("电量已经充满");
+    //     }
+    // });
 }
 
 // 说到底这个监听还是有时效的，得隔一天尝试重复唤醒

@@ -2,6 +2,21 @@ importClass(android.telephony.TelephonyManager);
 importClass(android.content.Intent);
 importClass(android.content.IntentFilter);
 
+/*
+*不能静态注册的广播:
+
+　　android.intent.action.SCREEN_ON
+
+　　android.intent.action.SCREEN_OFF
+
+　　android.intent.action.BATTERY_CHANGED
+
+　　android.intent.action.CONFIGURATION_CHANGED
+
+　　android.intent.action.TIME_TICK
+*/
+
+// 动态广播延时严重
 
 /**
  * 注册电话状态广播接收器
