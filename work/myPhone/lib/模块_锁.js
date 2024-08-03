@@ -1,4 +1,5 @@
-
+// 有概率出现锁上无法恢复的问题
+// 在常驻任务里清空锁的数据
 
 function _setLocked(lock, lockName){
     var storage = storages.create("TaskShared");
@@ -17,6 +18,13 @@ function _getLocked(lockName){
     return storage.get(n);
 }
 
+function _clearLockDate(){
+    storages.remove("TaskShared");
+}
+
+exports.clearLockDate = function(){
+    _clearLockDate();
+}
 
 exports.setLocked = function(lock){
     _setLocked(lock);

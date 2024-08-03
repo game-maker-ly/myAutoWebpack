@@ -24,6 +24,8 @@ if (isRuning) {
     // 开始不用清理，反正亮屏和息屏都会触发清理脚本
     // scriptTool.closeOtherScript();
     log("启动时触发");
+    // 初始化锁的状态
+    lockTool.clearLockDate();
     // 重复触发了，得防止重复
     // 来电监听
     phoneStateListenerTool.setPhoneStateListener((state, phone) => {
