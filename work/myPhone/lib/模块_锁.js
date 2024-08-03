@@ -26,10 +26,10 @@ exports.clearLockDate = function(){
     _clearLockDate();
 }
 
-exports.setLocked = function(lock){
-    _setLocked(lock);
+exports.setLocked = function(lock, lockName){
+    _setLocked(lock, lockName);
 }
 
-exports.getLocked = function(){
-    return _getLocked();
+exports.getLocked = function(lockName){
+    return _getLocked(lockName);
 }

@@ -4,6 +4,7 @@ const scriptTool = require("../lib/模块_脚本管理.js");
 const lockTool = require("../lib/模块_锁.js");
 
 
+// 比锁有bug
 // 如果锁住
 if (lockTool.getLocked()) {
     // 就停止执行
