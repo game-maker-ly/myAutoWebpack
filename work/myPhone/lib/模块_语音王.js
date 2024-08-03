@@ -4,9 +4,7 @@ importClass(android.speech.tts.TextToSpeech)
 importClass(android.speech.tts.TextToSpeech.OnInitListener)
 
 // 获取时间，仅时分用于播报
-// 整点报时暂不考虑
-// 主要是没有低成本的监听方案
-// 定时检测太耗电了
+// 整点报时
 function _getSpeakerTime() {
     var now = new Date();
     var hour = now.getHours();
@@ -20,7 +18,15 @@ function _getSpeakerTime() {
         resStr = "下午";
         hour -= 12;
     }
-    resStr += hour + "点" + minute + "分";
+    var minute_addstr = "";
+    if(minute == 0){
+        minute_addstr = "整";
+    }else if(minute < 10){
+        minute_addstr = "0"+minute+"分";
+    }else{
+        minute_addstr = minute+"分";
+    }
+    resStr += hour + "点" + minute_addstr;
     return resStr;
 }
 

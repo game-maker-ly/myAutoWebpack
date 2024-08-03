@@ -8,9 +8,16 @@
 const lockTool = require("../lib/模块_锁.js");
 const voiceTool = require("../lib/模块_语音王.js");
 
+// 删掉log保电
+// log("电量变化时触发");
+// 保存一个旧电量？
+// 脱裤子放屁，反正都要去读电量
 
-log("电量变化时触发");
+// 触发太频繁了
+// 没有降频的方法么？
 // 读取电源连接状态
+// 弃用这个广播
+// 用okay和low广播
 var isCharge = lockTool.getLocked("battery_lock");
 var chargePoint = device.getBattery();
 if(isCharge){
