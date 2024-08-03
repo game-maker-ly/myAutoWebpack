@@ -12,8 +12,11 @@ const lockTool = require("../lib/模块_锁.js");
 const voiceTool = require("../lib/模块_语音王.js");
 
 // 判断是否已有运行实例
+// 会把自己也判断进去
+// 怎么说？
 var isRuning = scriptTool.isExistSameSourceScript();
 if (isRuning) {
+    // 有则退出
     exit();
 } else {
     // 开始不用清理，反正亮屏和息屏都会触发清理脚本
@@ -77,3 +80,12 @@ if (isRuning) {
         }
     });
 }
+
+// 说到底这个监听还是有时效的，得隔一天尝试重复唤醒
+setTimeout(() => {
+    var mySrc = engines.myEngine().getSource();
+    // log(mySrc);
+    // 这个延时即使自己停止也有效
+    engines.execScriptFile(mySrc, {delay: 7000});
+    exit();
+}, 24 * 3600 * 1000)

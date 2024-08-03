@@ -45,10 +45,10 @@ function _setClickListener(callback_Func) {
         log("脚本退出");
     });
 
-    setTimeout(() => {
-        exit();
-        // 用于脚本保活，ui界面不需要
-    }, 5 * 3600 * 1000);
+    // setTimeout(() => {
+    //     exit();
+    //     // 用于脚本保活，ui界面不需要
+    // }, 5 * 3600 * 1000);
     isInit = true;
 }
 

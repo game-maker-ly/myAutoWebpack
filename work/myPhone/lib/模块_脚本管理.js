@@ -37,6 +37,8 @@ function _isExistSameSourceScript(source){
     for (let i = 0; i < allEngines.length; i++) {
         var c_engine = allEngines[i];
         // 如果有同源的，则返回true
+        // 但排除自己，遇到自己就跳过此次循环
+        if(c_engine == myEngine_cur) continue;
         if(c_engine.getSource() + "" == myEngine_cur.getSource() + "") return true;
     }
     // 否则返回false

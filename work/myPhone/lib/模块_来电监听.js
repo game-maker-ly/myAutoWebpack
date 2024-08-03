@@ -47,10 +47,11 @@ function registerPhoneStateReceiver() {
         context.unregisterReceiver(myBroadcastReceiver);
     });
 
-    setTimeout(() => {
-        exit();
-        // 用于脚本保活，ui界面不需要
-    }, 5 * 3600 * 1000);
+    // 自动退出在任务中实现，模块就不需要考虑了
+    // setTimeout(() => {
+    //     exit();
+    //     // 用于脚本保活，ui界面不需要
+    // }, 5 * 3600 * 1000);
     isInit = true;  // 只注册一次
 }
 

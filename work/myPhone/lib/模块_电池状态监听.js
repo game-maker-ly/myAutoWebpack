@@ -45,10 +45,10 @@ function registerReceiver() {
         context.unregisterReceiver(myBroadcastReceiver);
     });
 
-    setTimeout(() => {
-        exit();
-        // 用于脚本保活，ui界面不需要
-    }, 5 * 3600 * 1000);
+    // setTimeout(() => {
+    //     exit();
+    //     // 用于脚本保活，ui界面不需要
+    // }, 5 * 3600 * 1000);
     isInit = true;  // 只注册一次
 }
 
