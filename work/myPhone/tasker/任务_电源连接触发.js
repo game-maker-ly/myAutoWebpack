@@ -14,5 +14,5 @@ log("电源连接触发");
 // 上锁，意义不大了，但还是保留，因为这个广播不会频繁触发，耗电也不大
 // 语音播报充电器已连接
 voiceTool.speak("充电器已连接，正在充电");
-lockTool.setLocked(true, "battery_lock");
+// lockTool.setLocked(true, "battery_lock");
 
