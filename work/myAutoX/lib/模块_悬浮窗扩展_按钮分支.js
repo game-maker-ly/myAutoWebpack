@@ -59,7 +59,7 @@ var x = 0, y = 0;
 var windowX, windowY;
 //记录按键被按下的时间以便判断长按等动作
 var downTime;
-function _addTouchEvent() {
+function _addTouchEvent(callback_Func) {
     window.action.setOnTouchListener(function (view, event) {
         switch (event.getAction()) {
             case event.ACTION_DOWN:
@@ -81,7 +81,7 @@ function _addTouchEvent() {
             case event.ACTION_UP:
                 //手指弹起时如果偏移很小则判断为点击
                 if (Math.abs(event.getRawY() - y) < 5 && Math.abs(event.getRawX() - x) < 5) {
-                    onClick();
+                    callback_Func && callback_Func();
                 }
                 return true;
         }
@@ -102,27 +102,23 @@ function _getScreenRotation() {
 
 
 function _registerClickBroadcast(isDragable, callback_Func) {
+    var callFunc_tmp = function () {
+        // 回调+线程
+        setAutoHide();
+        threads.start(function () {
+            callback_Func && callback_Func();
+        });
+    }
     // 可拖拽改变位置
     if (isDragable) {
         // 不需要java包装，可以直接用touch监听
-        _addTouchEvent();
+        _addTouchEvent(callFunc_tmp);
     } else {
-        window.action.click(function () {
-            onClick();
-        });
+        window.action.click(callFunc_tmp);
     }
-    events.broadcast.on("onMyBtnClick", function () {
-        callback_Func && callback_Func();
-    });
 }
 
 
-function onClick() {
-    // toastLog("触发点击");
-    setAutoHide();
-    events.broadcast.emit("onMyBtnClick");
-    // 用广播通知上层，懒得回调了
-}
 
 // 理论上用面向对象的方式更好重构
 // 但现在先跑起来再说

@@ -59,17 +59,9 @@ function _getScreenRotation() {
 function _registerClickBroadcast(isDragable, callback_Func, callback_Func_R) {
     // 可拖拽改变位置
     if(!window) return;
-    // 这里注册广播
-    events.broadcast.on("onMy2SideBtnClick", function(id){
-        if(id == 1){
-            // 左边
-            callback_Func && callback_Func();
-        }else{
-            callback_Func_R && callback_Func_R();
-        }
-    });
-    window.setOnClickListener(isDragable);
-    window_r.setOnClickListener(isDragable);
+    // 回调注册事件
+    window.setOnClickListener(isDragable, callback_Func);
+    window_r.setOnClickListener(isDragable, callback_Func_R);
 }
 
 

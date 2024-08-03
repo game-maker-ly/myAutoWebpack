@@ -3,6 +3,9 @@ importClass(java.util.Locale);
 importClass(android.speech.tts.TextToSpeech)
 importClass(android.speech.tts.TextToSpeech.OnInitListener)
 
+
+// 息屏状态下一样能够播报，就是延时很高
+
 // 获取时间，仅时分用于播报
 // 整点报时
 function _getSpeakerTime() {

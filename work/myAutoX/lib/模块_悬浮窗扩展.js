@@ -99,7 +99,11 @@ function _watchFloatyRotate() {
                 // 完成修正
                 // log(desOriType);
                 // 否则执行更新，这里可以用广播或回调把处理旋转的逻辑抛给上层处理
-                _emitUpdateFloatyBroadcast(desOriType);
+                // 之前用的是事件机制
+                // 要求即时性的话可以用线程代替
+                threads.start(function () {
+                    _emitUpdateFloatyBroadcast(desOriType);
+                });
                 // 设置当前屏幕方向状态，关键是这个type一定要对
                 currentType = desOriType;
             }
@@ -222,6 +226,11 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
         // 广播并没有生效，这就离谱了
         // 设置延时广播
         // 线程不能用？准确来说是回调函数不能用
+        // 这里用事件是为了通过事件唤起线程
+        // 然后保存线程状态，如果短时间触发两次更新布局
+        // 则取消之后的回调，便于随时取消
+        // 否则短时间触发两次，可能会导致无障碍操作重复触发
+        // 简单来说就是为了便于随时取消操作
         events.broadcast.emit("onUpdateFloatyFinished", oriType);
         isLocked = false;// 释放锁
         isEmitLocked = false;
@@ -234,9 +243,16 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
 // 不能共用锁？
 // 这里的锁只能保证不会重复触发动画
 // 还需要一个锁，并且有一个锁住，就不发送广播
+// 这里锁可能需要换成线程锁
 var isEmitLocked = false;
 var emitCallback_Func;
 function _emitUpdateFloatyBroadcast(oriType) {
+    // 使用线程，不然对监听本身有影响
+    // 之前用的事件机制，但autojs的事件通知延时bug很迷
+    // 最好用线程代替（特别是对于即时性要求高的监听而言
+    // 比如来电监听，屏幕旋转监听
+    // 至于点击事件延时倒还能接受
+    // 只要不重复触发都还行
     log("当前布局锁：" + isLocked + "，当前广播锁：" + isEmitLocked + "，当前屏幕方向：" + oriType);
     if (isEmitLocked) return;
     isEmitLocked = true;
@@ -378,6 +394,6 @@ exports.getCurrentOriType = function () {
 }
 
 // 创建两侧按钮
-exports.create2sidesBtn2click = function(isLandscape, isDragable, callback_Func, callback_Func_R){
+exports.create2sidesBtn2click = function (isLandscape, isDragable, callback_Func, callback_Func_R) {
     AddonTool_Btn_2side.create2sidesBtn2clickAddon(isLandscape, isDragable, callback_Func, callback_Func_R);
 }

@@ -99,11 +99,24 @@ MyFloatyBtn.prototype.setOnClickListener = function (isDragable, callback_Func) 
     var tmpThis = this;
     let clickFunc = function(){
         // 这里是处于Ui线程，做无障碍操作会卡死
-        // 老样子，用广播吧
-        // 要根据id区分广播发起者
+        // 新开一个线程执行回调
         // 隐藏按钮
         tmpThis.autoHide(); // 触发点击自动3s后隐藏
-        events.broadcast.emit("onMy2SideBtnClick", tmpThis.id);
+        // 事件通知可以规避递归死循环，
+        // 但是延时很大并且不稳定
+        // 对于即时性要求高的操作，需要用线程替代
+        // 事件好处是方便多个文件之间调用
+        // 坏处也在此，代码容易高耦合，你调用我，我调用你
+        // 尽量减少不同文件之间的事件通知
+        // 这里可以用线程+回调，
+        // 事件写法反而复杂了
+        // 本身事件通知的好处之一是减少回调，
+        // 但涉及到回调的地方就可以避免用事件
+        // 譬如设置监听的操作，一般都是用回调
+        threads.start(function(){
+            callback_Func && callback_Func();
+        });
+        // events.broadcast.emit("onMy2SideBtnClick", tmpThis.id);
     }
     if(isDragable){
         this.event = new MyDragEvent();

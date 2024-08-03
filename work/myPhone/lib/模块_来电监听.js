@@ -20,6 +20,16 @@ importClass(android.content.IntentFilter);
 // 另外之前的延时是autojs本身的事件通知延时，不考虑修复的问题了（延时10-20s也不会修
 // 直接用线程替代
 
+// 所谓静态广播，就是需要在xml里面配合注册的广播，一般不考虑
+
+// 另外来电监听还可以通过TelephonyManager服务的listen做到，不过效果应该和动态广播类似
+// 并且不如动态广播通用，没有特殊的要求不考虑
+// 而注册动态广播可以在app的activity里面，缺点是活动生命周期到了容易被销毁，不能持续
+// 还有一种方案就是在自定义service里面注册，和现在的方案类似，定期尝试唤醒和清理
+// 就是不知道autojs怎么实现自定义的service，没有找到现有的例子
+// 后面再考虑吧，现在基本的效果已经实现
+
+
 /**
  * 注册电话状态广播接收器
  */
@@ -56,7 +66,7 @@ function registerPhoneStateReceiver(callback_Func) {
                     curPhoneState = state;
                     // log("状态变化", curPhoneState, mIncomingNumber);
                     // 直接用线程，事件通知会延迟10-20s
-                    var t1 = threads.start(function () {
+                    threads.start(function () {
                         log("此时通话状态：" + state + "，来电号码：" + mIncomingNumber);
                         callback_Func && callback_Func(state, mIncomingNumber);
                     });
