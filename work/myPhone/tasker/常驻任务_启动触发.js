@@ -49,47 +49,54 @@ if (isRuning) {
     });
     // 按键监听
     // 设置按键监听，若检测到有按键按下，则异步执行手电筒脚本
-    // btnListenerTool.setClickListener((keyCode) => {
-    //     // 音量键则按下手电筒
-    //     if (keyCode == btnListenerTool.KEY_CODE.volume_up || keyCode == btnListenerTool.KEY_CODE.volume_down) {
-    //         engines.execScriptFile("../shortcut/手电筒.js");
-    //     } else if (keyCode == btnListenerTool.KEY_CODE.menu) {
-    //         try {
-    //             // 目前的情况，
-    //             // 来电接听
-    //             // 电话本拨号
-    //             // 拨号界面拨号
-    //             // 挂断（电源键，暂不考虑
-    //             // 拨号键
-    //             var sim_dial_btn = id("com.android.contacts:id/sim_dial_btn").findOnce();
-    //             sim_dial_btn && sim_dial_btn.click();
-    //             // 联系人电话
-    //             var contact_data = id("com.android.contacts:id/data").findOnce();
-    //             contact_data && contact_data.parent().parent().click();
-    //             // 接听电话
-    //             var unlock_answer = id("com.android.incallui:id/unlock_answer").findOnce();
-    //             unlock_answer && unlock_answer.click();
-    //         } catch (error) { }
-    //     }
-    // });
+    btnListenerTool.setClickListener((keyCode) => {
+        // 音量键则按下手电筒
+        if (keyCode == btnListenerTool.KEY_CODE.volume_up || keyCode == btnListenerTool.KEY_CODE.volume_down) {
+            engines.execScriptFile("../shortcut/手电筒.js");
+        } else if (keyCode == btnListenerTool.KEY_CODE.menu) {
+            try {
+                // 目前的情况，
+                // 来电接听
+                // 电话本拨号
+                // 拨号界面拨号
+                // 挂断（电源键，暂不考虑
+                // 拨号键
+                var sim_dial_btn = id("com.android.contacts:id/sim_dial_btn").findOnce();
+                sim_dial_btn && sim_dial_btn.click();
+                // 联系人电话
+                var contact_data = id("com.android.contacts:id/data").findOnce();
+                contact_data && contact_data.parent().parent().click();
+                // 接听电话
+                var unlock_answer = id("com.android.incallui:id/unlock_answer").findOnce();
+                unlock_answer && unlock_answer.click();
+            } catch (error) { }
+        }
+    });
     // 电池状态
-    // batteryStateListenerTool.setBatteryStateListener((state) => {
-    //     if(state == "low"){
-    //         // 语音提示需要充电
-    //         voiceTool.speak("电量不足，请及时充电");
-    //     }else if(state == "okay"){
-    //         voiceTool.speak("电量已经充满");
-    //     }
-    // });
+    batteryStateListenerTool.setBatteryStateListener((state) => {
+        if(state == "low"){
+            // 语音提示需要充电
+            voiceTool.speak("电量不足，请及时充电");
+        }else if(state == "okay"){
+            voiceTool.speak("电量已经充满");
+        }
+    });
 }
 
 // 奇了怪了，怎么单独写可以，换了就不行了
+// 这个延时本身是没问题的，可以接受
+// 问题大的是autojs本身的事件通知机制
+// 既然事件通知会延时，那就用线程吧
+// 尤其是电话这种对即时性要求很高的，不能用事件通知
+
+// 目前的关键放在这个任务保活上面，通过延时函数一天一唤起，如果没问题就用这个方案
+// 还能清理一下内存
 
 // 说到底这个监听还是有时效的，得隔一天尝试重复唤醒
 setTimeout(() => {
-    // var mySrc = engines.myEngine().getSource();
+    var mySrc = engines.myEngine().getSource();
     // log(mySrc);
     // 这个延时即使自己停止也有效
-    // engines.execScriptFile(mySrc, {delay: 7000});
+    engines.execScriptFile(mySrc, {delay: 7000});
     exit();
-},   3600 * 1000)
+},  24 * 3600 * 1000);

@@ -56,6 +56,9 @@ function registerReceiver() {
 function _setListener(callback_Func) {
     registerReceiver();
     // 仅注册一次
+    // 对即时性要求不高的话就用事件通知？这个延迟大概有10-20s
+    // 虽然新线程本身开销并不大
+    // 后面再考虑吧，如果不能触发再说，反正这种一般也触发不了几次
     events.broadcast.on("onMyBatteryStateChanged", function (state) {
         log("电池状态:"+state);
         callback_Func && callback_Func(state);

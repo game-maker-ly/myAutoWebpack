@@ -5,24 +5,27 @@ importClass(android.content.IntentFilter);
 /*
 *不能静态注册的广播:
 
-　　android.intent.action.SCREEN_ON
+  android.intent.action.SCREEN_ON
 
-　　android.intent.action.SCREEN_OFF
+  android.intent.action.SCREEN_OFF
 
-　　android.intent.action.BATTERY_CHANGED
+  android.intent.action.BATTERY_CHANGED
 
-　　android.intent.action.CONFIGURATION_CHANGED
+  android.intent.action.CONFIGURATION_CHANGED
 
-　　android.intent.action.TIME_TICK
+  android.intent.action.TIME_TICK
 */
 
-// 动态广播延时严重
+// 动态注册广播优先级高于静态广播
+// 另外之前的延时是autojs本身的事件通知延时，不考虑修复的问题了（延时10-20s也不会修
+// 直接用线程替代
 
 /**
  * 注册电话状态广播接收器
  */
 var isInit = false;
-function registerPhoneStateReceiver() {
+var curPhoneState = "";
+function registerPhoneStateReceiver(callback_Func) {
     if (isInit) return;
     let filter = new IntentFilter();
     filter.addAction("android.intent.action.PHONE_STATE"); // 监听电话状态变化
@@ -43,14 +46,21 @@ function registerPhoneStateReceiver() {
                 // 另外TelephonyManager.CALL_STATE_IDLE是数字的形式，不适合用
                 let state = intent.getStringExtra(TelephonyManager.EXTRA_STATE) + "";
                 let mIncomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
-                // log(state == "IDLE");
                 // 抛给上层，连状态和号码一起
                 // IDLE：挂断，OFFHOOK，为接通或者拨出（主动拨出也可触发
                 // RINGING，来电
-                // 去掉NULL的
-                // 还要避免重复
-                if (mIncomingNumber) {
-                    events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
+                // 都会触发两次，第一次的电话号码有概率为null
+                // 用个变量保存状态，如果当前状态和传入状态一致，则不做操作
+                if (mIncomingNumber && state != curPhoneState) {
+                    // 不一致则暂存状态
+                    curPhoneState = state;
+                    // log("状态变化", curPhoneState, mIncomingNumber);
+                    // 直接用线程，事件通知会延迟10-20s
+                    var t1 = threads.start(function () {
+                        log("此时通话状态：" + state + "，来电号码：" + mIncomingNumber);
+                        callback_Func && callback_Func(state, mIncomingNumber);
+                    });
+                    // events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
                 }
             }
         }
@@ -72,13 +82,15 @@ function registerPhoneStateReceiver() {
 
 // 会重复触发，需要用锁？
 function _setPhoneStateListener(callback_Func) {
-    registerPhoneStateReceiver();
+    registerPhoneStateReceiver(callback_Func);
 
     // 仅注册一次
-    events.broadcast.on("onMyPhoneStateChanged", function (state, phone) {
-        log("此时通话状态：" + state + "，来电号码：" + phone);
-        callback_Func && callback_Func(state, phone);
-    });
+    // 事件通知莫名延时很高，推测是省电优化的问题
+    // 直接用线程运行
+    // events.broadcast.on("onMyPhoneStateChanged", function (state, phone) {
+    //     log("此时通话状态：" + state + "，来电号码：" + phone);
+    //     callback_Func && callback_Func(state, phone);
+    // });
 }
 
 
