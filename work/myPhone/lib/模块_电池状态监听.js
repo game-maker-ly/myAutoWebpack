@@ -44,7 +44,6 @@ function registerReceiver(callback_Func) {
                     callback_Func && callback_Func(state);
                 });
             }
-            // state && events.broadcast.emit("onMyBatteryStateChanged", state);
         }
     });
     context.registerReceiver(myBroadcastReceiver, filter); // 注册广播接收器

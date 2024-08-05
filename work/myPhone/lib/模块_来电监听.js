@@ -70,7 +70,6 @@ function registerPhoneStateReceiver(callback_Func) {
                         log("此时通话状态：" + state + "，来电号码：" + mIncomingNumber);
                         callback_Func && callback_Func(state, mIncomingNumber);
                     });
-                    // events.broadcast.emit("onMyPhoneStateChanged", state, mIncomingNumber);
                 }
             }
         }

@@ -191,12 +191,6 @@ exports.searchWithType = function (keyword, type, sortType) {
 function addMyRotateEvent() {
     myFloaty.registerRotateBroadcast((type) => {
         log("当前屏幕方向状态：" + type);
-        /*
-        if (type == myFloaty.ORI_TYPE.Portrait_reverse) {
-            log("触发重选关键词事件");
-            // 广播给上层处理，或者回调
-            events.broadcast.emit("DY_RE_search");
-        }*/
         // 手动更新布局
         var isIngored = (type == myFloaty.ORI_TYPE.Portrait_reverse || type == myFloaty.ORI_TYPE.Auto);
         // 如果需要旋转，就旋转

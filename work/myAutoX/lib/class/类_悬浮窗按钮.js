@@ -116,7 +116,6 @@ MyFloatyBtn.prototype.setOnClickListener = function (isDragable, callback_Func) 
         threads.start(function(){
             callback_Func && callback_Func();
         });
-        // events.broadcast.emit("onMy2SideBtnClick", tmpThis.id);
     }
     if(isDragable){
         this.event = new MyDragEvent();
