@@ -43,14 +43,12 @@ function createDesktopShortCut(s_id, s_name, s_path, i_path){
         .setIntent(shortcutInfoIntent)
         .build();
 
-    // 通过广播来监听回调，如果通过就继续执行
+    // 通过广播来监听创建完毕回调，如果通过就继续执行
     var succIntent = new Intent();
     succIntent.setAction("android.intent.action.ly_create_shortcut");
-    // succIntent.setClassName("org.autojs.autojs", "org.autojs.autojs.external.open.RunIntentActivity");
-    // succIntent.setData(Uri.parse(files.path(s_path)));
 
     // 目前要做的，给定Intent，执行创建快捷方式请求并触发广播
-    // 然后用promise阻塞
+    // 然后用子线程阻塞
     // 等待接收广播，抛出执行成功
     // 再继续执行
 

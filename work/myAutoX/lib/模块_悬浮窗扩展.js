@@ -231,6 +231,7 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
         // 则取消之后的回调，便于随时取消
         // 否则短时间触发两次，可能会导致无障碍操作重复触发
         // 简单来说就是为了便于随时取消操作
+        // 又不影响屏幕旋转
         events.broadcast.emit("onUpdateFloatyFinished", oriType);
         isLocked = false;// 释放锁
         isEmitLocked = false;
@@ -301,6 +302,8 @@ function _notiWithAppExecFinished(isFinished) {
     log("广播锁变化：" + isEmitLocked);
 }
 
+
+// 滑动监听没用上，懒得改了
 var minSwipeDistance = 100;
 var mPosX = 0;
 var mPosY = 0;

@@ -40,33 +40,57 @@ function downloadFile_private(srcDir, desDir) {
 }
 
 
-function downloadFile_async_list(dirList) {
+var lock = false;
+function downloadFile_async_list(dirList, callBack_Func) {
     // 不能用async/await
-    // get的回调不兼容Promise
+    // get的回调属于okhttp框架下的代码
+    // 不受autojs管理，不能在此中断线程以及抛出resolve
     // 仅在autojs4版本有这个问题，之后的版本都正常
     let size = dirList.length;
+    let pList = [];
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
         var url = BASE_URL + srcDir;
-        // log(url);
-        // 有bug，暂时重复广播实现
-        http.get(url, null, (res) => {
-            // 保存到本地
-            if (res.statusCode == 200) {
-                // srcDir恒为数组最后一项
-                // 但是i在变化，可能和变量作用域有关
-                var desDir = dirList[i];
-                files.createWithDirs(desDir);
-                files.writeBytes(desDir, res.body.bytes());
-                log("下载成功："+desDir);
-                events.broadcast.emit("isFileListDownloaded", size);
-            } else {
-                log("下载失败！");
-            }
-            // 重复广播给主线程，如果达到列表数目，就认为完成
-            // 执行退出
+        // 抛出resolve需要在ui线程
+        // 使用普通线程有概率无法生效
+        var p1 = new Promise((resolve, reject) => {
+            http.get(url, {}, (res) => {
+                // resolve必须另起线程才生效
+                ui.run(function () {
+                    // 保存到本地
+                    if (res.statusCode == 200) {
+                        // srcDir恒为数组最后一项
+                        // 但是i在变化，可能和变量作用域有关
+                        var desDir = dirList[i];
+                        files.createWithDirs(desDir);
+                        files.writeBytes(desDir, res.body.bytes());
+                        log("下载成功：" + desDir);
+                        resolve(true);
+                    } else {
+                        log("下载失败！");
+                        reject(false);
+                    }
+                });
+            });
         });
+        pList.push(p1);
     }
+    Promise.all(pList).then(() => {
+        log("所有文件下载完毕");
+    }).catch(() => {
+        log("下载出错");
+    }).finally(() => {
+        log("异步下载流程结束");
+        // 需要注意的是，主线程后面的代码不是同步的，需要用回调表明哪里下载完毕了
+        callBack_Func && callBack_Func();
+        // 释放阻塞线程
+        lock = false;
+    });
+
+    lock = true;
+    threads.start(function () {
+        while (lock);
+    });
 }
 
 // 获取本地版本号
@@ -79,9 +103,9 @@ exports.downloadFile = function (desDir) {
     downloadFile_private(desDir, desDir);
 }
 
-exports.downloadFileList_Async = function (desDirList) {
+exports.downloadFileList_Async = function (desDirList, callback_Func) {
     log("开始异步下载");
-    downloadFile_async_list(desDirList);
+    downloadFile_async_list(desDirList, callback_Func);
 }
 
 exports.downloadFileAndRead = function (srcDir, desDir) {

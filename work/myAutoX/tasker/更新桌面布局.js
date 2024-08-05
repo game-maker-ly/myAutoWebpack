@@ -49,3 +49,5 @@ for (sid in shortcutConfig) {
 sleep(5000);
 log("结束创建快捷方式，执行锁屏");
 DeviceTool.cancelWakeUpAndLock();
+
+// 这种线程挂起有概率阻塞，需要手动exit

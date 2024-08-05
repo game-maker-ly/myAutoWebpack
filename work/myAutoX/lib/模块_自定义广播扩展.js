@@ -1,53 +1,50 @@
 importClass(android.content.IntentFilter);
 
-let myInterval;
-let myThread;
+// let myInterval;
+// let myThread;
+let myThread_lock;
 
-function waitBroadcastReceiver(callBack_func) {
-    var flag = false;
-    let receiver;
-
+// 动态注册一次销毁一次
+// 那其实这个广播可以只注册一次，脚本结束时销毁
+// 初始化广播
+var isInit = false;
+function _init() {
+    if (isInit) return;
+    isInit = true;
     // 初始化receiver
-    var p1 = new Promise((resolve, reject) => {
-        receiver = new JavaAdapter(android.content.BroadcastReceiver, {
-            onReceive: function (context, intent) {
-                resolve(true);
-            },
-        });
-    }).then((res) => {
-        // log(res);
-        log("创建快捷方式结束广播");
-        receiver && context.unregisterReceiver(receiver);
-        log("关闭广播");
-
-        // myThread.clearInterval(myInterval);
-        // 退出当前线程
-        myThread.interrupt();
+    let receiver = new JavaAdapter(android.content.BroadcastReceiver, {
+        onReceive: function (context, intent) {
+            threads.start(function () {
+                myThread_lock = false;
+            });
+        },
     });
 
     // 注册广播
     let filter = new IntentFilter();
-    // filter.addAction(Intent.ACTION_BATTERY_CHANGED);
+    // 使用自定义action拦截
     filter.addAction("android.intent.action.ly_create_shortcut");
-    // filter.addAction("android.intent.action.激活路飞");
+    log("注册监听创建快捷方式完毕广播");
     context.registerReceiver(receiver, filter);
 
+    events.on(("exit"), () => {
+        log("销毁监听创建快捷方式完毕广播");
+        receiver && context.unregisterReceiver(receiver);
+    });
+}
+
+
+function waitBroadcastReceiver(callBack_func) {
+    _init();
     // 发送广播
     // 这里就用创建快捷方式代替
-    // 广播回调触发
-    callBack_func && callBack_func();
-    // 用定时器+子线程阻塞函数
-    // 直到回调执行完毕
-    // 理论上http的get，也可以用这个方法阻塞
-    // 不过本来就需要异步下载，用重复广播反而是比较适合的
-    myThread = threads.start(function(){
-        myInterval = setInterval(() => {
-            log("执行阻塞");
-        }, 3000);
+    // 使用线程+while锁阻塞主线程
+    myThread_lock = true;
+    var myThread = threads.start(function () {
+        callBack_func && callBack_func();
+        while (myThread_lock);
     });
     myThread.join();
-
-    return p1;
 }
 
 
