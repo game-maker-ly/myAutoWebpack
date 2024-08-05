@@ -146,13 +146,38 @@ function _removeFlag(srcFlags, flag) {
 // 更新悬浮窗
 // 使用锁更新悬浮窗角度
 var isLocked = false;
+var isUpdateFloatyBroadcastInit = false;
+var updateFloatyFinished_callback_Func;
 var updateFloatyFinished_Thread;
 function _updateFloaty(oriType, isHideBar, callback_Func) {
     if (isLocked) {
         return;
     }
-    //停止已有的回调线程执行
+    //停止回调线程执行
     updateFloatyFinished_Thread && updateFloatyFinished_Thread.interrupt();
+    // 仅注册1次
+
+    if (!isUpdateFloatyBroadcastInit) {
+        // 注册完成更新布局广播
+        // once只能保证进执行1次，但不能防止重复注册
+        // 没有释放锁，只能是广播没有触发
+        // 这就很尴尬了，要保证释放锁一定触发，那就必须得用回调函数
+        // 实际上也可以通过线程嵌套线程实现
+        // 没明显bug就先这么用吧，线程多了容易弄混
+        events.broadcast.on("onUpdateFloatyFinished", function (type) {
+            log("更新布局完毕");
+            updateFloatyFinished_Thread = threads.start(function () {
+                updateFloatyFinished_callback_Func && updateFloatyFinished_callback_Func();
+                // 修改悬浮窗按钮位置
+                AddonTool_Btn.setBtnPos(type == 90 || type == 270);
+            });
+        });
+        isUpdateFloatyBroadcastInit = true;
+    }
+
+    // 修改回调函数
+    updateFloatyFinished_callback_Func = callback_Func;
+
     // 加锁
     isLocked = true;
     // 反射获取悬浮窗实例
@@ -209,12 +234,7 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
         // 否则短时间触发两次，可能会导致无障碍操作重复触发
         // 简单来说就是为了便于随时取消操作
         // 又不影响屏幕旋转
-        updateFloatyFinished_Thread = threads.start(function () {
-            log("更新布局完毕");
-            callback_Func && callback_Func();
-            // 修改悬浮窗按钮位置
-            AddonTool_Btn.setBtnPos(oriType == 90 || oriType == 270);
-        });
+        events.broadcast.emit("onUpdateFloatyFinished", oriType);
         isLocked = false;// 释放锁
         isEmitLocked = false;
         // 如果重新触发了更新布局，就放弃已有的回调？那要单开一个线程，随时终止这个线程
@@ -240,7 +260,11 @@ function _emitUpdateFloatyBroadcast(oriType) {
     if (isEmitLocked) return;
     isEmitLocked = true;
     // 这里很灵敏
+    // log("触发旋转广播发送");
     if (isLocked) return;
+    // 但是广播发送到接收，很慢，有点卡的感觉
+    // events.broadcast.emit("onMyDeviceRotate", oriType);
+    // log("触发旋转事件回调:"+emitCallback_Func);
     emitCallback_Func && emitCallback_Func(oriType);
 }
 
@@ -263,6 +287,16 @@ function _registerRotateBroadcast(callback_Func) {
     _watchFloatyRotate();
     // 返回
     emitCallback_Func = callback_Func;
+    log("注册旋转回调函数");
+    // events.broadcast.on("onMyDeviceRotate", function (type) {
+    //     // 尝试更新坐标
+    //     callback_Func && callback_Func(type);
+    // });
+    // events.broadcast.on("onMyAppExecFinished", function (isFinished) {
+    //     // 锁住/解锁广播
+    //     isEmitLocked = !isFinished;
+    //     log("广播锁变化："+isEmitLocked);
+    // });
 }
 
 function _notiWithAppExecFinished(isFinished) {
