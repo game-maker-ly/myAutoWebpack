@@ -213,7 +213,7 @@ function _updateFloaty(oriType, isHideBar, callback_Func) {
             log("更新布局完毕");
             callback_Func && callback_Func();
             // 修改悬浮窗按钮位置
-            AddonTool_Btn.setBtnPos(type == 90 || type == 270);
+            AddonTool_Btn.setBtnPos(oriType == 90 || oriType == 270);
         });
         isLocked = false;// 释放锁
         isEmitLocked = false;
