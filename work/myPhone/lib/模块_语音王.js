@@ -18,9 +18,17 @@ function _getSpeakerTime() {
     var isAm = hour < 13;
     var resStr = "";
     if (isAm) {
-        resStr = "上午";
+        if (hour < 9) {
+            resStr = "早上";
+        } else {
+            resStr = "上午";
+        }
     } else {
-        resStr = "下午";
+        if (hour > 18) {
+            resStr = "晚上";
+        } else {
+            resStr = "下午";
+        }
         hour -= 12;
     }
     var minute_addstr = "";

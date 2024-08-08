@@ -13,6 +13,11 @@ const scriptTool = require("../lib/模块_脚本管理.js");
 const lockTool = require("../lib/模块_锁.js");
 const voiceTool = require("../lib/模块_语音王.js");
 
+
+// 息屏状态下广播延时大概在2分钟左右
+// 由xp模块接管广播，电话监听，按键监听，电池状态监听
+// 那基本上就是把这里的无障碍代码拆散到xp_task里面
+
 // 判断是否已有运行实例
 // 会把自己也判断进去
 // 怎么说？
@@ -78,9 +83,14 @@ if (isRuning) {
     batteryStateListenerTool.setBatteryStateListener((state) => {
         if(state == "low"){
             // 语音提示需要充电
+            // 这里可以延迟定时播报，把电池状态存入storage
+            // 如果定时检查，如果为low，那么就播报
+            // 比如8点的时候
+            log("电量不足");
             voiceTool.speak("电量不足，请及时充电");
         }else if(state == "okay"){
-            voiceTool.speak("电量已经充满");
+            log("充电已完成");
+            voiceTool.speak("充电已完成");
         }
     });
 }
