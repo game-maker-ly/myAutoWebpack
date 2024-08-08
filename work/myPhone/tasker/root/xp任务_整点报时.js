@@ -32,9 +32,27 @@ const voiceTool = require("../../lib/模块_语音王.js");
 const weatherTool = require("../../net/天气预报网络接口.js");
 const adbTool = require("../../lib/root/模块_adb命令.js");
 
+// 这个思路基本寄了
+// edge自己接收广播倒是快，但是唤起autojs太慢了
+
+// 也就是说必须分开
+// 有些语音可以用edge播报
+// 不过复杂逻辑还得上autojs
+
+// 首先edge可以做到绝大部分简单操作
+// 但不能唤起应用
+// 纯语音播报可以交给edge
+// 目前交给edge的有，亮屏动作，息屏动作
+// 电量充满，充电器连接和断开
+// 手电筒（音量键，
+
+
+
+
 var now_h = new Date().getHours();
 var time_str = voiceTool.getSpeakerTime();
 voiceTool.speak("现在是北京时间，"+time_str);
+
 
 if(now_h < 9){
     // 唤醒屏幕，有自动息屏就不用管了？
