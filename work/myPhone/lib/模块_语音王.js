@@ -86,7 +86,7 @@ function _init() {
     // 还是老样子，异步变同步
     // 用事件延时很高
     // 直接线程锁得了
-    log(tts.getDefaultVoice());
+    // log(tts.getDefaultVoice());
     tts.setOnUtteranceProgressListener(new JavaAdapter(UtteranceProgressListener, {
         onStart: function () {
             log("开始播报");
