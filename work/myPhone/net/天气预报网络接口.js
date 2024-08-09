@@ -58,7 +58,8 @@ function _getSpeakerString(weather_type, isIgnoreTemp, isIgnoreAlarm) {
         var cur_temperature = _getNowData().temperature;
         str += "当前气温是：" + cur_temperature + "度。";
     }
-    var now_str = "今天天气是";
+    // 天气发音不对，用同音字代替
+    var now_str = "今天的天器是";
     if (nowData.dayText != nowData.nightText) {
         now_str += nowData.dayText + "转" + nowData.nightText;
     } else {
@@ -66,7 +67,7 @@ function _getSpeakerString(weather_type, isIgnoreTemp, isIgnoreAlarm) {
     }
     now_str += "，最高气温" + nowData.high + "度";
     now_str += "，最低气温" + nowData.low + "度。";
-    var next_str = "明天天气是";
+    var next_str = "明天的天器是";
     if (nextData.dayText != nextData.nightText) {
         next_str += nextData.dayText + "转" + nextData.nightText;
     } else {
