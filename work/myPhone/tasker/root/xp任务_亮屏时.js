@@ -19,8 +19,8 @@ if (lockTool.getLocked("screen_on")) {
     });
 }
 // 触发按键监听，回调传入手电筒执行函数
-// 清理其他脚本，这里只需要保证亮屏清理手电筒即可
-scriptTool.closeOtherScript();
+// 清理其他脚本，忽略来电脚本
+scriptTool.closeOtherScriptWithIgnoreSource("来电");
 // log("亮屏触发");
 // 重复触发了，得防止重复
 // 亮屏打开数据，息屏关闭数据，不过这也可以用edge来实现
