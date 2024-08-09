@@ -25,7 +25,7 @@ const isRoot = device.model != "MI 9";
 // 默认前缀adb shell，不需要重复加
 function _setSvcDataEnable(isEnable) {
     // 如果未root，则不执行
-    if(!isRoot) return;
+    if (!isRoot) return;
     var str = isEnable ? "enable" : "disable";
     let result = shell("svc data " + str, true);
     log(result);
@@ -37,14 +37,34 @@ exports.setSvcDataEnable = function (isEnable) {
 
 // 强制关闭应用
 function _forceStopApp(packageName) {
-    if(!isRoot) return;
+    if (!isRoot) return;
     let result = shell("am force-stop " + packageName, true);
     log(result);
 }
 
-exports.forceStopApp = function(packageName){
+exports.forceStopApp = function (packageName) {
     _forceStopApp(packageName);
 }
+// adb省电
+function _setLowPowerEnable(isEnable) {
+    var str = isEnable ? 1 : 0;
+    let a = shell("settings put global low_power " + str, true);
+    log(a);
+}
+exports.setLowPowerEnable = function(isEnable){
+    _setLowPowerEnable(isEnable);
+}
+
+// 清理后台应用
+function _killAllBackground() {
+    let a = shell("am kill-all", true);
+    log(a);
+}
+
+exports.killAllBackground = function(){
+    _killAllBackground();
+}
+
 // 模拟电源键，锁屏和唤醒
 // 坏处是无法确定是否唤醒了
 function _clickPower() {

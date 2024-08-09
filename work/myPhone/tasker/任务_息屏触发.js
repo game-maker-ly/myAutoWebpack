@@ -5,6 +5,7 @@
 const scriptTool = require("../lib/模块_脚本管理.js");
 const deviceTool = require("../lib/模块_设备操作.js");
 const lockTool = require("../lib/模块_锁.js");
+const adbTool = require("../lib/root/模块_adb命令.js");
 
 
 // 如果锁住
@@ -21,6 +22,10 @@ if (lockTool.getLocked()) {
 scriptTool.closeOtherScriptWithIgnoreSource("手电筒");
 // 返回桌面，交给edge pro
 // deviceTool.goHome();
+// 尝试清理后台
+adbTool.killAllBackground();
+// 打开省电模式
+adbTool.setLowPowerEnable(true);
 
 // 执行完毕，释放锁
 lockTool.setLocked(false);
