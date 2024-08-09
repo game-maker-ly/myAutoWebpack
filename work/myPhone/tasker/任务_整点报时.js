@@ -57,21 +57,15 @@ voiceTool.speak("现在是北京时间，" + time_str);
 
 
 if (now_h < 9) {
-    // 唤醒屏幕，有自动息屏就不用管了？
-    device.wakeUpIfNeeded();
+    // 9点之前则自动播报天气
+    // 息屏执行，不需要唤醒
+    // 打开网络
     adbTool.setSvcDataEnable(true);
-    // 触发天气预报
-    // 需要唤醒屏幕，开启数据开关，结束后关闭
-    var weatherStr = weatherTool.getSpeakerString();
+    // 播报当天天气，忽略温度和告警
+    var weatherStr = weatherTool.getSpeakerString(0, true, true);
     weatherStr && voiceTool.speak(weatherStr);
-    // 关闭数据
+    // 关闭网络
     adbTool.setSvcDataEnable(false);
-    // 模拟电源键息屏
-    // 不行，太快了，没有正常结束脚本
-    // 脚本结束再关闭屏幕
-    events.on("exit", function () {
-        Power();
-    });
 } else if (now_h > 19) {
     // 触发电量检测，获取当前电量，如果小于20%，语音提示充电
     let battery = device.getBattery();

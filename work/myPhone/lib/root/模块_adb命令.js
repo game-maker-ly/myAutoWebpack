@@ -19,18 +19,31 @@ adb shell am start -a android.intent.action.CALL -d tel:10086
 
 */
 // adb还是方便啊，不需要那么麻烦的安卓规范和权限，可惜默认root启用
-
+const isRoot = device.model != "MI 9";
 
 // 开启和关闭数据
 // 默认前缀adb shell，不需要重复加
 function _setSvcDataEnable(isEnable) {
+    // 如果未root，则不执行
+    if(!isRoot) return;
     var str = isEnable ? "enable" : "disable";
-    var result = shell("svc data " + str, true);
+    let result = shell("svc data " + str, true);
     log(result);
 }
 
-exports.setSvcDataEnable = function(isEnable){
+exports.setSvcDataEnable = function (isEnable) {
     _setSvcDataEnable(isEnable);
+}
+
+// 强制关闭应用
+function _forceStopApp(packageName) {
+    if(!isRoot) return;
+    let result = shell("am force-stop " + packageName, true);
+    log(result);
+}
+
+exports.forceStopApp = function(packageName){
+    _forceStopApp(packageName);
 }
 // 模拟电源键，锁屏和唤醒
 // 坏处是无法确定是否唤醒了
