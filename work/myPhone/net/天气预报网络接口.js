@@ -34,7 +34,9 @@ function _getAlarmData() {
     var res = http.get(alarmUrl);
     if (res.statusCode == 200) {
         var rejson = res.body.json();
-        return rejson.data[0].description;
+        if (rejson.data.length > 0) {
+            return rejson.data[0].description;
+        }
     }
     return null;
 }
