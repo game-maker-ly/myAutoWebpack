@@ -49,8 +49,6 @@ const adbTool = require("../lib/root/模块_adb命令.js");
 // 手电筒（音量键，
 
 
-
-
 var now_h = new Date().getHours();
 var time_str = voiceTool.getSpeakerTime();
 // 提前打开网络

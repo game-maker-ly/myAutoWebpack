@@ -34,6 +34,8 @@ const adbTool = require("../../lib/root/模块_adb命令.js");
 
 // 这个思路基本寄了
 // edge自己接收广播倒是快，但是唤起autojs太慢了
+// edge倒是有打开指定活动的功能，但是和autojs不兼容
+
 
 // 也就是说必须分开
 // 有些语音可以用edge播报
@@ -46,30 +48,27 @@ const adbTool = require("../../lib/root/模块_adb命令.js");
 // 电量充满，充电器连接和断开
 // 手电筒（音量键，
 
-
-
-
 var now_h = new Date().getHours();
 var time_str = voiceTool.getSpeakerTime();
-voiceTool.speak("现在是北京时间，"+time_str);
-
-
+// 提前打开网络
 if(now_h < 9){
-    // 唤醒屏幕，有自动息屏就不用管了？
-    device.wakeUpIfNeeded();
+    // 打开网络
     adbTool.setSvcDataEnable(true);
-    // 触发天气预报
-    // 需要唤醒屏幕，开启数据开关，结束后关闭
-    var weatherStr = weatherTool.getSpeakerString();
+}
+voiceTool.speak("现在是北京时间，" + time_str);
+
+if (now_h < 9) {
+    // 9点之前则自动播报天气
+    // 息屏执行，不需要唤醒
+    // 播报当天天气，忽略温度和告警
+    var weatherStr = weatherTool.getSpeakerString(0, true, true);
     weatherStr && voiceTool.speak(weatherStr);
-    // 关闭数据
+    // 播报完毕关闭网络
     adbTool.setSvcDataEnable(false);
-    // 模拟电源键息屏
-    Power();
-}else if(now_h > 19){
+} else if (now_h > 19) {
     // 触发电量检测，获取当前电量，如果小于20%，语音提示充电
     let battery = device.getBattery();
-    if(battery < 20){
+    if (battery < 20) {
         voiceTool.speak("电量不足，请及时充电。");
     }
 }
