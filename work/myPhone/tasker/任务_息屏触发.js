@@ -7,6 +7,7 @@ const deviceTool = require("../lib/模块_设备操作.js");
 const lockTool = require("../lib/模块_锁.js");
 const adbTool = require("../lib/root/模块_adb命令.js");
 
+// 锁的bug也很好理解，如果执行完毕就退出了，那将永远锁住
 
 // 如果锁住
 if (lockTool.getLocked()) {
@@ -15,6 +16,10 @@ if (lockTool.getLocked()) {
 } else {
     // 设置锁
     lockTool.setLocked(true);
+    events.on("exit", function () {
+        // 脚本退出一定要释放锁
+        lockTool.setLocked(false);
+    });
 }
 // log("息屏触发");
 // 触发按键监听，回调传入手电筒执行函数
@@ -27,8 +32,7 @@ adbTool.killAllBackground();
 // 打开省电模式
 adbTool.setLowPowerEnable(true);
 
-// 执行完毕，释放锁
-lockTool.setLocked(false);
+
 
 // 简单来说就是：息屏-》返回桌面，并停止其他脚本，开启一个按键监听任务（监听音量键按下则执行手电筒的快捷方式
 // 亮屏则停止手电筒的监听，然后开启来电状态监听，如果接电话则修改为外放，如果挂电话就还原

@@ -13,6 +13,10 @@ if (lockTool.getLocked("screen_on")) {
 } else {
     // 设置锁
     lockTool.setLocked(true, "screen_on");
+    events.on("exit", function () {
+        // 脚本退出一定要释放锁
+        lockTool.setLocked(false, "screen_on");
+    });
 }
 // 触发按键监听，回调传入手电筒执行函数
 // 清理其他脚本，这里只需要保证亮屏清理手电筒即可
@@ -23,9 +27,6 @@ scriptTool.closeOtherScript();
 
 // 关闭省电模式
 adbTool.setLowPowerEnable(false);
-
-// 执行完毕，释放锁
-lockTool.setLocked(false, "screen_on");
 
 // 简单来说就是：息屏-》返回桌面，并停止其他脚本，开启一个按键监听任务（监听音量键按下则执行手电筒的快捷方式
 // 亮屏则停止手电筒的监听，然后开启来电状态监听，如果接电话则修改为外放，如果挂电话就还原
