@@ -18,6 +18,8 @@ if (lockTool.getLocked("screen_on")) {
 scriptTool.closeOtherScript();
 // log("亮屏触发");
 // 重复触发了，得防止重复
+// 亮屏打开数据，息屏关闭数据，不过这也可以用edge来实现
+
 
 // 执行完毕，释放锁
 lockTool.setLocked(false, "screen_on");
