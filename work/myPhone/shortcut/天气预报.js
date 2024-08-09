@@ -2,12 +2,4 @@
 const fyApp = require("../app/打开风云天气.js");
 
 fyApp.open();
-
-events.on("exit", function () {
-    fyApp.close();
-});
-
-// 考虑5分钟自动关闭
-setTimeout(() => {
-    exit();
-}, 5 * 60 * 1000);
+// 这里不能用adb和延时器，会造成autojs任务无法退出

@@ -51,7 +51,7 @@ function _setLowPowerEnable(isEnable) {
     let a = shell("settings put global low_power " + str, true);
     log(a);
 }
-exports.setLowPowerEnable = function(isEnable){
+exports.setLowPowerEnable = function (isEnable) {
     _setLowPowerEnable(isEnable);
 }
 
@@ -61,7 +61,12 @@ function _killAllBackground() {
     log(a);
 }
 
-exports.killAllBackground = function(){
+// 强制清理一些黑名单内的应用
+const black_list = ["me.wsj.fengyun"];
+exports.killAllBackground = function () {
+    for (let i = 0; i < black_list.length; i++) {
+        _forceStopApp(black_list[i]);
+    }
     _killAllBackground();
 }
 
