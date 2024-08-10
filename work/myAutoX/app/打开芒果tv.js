@@ -38,12 +38,7 @@ function _openMGTV(videoId) {
     // 纯坐标是对应不上的
     click(600, 400);// 全屏按钮
     try {
-        if (device.model == "MI 9") {
-            log("小米9");
-            id("toFullScreen").findOne(1000).click();
-        } else {
-            text("全屏").findOne(1000).click();
-        }
+        id("toFullScreen").findOne(1000).click();
     } catch (error) { }
 
     // 用sleep函数貌似会出现按钮不显示

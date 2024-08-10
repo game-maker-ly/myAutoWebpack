@@ -64,7 +64,7 @@ function createDesktopShortCut(s_id, s_name, s_path, i_path){
     var shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, succIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     // 以广播+回调阻塞异步请求，使其顺序执行
     MyBroadcastTool.waitBroadcastReceiver_Async(() => {
-        // log("当前执行："+name);
+        log("当前执行："+name);
         shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
     });
 }
