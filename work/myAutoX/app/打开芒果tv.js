@@ -1,6 +1,6 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
-
+var isFirst = true;
 function _openVideoById(videoId) {
     var videoUrl = util.format("imgotv://player?videoId=%s", videoId);
     // log(videoUrl);
@@ -15,7 +15,6 @@ function _openVideoById(videoId) {
 // 问题就在于获取上一个和下一个的videoId，比模拟操作要靠谱
 // 毕竟控件挺麻烦的
 function _openMGTV(videoId) {
-    _openVideoById(videoId);
 
     // 必须在屏幕旋转前创建，不然平板上会无法显示
     myFloaty.create2sidesBtn2click(true, false, () => {
@@ -27,6 +26,9 @@ function _openMGTV(videoId) {
         events.broadcast.emit("onMyMgtvChangeNO", false);
     });
 
+    sleep(1000);
+    _openVideoById(videoId);
+
     // 全屏
     // 芒果tv无法生效，在高版本miui上
     // 其他强制横屏app也是一样
@@ -37,8 +39,9 @@ function _openMGTV(videoId) {
     text("简介").waitFor();
     // 纯坐标是对应不上的
     click(600, 400);// 全屏按钮
+    // 延时1s再点
     try {
-        id("toFullScreen").findOne(1000).click();
+        id("toFullScreen").findOne(3000).click();
     } catch (error) { }
 
     // 用sleep函数貌似会出现按钮不显示

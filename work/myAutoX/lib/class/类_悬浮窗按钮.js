@@ -54,6 +54,9 @@ function MyFloatyBtn(id, img_path, btn_size) {
         </frame>
     );
 
+    // 调试代码
+    // this.window.content.attr("bg", "#66FFCC");
+
     // 修改图片SRC
     this.window.action.attr("src", img_path);
     // 修改图片大小
