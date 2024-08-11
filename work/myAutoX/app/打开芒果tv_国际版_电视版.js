@@ -1,5 +1,6 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
+var isFirst = true;
 // 芒果tv电视版，懒得转屏幕和找全屏控件了，直接用横屏的
 function _openVideoById(videoId) {
     // 需要销毁活动，否则partId不生效，或者结合clipId也是一样的效果
@@ -11,6 +12,11 @@ function _openVideoById(videoId) {
         data: videoUrl
     });
     
+    if(isFirst){
+        // 第一次进入等待指定控件出现再点击
+        text("全屏").waitFor();
+        isFirst = false;
+    }
     // 全屏
     sleep(1000);
     click(1200, 610);
@@ -33,6 +39,7 @@ function _openMGTV(videoId) {
     _openVideoById(videoId);
 
     // 用悬浮窗隐藏导航栏设置全屏
+    // 需要注意的是，用此悬浮窗后会导致控件查找失效
     myFloaty.createFloaty2FullScreen(myFloaty.ORI_TYPE.Auto, true);
 }
 
