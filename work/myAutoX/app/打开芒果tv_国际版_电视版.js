@@ -16,6 +16,7 @@ function _openVideoById(videoId) {
         // 第一次进入等待指定控件出现再点击
         text("全屏").waitFor();
         isFirst = false;
+        sleep(2000);
     }
     // 全屏
     sleep(1000);

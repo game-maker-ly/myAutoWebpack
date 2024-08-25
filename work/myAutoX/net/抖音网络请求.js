@@ -1,3 +1,6 @@
+// b站热榜：https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50
+
+
 
 // 获取热榜关键词数组
 var news_keys_arr;
