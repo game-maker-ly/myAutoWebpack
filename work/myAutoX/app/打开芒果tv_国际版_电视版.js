@@ -1,26 +1,21 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
-var isFirst = true;
 // 芒果tv电视版，懒得转屏幕和找全屏控件了，直接用横屏的
 function _openVideoById(videoId) {
     // 需要销毁活动，否则partId不生效，或者结合clipId也是一样的效果
     // 这里partId就相当于videoId，还有个PlId，播放列表id
-    var videoUrl = util.format("mgtvapp://vod/player?partId=%s", videoId);
+    // 国内版本可以使用fullScreen=1&fullPlay=1来达到全屏
+    // 但国际版不行，有个选集列表无法关闭
+    // 只能手动关闭
+    // 国际版唯一的好处就是无更新和广告
+    // 不过缺点就是片源少，另外部分scheme不生效
+    var videoUrl = util.format("mgtvintl://vod/player?partId=%s&fullScreen=1&fullPlay=1", videoId);
     app.startActivity({
         action: "VIEW",
         flags: ["ACTIVITY_CLEAR_TOP", "ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效
         data: videoUrl
     });
-    
-    if(isFirst){
-        // 第一次进入等待指定控件出现再点击
-        text("全屏").waitFor();
-        isFirst = false;
-        sleep(2000);
-    }
-    // 全屏
-    sleep(1000);
-    click(1200, 610);
+    // 反正3s后自动隐藏节目单，就不手动点击了，主要是悬浮窗影响控件查找，能不用就不用
 }
 // 目前是通过vieeoId来实现跳转的
 // 问题就在于获取上一个和下一个的videoId，比模拟操作要靠谱

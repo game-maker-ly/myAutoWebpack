@@ -1,30 +1,31 @@
 const myFloaty = require("../lib/模块_悬浮窗扩展.js");
 
-var isFirst = true;
+// var isFirst = true;
+// var full_pos_x=0;
+// var full_pos_y=0;
 // 芒果tv电视版，懒得转屏幕和找全屏控件了，直接用横屏的
-var full_pos_x=0;
-var full_pos_y=0;
 function _openVideoById(videoId) {
     // 需要销毁活动，否则partId不生效，或者结合clipId也是一样的效果
     // 这里partId就相当于videoId，还有个PlId，播放列表id
-    var videoUrl = util.format("mgtvapp://vod/player?partId=%s", videoId);
+    // 可以用fullPlay=1，来实现全屏
+    var videoUrl = util.format("mgtvapp://vod/player?partId=%s&fullScreen=1&fullPlay=1", videoId);
     app.startActivity({
         action: "VIEW",
         flags: ["ACTIVITY_CLEAR_TOP", "ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效
         data: videoUrl
     });
 
-    if (isFirst) {
-        // 第一次进入等待指定控件出现再点击
-        var b1 = text("全屏").findOne().bounds();
-        full_pos_x = b1.centerX();
-        full_pos_y = b1.centerY();
-        isFirst = false;
-        sleep(2000);
-    }
-    // 全屏
-    sleep(3000);
-    click(full_pos_x, full_pos_y);
+    // if (isFirst) {
+    //     // 第一次进入等待指定控件出现再点击
+    //     var b1 = text("全屏").findOne().bounds();
+    //     full_pos_x = b1.centerX();
+    //     full_pos_y = b1.centerY();
+    //     isFirst = false;
+    //     sleep(2000);
+    // }
+    // // 全屏
+    // sleep(3000);
+    // click(full_pos_x, full_pos_y);
 }
 // 目前是通过vieeoId来实现跳转的
 // 问题就在于获取上一个和下一个的videoId，比模拟操作要靠谱
