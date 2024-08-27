@@ -50,7 +50,7 @@ function _getSpeakerTime() {
 // 需要手动exit() ,此时shutdown也没用
 
 // 最大音量
-const MAX_VOLUME = device.getMusicMaxVolume();
+// const MAX_VOLUME = device.getMusicMaxVolume();
 // 生命周期以脚本为单位，脚本运行则创建，脚本退出则销毁
 // 和广播的思路一致
 var tts;
@@ -117,9 +117,9 @@ function _speak(str) {
     // 尝试初始化
     _init();
     // 获取当前音量
-    let old = device.getMusicVolume();
+    // let old = device.getMusicVolume();
     // 设置最大音量
-    device.setMusicVolume(MAX_VOLUME);
+    // device.setMusicVolume(MAX_VOLUME);
     // 播报内容，返回0/1，失败/成功，
     // 添加到队列
     // 等待读文字完毕
@@ -140,7 +140,7 @@ function _speak(str) {
     // t_lock.waitFor();
     t_lock.join();
     // 恢复音量
-    device.setMusicVolume(old);
+    // device.setMusicVolume(old);
 }
 
 

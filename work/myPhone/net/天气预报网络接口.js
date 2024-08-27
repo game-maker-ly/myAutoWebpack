@@ -56,7 +56,7 @@ function _getSpeakerString(weather_type, isIgnoreTemp, isIgnoreAlarm) {
     var str = "";
     if (!isIgnoreAlarm) {
         var cur_temperature = _getNowData().temperature;
-        str += "当前气温是：" + cur_temperature + "度。";
+        str += "当前气温是" + cur_temperature + "度。";
     }
     // 天气发音不对，用同音字代替
     var now_str = "今天的天器是";

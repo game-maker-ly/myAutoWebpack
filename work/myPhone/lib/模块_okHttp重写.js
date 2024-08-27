@@ -1,9 +1,11 @@
 // let a = http.client;
 importClass(java.net.InetAddress);
 importClass(java.net.Inet4Address);
+importClass(java.util.concurrent.TimeUnit);
 
 // 通过修改域名解析的ipv4和ipv6地址优先级来实现ipv4优先访问
 // 在没有ipv4地址的情况下，启用storage里缓存的ipv4地址
+// 事实证明，缓存用处并不大，还是修改超时为1s吧
 function _setCacheIpv4ByHostname(hostname, list) {
     var storage = storages.create("OkHttpIpv4Cache");
     storage.put(hostname, list);
@@ -46,6 +48,7 @@ function _forceUseIpv4() {
                         _setCacheIpv4ByHostname(hostname, ipv4AddrList);
                     }else{
                         // 如果没有解析到ipv4地址，那么就调用缓存里面的地址
+                        log("dns解析失败,尝试从缓存中获取ip地址");
                         return _getCacheIpv4ByHostname(hostname);
                     }
                     // 返回ip地址
@@ -57,7 +60,11 @@ function _forceUseIpv4() {
         }
     });
     // 使用自定义dns编译生成okhttpClient
-    let b = new OkHttpClient.Builder().dns(myDns).build();
+    // 设置超时1s
+    let b = new OkHttpClient.Builder()
+    .connectTimeout(1, TimeUnit.SECONDS)
+    .dns(myDns)
+    .build();
     // 覆盖http请求的client
     http.client = function () {
         return b;
