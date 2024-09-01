@@ -1,5 +1,5 @@
 const dyApp = require("../app/打开抖音.js");
-const dyNet = require("../net/抖音网络请求.js"); 
+const newsNet = require("../net/新闻网络请求.js");
 
 // 初次打开
 randOpenVideo();
@@ -16,7 +16,7 @@ events.broadcast.on("DY_RE_search", function () {
 // 竖屏视频不能旋转，预料之内
 
 function randOpenVideo() {
-    var rand_ch_keyword = dyNet.getRandNewsKeyword();
+    var rand_ch_keyword = newsNet.getRandNewsKeyword();
     var sortType = dyApp.SORT_TYPE.Default; // 默认排序
     // 随机关键词并打开抖音
     dyApp.searchWithType(rand_ch_keyword, "video", sortType);

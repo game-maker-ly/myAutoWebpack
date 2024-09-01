@@ -1,27 +1,35 @@
 // b站热榜：https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50
+// 目前比较靠谱的只有百度新闻
+const dyNet = require("./抖音网络请求.js");
 
-
+// 是否需要加权随机？
+// 基本逻辑都共通，唯一的区别就是json格式
 
 // 获取热榜关键词数组
-var news_keys_arr;
-function _getNewsKeywordList() {
-    var res = http.get("https://www.iesdouyin.com/web/api/v2/hotsearch/billboard/word/");
+function _getNewsKeywordList_baidu() {
+    var res = http.get("https://top.baidu.com/api/board?tab=realtime");
     if (res.statusCode == 200) {
         var rejson = res.body.json();
-        news_keys_arr = [];
-        var word_list = rejson.word_list;
+        var res_list = [];
+        var word_list = rejson.data.cards[0].content;
         for (let i = 0; i < word_list.length; i++) {
-            // 目前label为17的一般是娱乐，为9的也差不多
-            var label = word_list[i].label;
-            if (label != 17 && label != 9) {
-                var myKeyword = word_list[i].word;
-                news_keys_arr.push(myKeyword);
-            }
+            var myKeyword = word_list[i].word;
+            res_list.push(myKeyword);
         }
-        // log(news_keys_arr);
-        return news_keys_arr;
+        return res_list;
     }
     return -1;
+}
+
+const news_type_list = ["dy", "bd"];
+var cur_type = news_type_list[random(0, news_type_list.length - 1)];
+var news_keys_arr;
+function _getNewsKeywordList(){
+    if(cur_type == "dy"){
+        news_keys_arr = dyNet.getNewsKeywordList();
+    }else{
+        news_keys_arr = _getNewsKeywordList_baidu();
+    }
 }
 
 // 获取随机热榜关键词，或许可以根据热度加权随机？
@@ -42,8 +50,4 @@ function _getRandNewsKeyword() {
 
 exports.getRandNewsKeyword = function (collection_id) {
     return _getRandNewsKeyword();
-}
-
-exports.getNewsKeywordList = function (collection_id) {
-    return _getNewsKeywordList();
 }

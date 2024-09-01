@@ -114,16 +114,6 @@ function _init() {
 
 // 可以修改默认引擎，但是无法指定发音人
 function _speak(str) {
-    // 尝试初始化
-    _init();
-    // 获取当前音量
-    // let old = device.getMusicVolume();
-    // 设置最大音量
-    // device.setMusicVolume(MAX_VOLUME);
-    // 播报内容，返回0/1，失败/成功，
-    // 添加到队列
-    // 等待读文字完毕
-    t_lock_flag = true;
     // 这里使用join阻塞主线程
     // 通过布尔值控制线程结束与否
     // 不能使用中断机制，中断会导致子线程无法正确结束
@@ -131,9 +121,14 @@ function _speak(str) {
     // 但不适用与异步下载的情况
     // 之前用interval的方式，会导致子线程无法结束
     // 对线程的操作不能放到java的回调里面，否则就会出无法结束的bug
-    // 最好还是用布尔值的方式，官方文档里面推荐的方式
+    // 最好还是用布尔值的方式，即官方文档里面推荐的方式
     var t_lock = threads.start(function () {
+        // 尝试初始化
+        _init();
+        // 等待读文字完毕
+        t_lock_flag = true;
         // 播报语音不能放在主线程，否则会被阻塞
+        // 播报内容，返回0/1，失败/成功，
         tts.speak(str, TextToSpeech.QUEUE_ADD, null, "mySpeakId");
         while (t_lock_flag) { }
     });
