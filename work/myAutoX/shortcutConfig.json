@@ -49,6 +49,11 @@
         "path":"同城_抖音.js",
         "icon_path":"同城.png"
     },
+    "dsjtj_fongmi":{
+        "name":"电视剧推荐",
+        "path":"电视剧推荐_OK影视.js",
+        "icon_path":"电视剧推荐.png"
+    },
     "lgxs_ysc":{
         "name":"兰闺喜事",
         "path":"兰闺喜事_OK影视.js",
