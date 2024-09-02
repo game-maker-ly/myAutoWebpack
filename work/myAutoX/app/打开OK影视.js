@@ -28,17 +28,22 @@ function _openFongMi(videoName, selectVideoSrc, selectResSrc, isShowBtn) {
         // 选择播放源
         var selectVideoSrcBtn = textContains(selectVideoSrc).clickable(true).findOne();
         selectVideoSrcBtn.click();
+        // 延时1s
+        sleep(1000);
     }
 
     // 选择第一个
+    // 但有的时候不准，
     var firstItem = className("RelativeLayout").visibleToUser(true).clickable(true).indexInParent(0).filter(function (w) {
         return w.bounds().top < 350;
     }).findOne();
     firstItem.click();
+    sleep(1000);
 
     // 选择线路
     if (selectResSrc) {
         textContains(selectResSrc).clickable(true).findOne().click();
+        sleep(1000);
     }
 
     // 全屏
