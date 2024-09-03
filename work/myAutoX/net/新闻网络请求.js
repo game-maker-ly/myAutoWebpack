@@ -24,10 +24,10 @@ function _getNewsKeywordList_baidu() {
 const news_type_list = ["dy", "bd"];
 var cur_type = news_type_list[random(0, news_type_list.length - 1)];
 var news_keys_arr;
-function _getNewsKeywordList(){
-    if(cur_type == "dy"){
+function _getNewsKeywordList() {
+    if (cur_type == "dy") {
         news_keys_arr = dyNet.getNewsKeywordList();
-    }else{
+    } else {
         news_keys_arr = _getNewsKeywordList_baidu();
     }
 }
@@ -36,13 +36,16 @@ function _getNewsKeywordList(){
 // 后面再说吧
 // 过滤掉一部分关键词
 // 再去除已选的
+// 顺序自增，每次重新运行脚本都从0开始
+var rand_idx = 0;
 function _getRandNewsKeyword() {
     if (!news_keys_arr || !news_keys_arr.length) {
         _getNewsKeywordList();
     }
-    var rand_idx = random(0, news_keys_arr.length - 1);
     // 取出并移除对应idx的元素
-    var rand_type = news_keys_arr.splice(rand_idx, 1)[0];
+    var rand_type = news_keys_arr[rand_idx];
+    // 在数组索引范围内自增
+    rand_idx = (rand_idx + 1) % news_keys_arr.length;
     return rand_type;
 }
 

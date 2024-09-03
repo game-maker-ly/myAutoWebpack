@@ -28,13 +28,19 @@ function _getNewsKeywordList() {
 // 后面再说吧
 // 过滤掉一部分关键词
 // 再去除已选的
+// 随机索引替换为自增顺序
+// 抖音关键词倒是不用，顺序不重要
+// 如果news_keys_arr.length = 0，会报错
+var rand_idx = 0;
 function _getRandNewsKeyword() {
     if (!news_keys_arr || !news_keys_arr.length) {
         _getNewsKeywordList();
     }
-    var rand_idx = random(0, news_keys_arr.length - 1);
     // 取出并移除对应idx的元素
-    var rand_type = news_keys_arr.splice(rand_idx, 1)[0];
+    var rand_type = news_keys_arr[rand_idx];
+    // 在数组索引范围内自增
+    rand_idx = (rand_idx + 1) % news_keys_arr.length;
+    // var rand_type = news_keys_arr.splice(rand_idx, 1)[0];
     return rand_type;
 }
 

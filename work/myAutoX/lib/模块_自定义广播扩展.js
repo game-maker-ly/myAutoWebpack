@@ -27,7 +27,7 @@ function _init() {
     log("注册监听创建快捷方式完毕广播");
     context.registerReceiver(receiver, filter);
 
-    events.on(("exit"), () => {
+    events.on("exit", () => {
         log("销毁监听创建快捷方式完毕广播");
         receiver && context.unregisterReceiver(receiver);
     });
