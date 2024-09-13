@@ -7,5 +7,5 @@ var dyApp = require("../app/打开抖音.js");
 
 // 至于快手源，倒也不用急，有时间就慢慢写，主要快手不精准
 
-dyApp.searchWithType("新闻", "video");
+dyApp.searchWithType("新闻夜航", "video", dyApp.SORT_TYPE.New);
 
