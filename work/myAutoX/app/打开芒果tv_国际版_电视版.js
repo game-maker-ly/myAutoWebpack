@@ -35,7 +35,7 @@ function _openVideoById(videoId) {
             // 累加观看时长
             play_time += curPlayTime;
             log("记忆播放进度：" + play_time);
-            st.put(lastVideoId, { totalTime: play_time, lastPlayTime: curPlayTime });
+            st.put(lastVideoId, { totalTime: play_time, lastPlayTime: 99999 });
         });
     } else {
         // 换集记忆，记忆上次打开的videoId
