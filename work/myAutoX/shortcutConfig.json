@@ -1,8 +1,8 @@
 {
-    "my_tv_diyp":{
-        "name":"电视",
-        "path":"我的电视.js",
-        "icon_path":"电视.png"
+    "dsjtj_fongmi":{
+        "name":"电视剧推荐",
+        "path":"电视剧推荐_OK影视.js",
+        "icon_path":"电视剧推荐.png"
     },
     "xqj2024_mgtv":{
         "name":"寻情记",
@@ -18,6 +18,11 @@
         "name":"热门",
         "path":"热门_抖音.js",
         "icon_path":"热门.png"
+    },
+    "my_tv_diyp":{
+        "name":"电视",
+        "path":"我的电视.js",
+        "icon_path":"电视.png"
     },
     "ms_dy":{
         "name":"美食",
@@ -48,11 +53,6 @@
         "name":"常德",
         "path":"同城_抖音.js",
         "icon_path":"同城.png"
-    },
-    "dsjtj_fongmi":{
-        "name":"电视剧推荐",
-        "path":"电视剧推荐_OK影视.js",
-        "icon_path":"电视剧推荐.png"
     },
     "lgxs_ysc":{
         "name":"兰闺喜事",
