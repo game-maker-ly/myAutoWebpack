@@ -1,8 +1,8 @@
 {
-    "dsjtj_fongmi":{
-        "name":"电视剧推荐",
-        "path":"电视剧推荐_OK影视.js",
-        "icon_path":"电视剧推荐.png"
+    "xfhek_mgtv":{
+        "name":"幸福花儿开",
+        "path":"幸福花儿开_芒果tv.js",
+        "icon_path":"幸福花儿开.png"
     },
     "xqj2024_mgtv":{
         "name":"寻情记",
@@ -14,15 +14,20 @@
         "path":"新闻_抖音.js",
         "icon_path":"新闻.png"
     },
-    "hot_dy":{
-        "name":"热门",
-        "path":"热门_抖音.js",
-        "icon_path":"热门.png"
+    "dsjtj_fongmi":{
+        "name":"电视剧推荐",
+        "path":"电视剧推荐_OK影视.js",
+        "icon_path":"电视剧推荐.png"
     },
     "my_tv_diyp":{
         "name":"电视",
         "path":"我的电视.js",
         "icon_path":"电视.png"
+    },
+    "hot_dy":{
+        "name":"热门",
+        "path":"热门_抖音.js",
+        "icon_path":"热门.png"
     },
     "ms_dy":{
         "name":"美食",

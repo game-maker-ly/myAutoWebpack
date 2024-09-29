@@ -73,10 +73,9 @@ function _openVideoById(videoId) {
     // 不过缺点就是片源少，另外部分scheme不生效
     var videoUrl = util.format("mgtvintl://vod/player?partId=%s&fullScreen=1&fullPlay=1", videoId);
     // 如果观看时长不为0，说明已有播放记录，则拼接playTime参数（单位毫秒
-    if (play_time) {
-        videoUrl += "&playTime=" + play_time;
-        log(videoUrl);
-    }
+    videoUrl += "&playTime=" + (play_time + 100);
+    log(videoUrl);
+    // 直接拼接playTime
     app.startActivity({
         action: "VIEW",
         flags: ["ACTIVITY_CLEAR_TOP", "ACTIVITY_CLEAR_TASK", "ACTIVITY_NEW_TASK"],   //清除活动，返回主页，对芒果TV无效

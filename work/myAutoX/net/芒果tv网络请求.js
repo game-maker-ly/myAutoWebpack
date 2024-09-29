@@ -256,11 +256,14 @@ function _getNearVideoId(collection_id, video_id, isPrev) {
                         // log(cur_month, tab_m);
                         isYearChange = true;
                         // 移动年份
-                        cache_yid_list.push(cur_yid);
                         // 说明已经找完一圈，无法找到，结束循环
+                        // 做个重试次数尝试，因为在只有一年的时候会报错
                         if (cache_yid_list.indexOf(near_yid) != -1) {
+                            log("查找年份重试次数过多");
                             break;
                         }
+                        // 缓存年份
+                        cache_yid_list.push(cur_yid);
                         cur_yid = near_yid;
                         // 暂存当前年份
                         curYearId = near_yid;
