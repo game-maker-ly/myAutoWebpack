@@ -9,7 +9,6 @@ const lockTool = require("../lib/模块_锁.js");
 const voiceTool = require("../lib/模块_语音王.js");
 
 // 不会重复触发
-
 log("电源连接触发");
 // 上锁，意义不大了，但还是保留，因为这个广播不会频繁触发，耗电也不大
 // 语音播报充电器已连接
