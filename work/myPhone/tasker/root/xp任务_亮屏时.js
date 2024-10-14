@@ -3,6 +3,7 @@
 const scriptTool = require("../../lib/模块_脚本管理.js");
 const lockTool = require("../../lib/模块_锁.js");
 const adbTool = require("../../lib/root/模块_adb命令.js");
+const voiceTool = require("../../lib/模块_语音王.js");
 
 // 比锁有bug
 // 如果锁住
@@ -27,3 +28,10 @@ scriptTool.closeOtherScriptWithIgnoreSource("来电");
 
 // 关闭省电模式
 adbTool.setLowPowerEnable(false);
+
+// 检测当前电量
+var battery_val = device.getBattery();
+if(battery_val < 20){
+    log("电量过低，当前电量为："+battery_val);
+    voiceTool.speak("电量过低，请及时充电");
+}
