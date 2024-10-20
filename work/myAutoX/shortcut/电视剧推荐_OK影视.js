@@ -2,27 +2,27 @@ var fongMiApp = require("../app/打开OK影视.js");
 const dsj_obj = {
     "暖春": {
         video_src: "可可",
-        res_src: "蓝光226",
+        // res_src: "蓝光226",
     },
     "正阳门下小女人": {
         video_src: "可可",
-        res_src: "蓝光748",
+        // res_src: "蓝光748",
     },
     "父母爱情": {
         video_src: "可可",
-        res_src: "",
+        // res_src: "",
     },
     "人世间雷佳音": {
         video_src: "可可",
-        res_src: "",
+        // res_src: "",
     },
     "老农民": {
         video_src: "可可",
-        res_src: "FF线路",
+        // res_src: "FF线路",
     },
     "幸福到万家": {
         video_src: "可可",
-        res_src: "",
+        // res_src: "",
     }
 }
 // 用随机？还是计数器？
