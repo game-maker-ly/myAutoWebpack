@@ -1,5 +1,5 @@
-// 全局白名单
-const white_list = ["常驻任务"];
+// 全局白名单，由于触发任务不会阻塞，并且做了防重复判断，所以脚本管理模块忽略任务脚本，更新脚本同理
+const white_list = ["任务","更新", "update"];
 const white_reg = new RegExp(white_list.join("|"));
 
 function _closeOtherScript(isOnlySource, ignoreSource) {

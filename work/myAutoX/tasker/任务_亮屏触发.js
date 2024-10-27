@@ -26,7 +26,7 @@ if (battery_val < 20) {
     log("电量过低，当前电量为：" + battery_val);
     // 并且如果没有在充电，那就语音提示充电，
     // 充电状态由充电器连接和拔出来修改
-    if (!lockTool.getLocked("battery_lock")) {
+    if (!device.isCharging()) {
         voiceTool.speak("电量过低，请及时充电");
     }
 }
