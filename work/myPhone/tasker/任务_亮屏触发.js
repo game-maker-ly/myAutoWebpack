@@ -38,6 +38,13 @@ if (battery_val < 20) {
     if (!device.isCharging()) {
         voiceTool.speak("电量过低，请及时充电");
     }
+}else if(battery_val == 100){
+    // 若电量等于100，且充电器连接时，提示充电已完成
+    // ps：xposed edge可以获取电量满广播，提示充电完成
+    if (device.isCharging()) {
+        log("电量已经充满");
+        voiceTool.speak("充电已完成，请拔出充电器");
+    }
 }
 
 // 简单来说就是：息屏-》返回桌面，并停止其他脚本，开启一个按键监听任务（监听音量键按下则执行手电筒的快捷方式

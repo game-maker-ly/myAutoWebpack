@@ -48,27 +48,27 @@ const adbTool = require("../../lib/root/模块_adb命令.js");
 // 电量充满，充电器连接和断开
 // 手电筒（音量键，
 
-var now_h = new Date().getHours();
+// var now_h = new Date().getHours();
 var time_str = voiceTool.getSpeakerTime();
 // 提前打开网络
-if(now_h < 9){
-    // 打开网络
-    adbTool.setSvcDataEnable(true);
-}
+// if(now_h < 9){
+//     // 打开网络
+//     adbTool.setSvcDataEnable(true);
+// }
 voiceTool.speak("现在是北京时间，" + time_str);
 
-if (now_h < 9) {
-    // 9点之前则自动播报天气
-    // 息屏执行，不需要唤醒
-    // 播报当天天气，忽略温度和告警
-    var weatherStr = weatherTool.getSpeakerString(0, true, true);
-    weatherStr && voiceTool.speak(weatherStr);
-    // 播报完毕关闭网络
-    adbTool.setSvcDataEnable(false);
-} else if (now_h > 19) {
-    // 触发电量检测，获取当前电量，如果小于20%，语音提示充电
-    let battery = device.getBattery();
-    if (battery < 20) {
-        voiceTool.speak("电量不足，请及时充电。");
-    }
-}
+// if (now_h < 9) {
+//     // 9点之前则自动播报天气
+//     // 息屏执行，不需要唤醒
+//     // 播报当天天气，忽略温度和告警
+//     var weatherStr = weatherTool.getSpeakerString(0, true, true);
+//     weatherStr && voiceTool.speak(weatherStr);
+//     // 播报完毕关闭网络
+//     adbTool.setSvcDataEnable(false);
+// } else if (now_h > 19) {
+//     // 触发电量检测，获取当前电量，如果小于20%，语音提示充电
+//     let battery = device.getBattery();
+//     if (battery < 20) {
+//         voiceTool.speak("电量不足，请及时充电。");
+//     }
+// }
