@@ -64,6 +64,7 @@ deviceTool.wakeUpDevice();
 adbTool.refreshVolte();
 deviceTool.cancelWakeUpAndLock();
 
+
 // if (now_h < 9) {
 //     // 9点之前则自动播报天气
 //     // 息屏执行，不需要唤醒
