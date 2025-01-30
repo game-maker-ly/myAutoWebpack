@@ -76,3 +76,22 @@ function _clickPower() {
     var result = shell("input keyevent 26", true);
     log(result);
 }
+
+// 重启设备
+// adb省电
+function _reboot() {
+    let a = shell("reboot", true);
+    log(a);
+}
+exports.rebootPhone = function () {
+    _reboot();
+}
+// adb刷新volte
+function _refreshVolte() {
+    var a = shell("settings put global volte_vt_enabled 1", true);
+    var b = shell("am start -n com.android.phone/.OppoCallFeaturesSetting", true);
+    log(a, b);
+}
+exports.refreshVolte = function () {
+    _refreshVolte();
+}

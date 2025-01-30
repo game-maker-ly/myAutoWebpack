@@ -31,6 +31,7 @@
 const voiceTool = require("../../lib/模块_语音王.js");
 const weatherTool = require("../../net/天气预报网络接口.js");
 const adbTool = require("../../lib/root/模块_adb命令.js");
+const deviceTool = require("../../lib/模块_设备操作.js");
 
 // 这个思路基本寄了
 // edge自己接收广播倒是快，但是唤起autojs太慢了
@@ -56,6 +57,12 @@ var time_str = voiceTool.getSpeakerTime();
 //     adbTool.setSvcDataEnable(true);
 // }
 voiceTool.speak("现在是北京时间，" + time_str);
+
+// 需要唤醒屏幕
+// 刷新volte
+deviceTool.wakeUpDevice();
+adbTool.refreshVolte();
+deviceTool.cancelWakeUpAndLock();
 
 // if (now_h < 9) {
 //     // 9点之前则自动播报天气

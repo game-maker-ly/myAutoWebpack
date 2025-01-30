@@ -26,7 +26,7 @@ if (lockTool.getLocked()) {
 // 清理其他脚本，但是忽略手电筒，手电筒亮屏清理
 scriptTool.closeOtherScriptWithIgnoreSource("手电筒");
 // 返回桌面，交给edge pro
-// deviceTool.goHome();
+deviceTool.goHome();
 // 尝试清理后台
 adbTool.killAllBackground();
 // 打开省电模式
