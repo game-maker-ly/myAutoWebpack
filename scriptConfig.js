@@ -23,7 +23,7 @@ var projects = [ //项目数组，放的是每一个要编译的项目，
   },
   {
     id: 8, compile: true, name: "myPhone", main: "./main.js",
-    others: ['./update.js', './shortcut/*.js', './tasker/*.js','./tasker/root/*.js'] //其他需要编译的文件,可以用通配符表示目录,后缀名过滤
+    others: ['./update.js', './shortcut/*.js', './tasker/*.js','./tasker/root/*.js','开机启动.js'] //其他需要编译的文件,可以用通配符表示目录,后缀名过滤
   },
 ]
 
