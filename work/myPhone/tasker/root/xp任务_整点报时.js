@@ -62,6 +62,7 @@ voiceTool.speak("现在是北京时间，" + time_str);
 // 刷新volte
 deviceTool.wakeUpDevice();
 adbTool.refreshVolte();
+sleep(5000);// 5s后息屏
 deviceTool.cancelWakeUpAndLock();
 
 
