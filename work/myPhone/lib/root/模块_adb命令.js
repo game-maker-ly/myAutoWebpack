@@ -88,9 +88,30 @@ exports.rebootPhone = function () {
 }
 // adb刷新volte
 function _refreshVolte() {
-    var a = shell("settings put global volte_vt_enabled 1", true);
+    // var a = shell("settings put global volte_vt_enabled 1", true);
+    // var b = shell("am start -n com.android.phone/.OppoCallFeaturesSetting", true);
+    // 打开电话设置界面
     var b = shell("am start -n com.android.phone/.OppoCallFeaturesSetting", true);
-    log(a, b);
+    // 查找volte选项
+    var volte_option = textContains("VoLTE").findOne().parent();
+    let volte_status = false;
+    // 检查volte启用状态
+    volte_option.children().each(function(e){
+        if(e.id().indexOf("switch") != -1){
+            // log(e.id());
+            volte_status = e.checked();
+            log("volte是否启用："+volte_status);
+            return;
+        }
+    });
+    sleep(1000);
+    if(volte_status){
+        // 点击两次重置
+        volte_option.click();
+        sleep(1000);
+    }
+    volte_option.click();
+    sleep(15*1000);// 等待15s，让volte修改生效
 }
 exports.refreshVolte = function () {
     _refreshVolte();

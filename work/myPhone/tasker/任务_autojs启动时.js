@@ -19,13 +19,17 @@ if (lockTool.getLocked("autojs_start")) {
 
 log("autojs启动时触发");
 // 如果开机启动脚本执行，那么就说明xp环境正常
+// 重置亮度和音量为最大值
+device.setBrightness(255);
+device.setMusicVolume(16);
+device.setAlarmVolume(16);
+
 // 否则执行重启指令，（当然需要设置延时，倒计时30s，否则无限重启了
 sleep(30000);
 if(!lockTool.getLocked("xp_status")){
     // 执行设备重启，默认xp状态就是false，不用重置lock
     adbTool.rebootPhone();
 }
-
 
 // 清除storage缓存，重置lockTool状态
 lockTool.clearLockDate();
