@@ -1,5 +1,5 @@
 // 全局白名单
-const white_list = ["常驻任务"];
+const white_list = ["常驻任务", "启动", "整点"];
 const white_reg = new RegExp(white_list.join("|"));
 
 function _closeOtherScript(isOnlySource, ignoreSource) {
