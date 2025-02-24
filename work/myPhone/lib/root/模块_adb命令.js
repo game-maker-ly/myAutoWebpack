@@ -111,6 +111,12 @@ function _refreshVolte() {
         sleep(1000);
     }
     volte_option.click();
+    // 返回上一级
+    // 然后再进入，让其生效
+    shell("input keyevent BACK", true);
+    sleep(1000);
+    shell("am start -n com.android.phone/.OppoCallFeaturesSetting", true);
+    
     sleep(15*1000);// 等待15s，让volte修改生效
 }
 exports.refreshVolte = function () {
