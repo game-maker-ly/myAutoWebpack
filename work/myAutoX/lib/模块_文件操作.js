@@ -4,10 +4,7 @@ var BASE_URL = "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/m
 var cache_config = readConfig();
 const CONFIG_URL = "http://541378.xyz/@http://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/config.json";
 
-const DEFAULT_CFG = {
-    "version": "1.0",
-    "project_url": BASE_URL
-};
+
 
 
 var cacheMd5 = null;
@@ -16,6 +13,10 @@ var cache_shortCutConfig = null;
 function readConfig() {
     // 假如配置文件不存在，就手动创建
     var c_path = "config.json";
+    var DEFAULT_CFG = {
+    "version": "1.0",
+    "project_url":  "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+};
     if (!files.exists(c_path)) {
         files.write(c_path, JSON.stringify(DEFAULT_CFG));
     }
