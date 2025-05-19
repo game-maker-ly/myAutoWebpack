@@ -27,7 +27,7 @@ function checkConfig(srcDir){
         cache_config = readConfig();
     }
     // 如果是下载配置文件，则固定BaseURL;
-    if (srcDir.indexOf("config") != -1) {
+    if (srcDir && srcDir.indexOf("config") != -1) {
         BASE_URL = CONFIG_URL;
     } else {
         BASE_URL = cache_config["project_url"];
@@ -59,8 +59,6 @@ function downloadFile_private(srcDir, desDir) {
 
 var lock = false;
 function downloadFile_async_list(dirList, callBack_Func) {
-    // 未初始化则去配置文件中读取
-    checkConfig(srcDir)
     // 不能用async/await
     // get的回调属于okhttp框架下的代码
     // 不受autojs管理，不能在此中断线程以及抛出resolve
@@ -69,6 +67,8 @@ function downloadFile_async_list(dirList, callBack_Func) {
     let pList = [];
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
+         // 未初始化则去配置文件中读取
+        checkConfig(srcDir)
         var url = BASE_URL + srcDir;
         // 抛出resolve需要在ui线程
         // 使用普通线程有概率无法生效
