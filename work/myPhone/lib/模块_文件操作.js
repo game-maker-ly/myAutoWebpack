@@ -39,8 +39,8 @@ function downloadFile_private(srcDir, desDir) {
     }
 }
 
-
-function downloadFile_async_list(dirList) {
+var count=0;
+function downloadFile_async_list(dirList, callback) {
     // 不能用async/await
     // get的回调不兼容Promise
     // 仅在autojs4版本有这个问题，之后的版本都正常
@@ -58,8 +58,13 @@ function downloadFile_async_list(dirList) {
                 var desDir = dirList[i];
                 files.createWithDirs(desDir);
                 files.writeBytes(desDir, res.body.bytes());
-                log("下载成功："+desDir);
-                events.broadcast.emit("isFileListDownloaded", size);
+                count+=1;   // 异步可能会数据不正确
+                log("下载成功："+desDir+"----"+count);
+                if(count == size){
+                    // 解锁
+                    callback && callback();
+                    events.broadcast.emit("isFileListDownloaded");
+                }
             } else {
                 log("下载失败！");
             }
@@ -79,9 +84,9 @@ exports.downloadFile = function (desDir) {
     downloadFile_private(desDir, desDir);
 }
 
-exports.downloadFileList_Async = function (desDirList) {
+exports.downloadFileList_Async = function (desDirList, callback) {
     log("开始异步下载");
-    downloadFile_async_list(desDirList);
+    downloadFile_async_list(desDirList, callback);
 }
 
 exports.downloadFileAndRead = function (srcDir, desDir) {
