@@ -26,8 +26,12 @@ var cloudMd5;
 var m_count = 0;
 
 // 注册销毁，释放引擎
+var isNeedLock = true;
 events.on("exit", function () {
     log("按需更新文件已exit");
+    if(isNeedLock){
+        DeviceTool.cancelWakeUpAndLock();
+    }
 });
 
 var t_lock_flag = false;
@@ -67,6 +71,7 @@ var t_lock = threads.start(function () {
         // 直接更新布局
         // 然后退出当前脚本
         log("无可更新文件，直接开始更新桌面布局。。。");
+        isNeedLock = false; // 锁屏交给下一个脚本
         engines.execScriptFile("tasker/更新桌面布局.js");
         //强制退出
         exit();
@@ -91,6 +96,7 @@ var t_lock = threads.start(function () {
                 files.rename(cloudPath, dirPath);
             }
             // 创建快捷方式
+            isNeedLock = false; // 锁屏交给下一个脚本
             engines.execScriptFile("tasker/更新桌面布局.js");
             // 强制退出
             t_lock_flag = false;    // 释放线程锁
@@ -109,7 +115,6 @@ t_lock.join();// 子线程阻塞主线程
 setTimeout(() => {
     // 锁屏
     log("更新文件超时，执行锁屏");
-    DeviceTool.cancelWakeUpAndLock();
     // 仅清除定时器无法退出
     // clearInterval(myInterval);
     exit();

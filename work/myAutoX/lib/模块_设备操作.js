@@ -1,5 +1,6 @@
 var curBrightnerss_Mode = 0;
 var curBrightnerss = 240;
+var isWakeUpState = false;
 
 // 调用无障碍服务的接口实现锁屏动作
 // 如果无障碍服务未开启则报错
@@ -33,6 +34,7 @@ exports.wakeUpDevice = function () {
     // 此时执行唤醒设备的代码
     var isNotTask = !engines.myEngine().execArgv.intent;
     if (!isNotTask) {
+        isWakeUpState = true;
         var lowBrightnerss = 1;
         // 设置手动亮度模式
         setDeviceBrightness_Mode(0);
@@ -67,7 +69,9 @@ exports.wakeUpDevice = function () {
 // 恢复亮度，并锁屏
 exports.cancelWakeUpAndLock = function () {
     var isNotTask = !engines.myEngine().execArgv.intent;
-    if (!isNotTask) {
+    // 防止重复触发
+    if (!isNotTask && isWakeUpState) {
+        isWakeUpState = false;
         device.cancelKeepingAwake();
         lockScreen();
         resetDeviceBrightness_Mode();

@@ -29,6 +29,12 @@ const DeviceTool = require("../lib/模块_设备操作.js");
 // 这个谜之bug
 // 我只能认为是顺序的问题
 // 第二个快捷方式会被莫名其妙吞掉
+events.on("exit", function () {
+    log("更新桌面布局已exit");
+    DeviceTool.cancelWakeUpAndLock();
+});
+
+
 log("开始创建快捷方式");
 
 var shortcutConfig = FileTool.getShortcutConfig();
@@ -48,6 +54,5 @@ for (sid in shortcutConfig) {
 // 另外之前创建快捷方式的延时不准，导致总有漏的情况
 sleep(5000);
 log("结束创建快捷方式，执行锁屏");
-DeviceTool.cancelWakeUpAndLock();
 
 // 这种线程挂起有概率阻塞，需要手动exit

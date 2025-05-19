@@ -22,12 +22,24 @@ toastLog("检查更新中");
 var cfg_path = "config.json";
 var cfg_path_cloud = "config_cloud.json";
 var localVersion = FileTool.getLocalVersion();
-var cloudCfg = FileTool.downloadFileAndRead(cfg_path, cfg_path_cloud);
+var cloudCfg = FileTool.tryDLCloudConfig();
 // 如果没有找到云端配置文件，就放弃更新操作，
 // 可能是没有网
-if(cloudCfg == null) {
+// 注册销毁，释放引擎
+// 需要线程阻塞，让其不要退出
+var isNeedLock = true;
+// 防止报错不执行
+events.on("exit", function () {
+    log("update已退出");
+    // 锁屏恢复
+    if(isNeedLock){
+        DeviceTool.cancelWakeUpAndLock();
+    }
+});
+
+
+if(!cloudCfg) {
     toastLog("未获取到更新配置，请检查网络情况");
-    DeviceTool.cancelWakeUpAndLock();
     exit();//相当于return，不能直接用return
 }
 var newVersion = cloudCfg["version"];
@@ -35,8 +47,8 @@ toastLog("本地版本:"+localVersion);
 toastLog("云端版本:"+newVersion);
 if(newVersion == localVersion){
     toastLog("已经是最新版本！");
-    DeviceTool.cancelWakeUpAndLock();
 }else{
+    isNeedLock = false; // 如果要执行别的脚本，就不锁屏
     toastLog("检测到新版本，正在执行更新");
     var dirPath = "tasker/按需更新文件.js";
     FileTool.downloadFile(dirPath);

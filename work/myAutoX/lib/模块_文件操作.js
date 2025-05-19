@@ -1,8 +1,13 @@
 // 读取配置文件
 // 本地操作
-var cache_config;
-var BASE_URL;
+var BASE_URL = "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/";
+var cache_config = readConfig();
 const CONFIG_URL = "http://541378.xyz/@http://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/config.json";
+
+const DEFAULT_CFG = {
+    "version": "1.0",
+    "project_url": BASE_URL
+};
 
 
 var cacheMd5 = null;
@@ -11,20 +16,15 @@ var cache_shortCutConfig = null;
 function readConfig() {
     // 假如配置文件不存在，就手动创建
     var c_path = "config.json";
-    var defaultCfg = {
-        "version": "1.0",
-        "project_url": CONFIG_URL
-    }
     if (!files.exists(c_path)) {
-        files.write(c_path, JSON.stringify(defaultCfg));
+        files.write(c_path, JSON.stringify(DEFAULT_CFG));
     }
     return readJson(c_path);
 }
 
 // 检测config是否有效
-function checkConfig(srcDir){
-     if (!cache_config) {
-        cache_config = readConfig();
+function checkConfig(srcDir) {
+    if (!cache_config) {
     }
     // 如果是下载配置文件，则固定BaseURL;
     if (srcDir && srcDir.indexOf("config") != -1) {
@@ -39,12 +39,9 @@ function readJson(path) {
     return JSON.parse(str);
 }
 
-//这个写法是同步下载
-function downloadFile_private(srcDir, desDir) {
+function downloadFile_fullpath(url, desDir) {
     // 未初始化则去配置文件中读取
-    checkConfig(srcDir)
-
-    var url = BASE_URL + srcDir;
+    //checkConfig(srcDir)
     var res = http.get(url);
     // 保存到本地
     if (res.statusCode == 200) {
@@ -54,6 +51,11 @@ function downloadFile_private(srcDir, desDir) {
     } else {
         return false;
     }
+}
+
+//这个写法是同步下载
+function downloadFile_private(srcDir, desDir) {
+    return downloadFile_fullpath(BASE_URL + srcDir);
 }
 
 
@@ -67,8 +69,8 @@ function downloadFile_async_list(dirList, callBack_Func) {
     let pList = [];
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
-         // 未初始化则去配置文件中读取
-        checkConfig(srcDir)
+        // 未初始化则去配置文件中读取
+       // checkConfig(srcDir)
         var url = BASE_URL + srcDir;
         // 抛出resolve需要在ui线程
         // 使用普通线程有概率无法生效
@@ -133,6 +135,14 @@ exports.downloadFileAndRead = function (srcDir, desDir) {
     return res;
 }
 
+
+// 独立的下载配置文件方法，
+exports.tryDLCloudConfig = function () {
+    let desDir =  "config_cloud.json";
+    var isSucc = downloadFile_fullpath(CONFIG_URL, desDir);
+    var res = isSucc ? readJson(desDir) : null;
+    return res;
+}
 
 
 exports.getMd5ByPath = function (path) {

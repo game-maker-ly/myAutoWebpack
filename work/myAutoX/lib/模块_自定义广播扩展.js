@@ -2,7 +2,7 @@ importClass(android.content.IntentFilter);
 
 // let myInterval;
 // let myThread;
-let myThread_lock;
+let myThread_lock;  // 线程锁
 
 // 动态注册一次销毁一次
 // 那其实这个广播可以只注册一次，脚本结束时销毁
@@ -15,7 +15,7 @@ function _init() {
     let receiver = new JavaAdapter(android.content.BroadcastReceiver, {
         onReceive: function (context, intent) {
             threads.start(function () {
-                myThread_lock = false;
+                myThread_lock = false;  // 释放线程锁，不能在java回调和主线程中执行
             });
         },
     });
@@ -41,10 +41,10 @@ function waitBroadcastReceiver(callBack_func) {
     // 使用线程+while锁阻塞主线程
     myThread_lock = true;
     var myThread = threads.start(function () {
-        callBack_func && callBack_func();
+        callBack_func && callBack_func();   // 异步代码
         while (myThread_lock);
     });
-    myThread.join();
+    myThread.join();    // 阻塞主线程，保证同步执行
 }
 
 
