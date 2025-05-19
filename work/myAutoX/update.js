@@ -15,6 +15,10 @@ toastLog("检查更新中");
 // 对比本地的版本
 // 如果一致，就跳过此次更新
 // 既然每次都会去请求config.json，那和md5一样，无需记录md5值
+// 有个问题，cloudflare不适用高频次的请求，
+// 所以只在需要获取config.json的时候使用自己的域名，而
+// 获取到config.json，就知道去哪个反代网站获取下载链接了
+// 并且config.json可以由我更新
 var cfg_path = "config.json";
 var cfg_path_cloud = "config_cloud.json";
 var localVersion = FileTool.getLocalVersion();

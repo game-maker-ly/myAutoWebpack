@@ -1,7 +1,8 @@
 // 读取配置文件
 // 本地操作
-var cache_config = readConfig();
-var BASE_URL = cache_config["project_url"];
+var cache_config;
+var BASE_URL;
+const CONFIG_URL = "http://541378.xyz/@http://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/config.json";
 
 
 var cacheMd5 = null;
@@ -12,12 +13,25 @@ function readConfig() {
     var c_path = "config.json";
     var defaultCfg = {
         "version": "1.0",
-        "project_url": "https://mirror.ghproxy.com/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+        "project_url": CONFIG_URL
     }
     if (!files.exists(c_path)) {
         files.write(c_path, JSON.stringify(defaultCfg));
     }
     return readJson(c_path);
+}
+
+// 检测config是否有效
+function checkConfig(srcDir){
+     if (!cache_config) {
+        cache_config = readConfig();
+    }
+    // 如果是下载配置文件，则固定BaseURL;
+    if (srcDir.indexOf("config") != -1) {
+        BASE_URL = CONFIG_URL;
+    } else {
+        BASE_URL = cache_config["project_url"];
+    }
 }
 
 function readJson(path) {
@@ -27,6 +41,9 @@ function readJson(path) {
 
 //这个写法是同步下载
 function downloadFile_private(srcDir, desDir) {
+    // 未初始化则去配置文件中读取
+    checkConfig(srcDir)
+
     var url = BASE_URL + srcDir;
     var res = http.get(url);
     // 保存到本地
@@ -42,6 +59,8 @@ function downloadFile_private(srcDir, desDir) {
 
 var lock = false;
 function downloadFile_async_list(dirList, callBack_Func) {
+    // 未初始化则去配置文件中读取
+    checkConfig(srcDir)
     // 不能用async/await
     // get的回调属于okhttp框架下的代码
     // 不受autojs管理，不能在此中断线程以及抛出resolve
