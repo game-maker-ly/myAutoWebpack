@@ -33,6 +33,7 @@ exports.wakeUpDevice = function () {
     // 说明isNotTask的值为false
     // 此时执行唤醒设备的代码
     var isNotTask = !engines.myEngine().execArgv.intent;
+    //var isNotTask = false;
     if (!isNotTask) {
         isWakeUpState = true;
         var lowBrightnerss = 1;
@@ -69,9 +70,12 @@ exports.wakeUpDevice = function () {
 // 恢复亮度，并锁屏
 exports.cancelWakeUpAndLock = function () {
     var isNotTask = !engines.myEngine().execArgv.intent;
+    log("取消唤醒，恢复亮度"+ curBrightnerss + "模式："+ curBrightnerss_Mode);
+    // var isNotTask = false;
     // 防止重复触发
     if (!isNotTask && isWakeUpState) {
         isWakeUpState = false;
+        log("取消唤醒，恢复亮度"+ curBrightnerss + "模式："+ curBrightnerss_Mode);
         device.cancelKeepingAwake();
         lockScreen();
         resetDeviceBrightness_Mode();

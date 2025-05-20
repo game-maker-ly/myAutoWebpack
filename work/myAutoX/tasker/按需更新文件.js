@@ -70,9 +70,9 @@ var t_lock = threads.start(function () {
     if (dl_Files.length == 0) {
         // 直接更新布局
         // 然后退出当前脚本
-        log("无可更新文件，直接开始更新桌面布局。。。");
-        isNeedLock = false; // 锁屏交给下一个脚本
-        engines.execScriptFile("tasker/更新桌面布局.js");
+        log("无可更新文件，跳过此次更新。。。");
+        // isNeedLock = false; // 锁屏交给下一个脚本
+        // engines.execScriptFile("tasker/更新桌面布局.js");
         //强制退出
         exit();
     } else {

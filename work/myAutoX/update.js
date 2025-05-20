@@ -3,10 +3,13 @@
 // 获取云端版本号，与本地版本号对比，如果不同则执行更新task文件
 // 否则跳过
 // 
+
+
 const FileTool = require("./lib/模块_文件操作.js");
 const DeviceTool = require("./lib/模块_设备操作.js");
 // 如果是息屏/休眠状态，需要解锁屏幕
 // 先保存亮度，并手动设置亮度
+
 DeviceTool.wakeUpDevice();
 
 toastLog("检查更新中");
@@ -19,9 +22,7 @@ toastLog("检查更新中");
 // 所以只在需要获取config.json的时候使用自己的域名，而
 // 获取到config.json，就知道去哪个反代网站获取下载链接了
 // 并且config.json可以由我更新
-var cfg_path = "config.json";
-var cfg_path_cloud = "config_cloud.json";
-var localVersion = FileTool.getLocalVersion();
+var localCfg = FileTool.getLocalConfig();
 var cloudCfg = FileTool.tryDLCloudConfig();
 // 如果没有找到云端配置文件，就放弃更新操作，
 // 可能是没有网
@@ -42,6 +43,7 @@ if(!cloudCfg) {
     toastLog("未获取到更新配置，请检查网络情况");
     exit();//相当于return，不能直接用return
 }
+var localVersion = localCfg["version"];
 var newVersion = cloudCfg["version"];
 toastLog("本地版本:"+localVersion);
 toastLog("云端版本:"+newVersion);
@@ -54,6 +56,5 @@ if(newVersion == localVersion){
     FileTool.downloadFile(dirPath);
     engines.execScriptFile(dirPath);
     // 覆盖版本
-    files.remove(cfg_path);
-    files.rename(cfg_path_cloud, cfg_path);
+   FileTool.syncConfigFile();
 }

@@ -1,10 +1,13 @@
 // 读取配置文件
 // 本地操作
-var BASE_URL = "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/";
-var cache_config = readConfig();
+var BASE_URL;
 const CONFIG_URL = "http://541378.xyz/@http://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/config.json";
 
-
+// 先定义
+const CFG_PATH = "config.json";
+const CFG_PATH_CLOUD = "config_cloud.json";
+// 后读取，不然会出问题
+var _Local_Config;   // 预读取本地配置文件
 
 
 var cacheMd5 = null;
@@ -12,28 +15,17 @@ var cache_shortCutConfig = null;
 
 function readConfig() {
     // 假如配置文件不存在，就手动创建
-    var c_path = "config.json";
     var DEFAULT_CFG = {
-    "version": "1.0",
-    "project_url":  "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
-};
-    if (!files.exists(c_path)) {
-        files.write(c_path, JSON.stringify(DEFAULT_CFG));
+        "version": "1.0",
+        "project_url": "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+    };
+    // log(CFG_PATH);
+    if (!files.exists(CFG_PATH)) {
+        files.write(CFG_PATH, JSON.stringify(DEFAULT_CFG));
     }
-    return readJson(c_path);
+    return readJson(CFG_PATH);
 }
 
-// 检测config是否有效
-function checkConfig(srcDir) {
-    if (!cache_config) {
-    }
-    // 如果是下载配置文件，则固定BaseURL;
-    if (srcDir && srcDir.indexOf("config") != -1) {
-        BASE_URL = CONFIG_URL;
-    } else {
-        BASE_URL = cache_config["project_url"];
-    }
-}
 
 function readJson(path) {
     var str = files.read(path);
@@ -46,7 +38,10 @@ function downloadFile_fullpath(url, desDir) {
     var res = http.get(url);
     // 保存到本地
     if (res.statusCode == 200) {
-        files.createWithDirs(desDir);
+        // 先删除旧的，再创建新的
+        // files.remove(desDir);
+        let isSucc = files.createWithDirs(desDir);
+        // log("downloadFile_fullpath: " + desDir + isSucc);
         files.writeBytes(desDir, res.body.bytes());
         return true;
     } else {
@@ -56,7 +51,7 @@ function downloadFile_fullpath(url, desDir) {
 
 //这个写法是同步下载
 function downloadFile_private(srcDir, desDir) {
-    return downloadFile_fullpath(BASE_URL + srcDir);
+    return downloadFile_fullpath(BASE_URL + srcDir, desDir);
 }
 
 
@@ -71,7 +66,7 @@ function downloadFile_async_list(dirList, callBack_Func) {
     for (let i = 0; i < size; i++) {
         var srcDir = dirList[i];
         // 未初始化则去配置文件中读取
-       // checkConfig(srcDir)
+        // checkConfig(srcDir)
         var url = BASE_URL + srcDir;
         // 抛出resolve需要在ui线程
         // 使用普通线程有概率无法生效
@@ -116,11 +111,20 @@ function downloadFile_async_list(dirList, callBack_Func) {
 }
 
 // 获取本地版本号
-exports.getLocalVersion = function () {
-    return cache_config["version"];
+exports.getLocalConfig = function () {
+    if(!_Local_Config){
+        _Local_Config = readConfig();
+    }
+    return _Local_Config;
 }
 
+// 移除原来的本地配置，并将云端配置重命名为本地配置达到更新的目的
+exports.syncConfigFile = function () {
+    files.remove(CFG_PATH);
+    files.rename(CFG_PATH_CLOUD, CFG_PATH);
+}
 
+// 就是直接下载url对于的文件，不重命名
 exports.downloadFile = function (desDir) {
     downloadFile_private(desDir, desDir);
 }
@@ -137,11 +141,20 @@ exports.downloadFileAndRead = function (srcDir, desDir) {
 }
 
 
-// 独立的下载配置文件方法，
+// 独立的下载配置文件方法
+// 相当于初始化
 exports.tryDLCloudConfig = function () {
-    let desDir =  "config_cloud.json";
-    var isSucc = downloadFile_fullpath(CONFIG_URL, desDir);
-    var res = isSucc ? readJson(desDir) : null;
+    var isSucc = downloadFile_fullpath(CONFIG_URL, CFG_PATH_CLOUD);
+    var res;
+    if (isSucc) {
+        // 成功读取，则返回云端配置的json对象，并将BASE_URL = 此json对象的project_url
+        res = readJson(CFG_PATH_CLOUD);
+        BASE_URL = res["project_url"];
+    } else {
+        res = null;
+        // 如果没有获取到云端配置，则将BASE_URL = 本地配置的project_url
+        BASE_URL = _Local_Config["project_url"];
+    }
     return res;
 }
 
