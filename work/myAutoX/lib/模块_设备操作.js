@@ -36,9 +36,9 @@ exports.wakeUpDevice = function () {
     // 假如是任务触发的，那么intent不为空
     // 说明isNotTask的值为false
     // 此时执行唤醒设备的代码
-    var isNotTask = !engines.myEngine().execArgv.intent;
+    // var isNotTask = !engines.myEngine().execArgv.intent;
     log("唤醒设备");
-    //var isNotTask = false;
+    var isNotTask = false;  // 此处的判断没啥意义，因为通过exescript执行的脚本不是定时任务
     if (!isNotTask) {
         isWakeUpState = true;
         st.put("isWakeUpState", isWakeUpState);
@@ -75,10 +75,10 @@ exports.wakeUpDevice = function () {
 }
 // 恢复亮度，并锁屏
 exports.cancelWakeUpAndLock = function () {
-    var isNotTask = !engines.myEngine().execArgv.intent;
-    // var isNotTask = false;
+    // var isNotTask = !engines.myEngine().execArgv.intent;
+    var isNotTask = false; // 此处的判断没啥意义，因为通过exescript执行的脚本不是定时任务
     // 防止重复触发
-    log("取消唤醒设备");
+    log("取消唤醒设备：" + isWakeUpState);
     if (!isNotTask && isWakeUpState) {
         isWakeUpState = false;
         st.put("isWakeUpState", isWakeUpState);
