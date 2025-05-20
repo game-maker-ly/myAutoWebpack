@@ -53,7 +53,8 @@ if(newVersion == localVersion){
     isNeedLock = false; // 如果要执行别的脚本，就不锁屏
     toastLog("检测到新版本，正在执行更新");
     var dirPath = "tasker/按需更新文件.js";
-    FileTool.downloadFile(dirPath);
+    var isSucc = FileTool.downloadFile(dirPath);
+    log("下载按需更新文件："+isSucc);
     engines.execScriptFile(dirPath);
     // 覆盖版本
    FileTool.syncConfigFile();

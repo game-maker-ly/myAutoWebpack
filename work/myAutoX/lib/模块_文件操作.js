@@ -1,6 +1,9 @@
 // 读取配置文件
 // 本地操作
-var BASE_URL;
+// 这个BASE_URL，不同脚本不共存，
+// 需要缓存
+const st = storages.create("Update.Share");
+var BASE_URL = st.get("BASE_URL");
 const CONFIG_URL = "http://541378.xyz/@http://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/config.json";
 
 // 先定义
@@ -126,7 +129,7 @@ exports.syncConfigFile = function () {
 
 // 就是直接下载url对于的文件，不重命名
 exports.downloadFile = function (desDir) {
-    downloadFile_private(desDir, desDir);
+    return downloadFile_private(desDir, desDir);
 }
 
 exports.downloadFileList_Async = function (desDirList, callback_Func) {
@@ -155,6 +158,9 @@ exports.tryDLCloudConfig = function () {
         // 如果没有获取到云端配置，则将BASE_URL = 本地配置的project_url
         BASE_URL = _Local_Config["project_url"];
     }
+    log("BASE_URL: "+BASE_URL);
+    // 缓存BASE_URL
+    st.put("BASE_URL", BASE_URL);
     return res;
 }
 
