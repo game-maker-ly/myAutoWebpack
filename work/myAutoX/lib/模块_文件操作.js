@@ -158,7 +158,7 @@ exports.tryDLCloudConfig = function () {
         // 如果没有获取到云端配置，则将BASE_URL = 本地配置的project_url
         BASE_URL = _Local_Config["project_url"];
     }
-    log("BASE_URL: "+BASE_URL);
+    // log("BASE_URL: "+BASE_URL);
     // 缓存BASE_URL
     st.put("BASE_URL", BASE_URL);
     return res;

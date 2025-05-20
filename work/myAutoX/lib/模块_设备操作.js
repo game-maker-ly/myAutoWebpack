@@ -1,6 +1,8 @@
-var curBrightnerss_Mode = 0;
-var curBrightnerss = 240;
-var isWakeUpState = false;
+const st = storages.create("Update.Share");
+
+var curBrightnerss_Mode =  st.get("curBrightnerss_Mode") || 0;    // 这些数据和BASE_URL一样，需要缓存
+var curBrightnerss = st.get("curBrightnerss") || 240;   // 不同脚本间不能共用
+var isWakeUpState =  st.get("isWakeUpState") || false;
 
 // 调用无障碍服务的接口实现锁屏动作
 // 如果无障碍服务未开启则报错
@@ -11,6 +13,7 @@ function lockScreen() {
 // 亮度模式
 function setDeviceBrightness_Mode(mode) {
     curBrightnerss_Mode = device.getBrightnessMode();
+    st.put("curBrightnerss_Mode", curBrightnerss_Mode);
     device.setBrightnessMode(mode);
 }
 
@@ -20,6 +23,7 @@ function resetDeviceBrightness_Mode() {
 // 亮度
 function setDeviceBrightness(b) {
     curBrightnerss = device.getBrightness();
+    st.put("curBrightnerss", curBrightnerss);
     device.setBrightness(b);
 }
 
@@ -33,9 +37,11 @@ exports.wakeUpDevice = function () {
     // 说明isNotTask的值为false
     // 此时执行唤醒设备的代码
     var isNotTask = !engines.myEngine().execArgv.intent;
+    log("唤醒设备");
     //var isNotTask = false;
     if (!isNotTask) {
         isWakeUpState = true;
+        st.put("isWakeUpState", isWakeUpState);
         var lowBrightnerss = 1;
         // 设置手动亮度模式
         setDeviceBrightness_Mode(0);
@@ -70,11 +76,12 @@ exports.wakeUpDevice = function () {
 // 恢复亮度，并锁屏
 exports.cancelWakeUpAndLock = function () {
     var isNotTask = !engines.myEngine().execArgv.intent;
-    log("取消唤醒，恢复亮度"+ curBrightnerss + "模式："+ curBrightnerss_Mode);
     // var isNotTask = false;
     // 防止重复触发
+    log("取消唤醒设备");
     if (!isNotTask && isWakeUpState) {
         isWakeUpState = false;
+        st.put("isWakeUpState", isWakeUpState);
         log("取消唤醒，恢复亮度"+ curBrightnerss + "模式："+ curBrightnerss_Mode);
         device.cancelKeepingAwake();
         lockScreen();

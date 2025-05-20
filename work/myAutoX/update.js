@@ -54,7 +54,7 @@ if(newVersion == localVersion){
     toastLog("检测到新版本，正在执行更新");
     var dirPath = "tasker/按需更新文件.js";
     var isSucc = FileTool.downloadFile(dirPath);
-    log("下载按需更新文件："+isSucc);
+    // log("下载按需更新文件："+isSucc);
     engines.execScriptFile(dirPath);
     // 覆盖版本
    FileTool.syncConfigFile();
