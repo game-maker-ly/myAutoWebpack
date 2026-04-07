@@ -20,7 +20,7 @@ function readConfig() {
     // 假如配置文件不存在，就手动创建
     var DEFAULT_CFG = {
         "version": "1.0",
-        "project_url": "https://tvv.tw/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
+        "project_url": "https://ghproxy.net/https://raw.githubusercontent.com/game-maker-ly/myAutoX/main/myAutoX/"
     };
     // log(CFG_PATH);
     if (!files.exists(CFG_PATH)) {
@@ -158,7 +158,7 @@ exports.tryDLCloudConfig = function () {
         // 如果没有获取到云端配置，则将BASE_URL = 本地配置的project_url
         BASE_URL = _Local_Config["project_url"];
     }
-    // log("BASE_URL: "+BASE_URL);
+    log("BASE_URL: "+BASE_URL);
     // 缓存BASE_URL
     st.put("BASE_URL", BASE_URL);
     return res;
