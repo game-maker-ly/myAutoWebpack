@@ -1,8 +1,8 @@
 var mgtvNet = require("../net/芒果tv网络请求.js");
 var mgtvApp = require("../app/打开芒果tv_国际版_电视版.js");
-var clipId = 714984;    // 寻情记的合集id
+var clipId = 820875;    // 寻情记的合集id，每年需要更新一次，由于规则可能会变更，暂不考虑重构代码
 var videoId = mgtvNet.getNewVideoId(clipId);
-if(videoId == -1){videoId = 21093374;}
+if(videoId == -1){videoId = 24282206;}
 
 // log(videoId);
 mgtvApp.openMGTV(videoId);
