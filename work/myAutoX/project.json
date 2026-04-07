@@ -1,10 +1,10 @@
 {
-    "name": "快捷多媒体项目",
-    "main": "main.js",
-    "ignore": [
-        "build"
-    ],
-    "packageName": "com.example",
-    "versionName": "1.0.0",
-    "versionCode": 1
+	"name": "快捷多媒体项目",
+	"main": "main.js",
+	"ignore": [
+		"build"
+	],
+	"packageName": "com.example",
+	"versionName": "1.0.0",
+	"versionCode": 1
 }
