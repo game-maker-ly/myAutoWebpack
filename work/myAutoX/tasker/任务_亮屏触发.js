@@ -20,6 +20,10 @@ if (lockTool.getLocked("screen_on")) {
 log("亮屏触发：清除还在运行的脚本");
 // 并清除正在运行的脚本
 scriptTool.closeOtherScript();
+// 拉满亮度和音量
+// device.setBrightness(2047);
+device.setMusicVolume(device.getMusicMaxVolume());
+
 // 检测当前电量
 var battery_val = device.getBattery();
 if (battery_val < 20) {
